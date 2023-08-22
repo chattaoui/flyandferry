@@ -23,8 +23,6 @@
 }
 
 nav {
-  padding: 0px;
-
   a {
     font-weight: bold;
     color: rgb(25, 51, 84);

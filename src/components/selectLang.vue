@@ -458,7 +458,8 @@ img, video, svg {
 
 .language-picker__dropdown {
   position: absolute;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   top: 100%;
   width: 200px;
   background-color: hsl(var(--li4-color-bg-light-hsl));

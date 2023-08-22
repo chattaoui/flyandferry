@@ -1,162 +1,34 @@
 <template>
   <div class="formbold-main-wrapper" style="margin: 100px">
-    <!-- Author: FormBold Team -->
-    <!-- Learn More: https://formbold.com -->
     <div class="formbold-form-wrapper">
-      <form class="search-form" method="POST">
+      <form class="search-form" @submit="preventDefault" method="POST">
         <div class="toggle">
-          <input
-            type="radio"
-            name="sizeBy"
-            value="weight"
-            id="sizeWeight"
-            checked="checked"
-          />
+          <input type="radio" name="sizeBy" v-model="tripType" value="roundTrip" id="sizeWeight" checked="checked" />
           <label for="sizeWeight">Voyage aller-retour</label>
-          <input
-            type="radio"
-            name="sizeBy"
-            value="dimensions"
-            id="sizeDimensions"
-          />
+          <input type="radio" name="sizeBy" v-model="tripType" value="oneWay" id="sizeDimensions" />
           <label for="sizeDimensions">Aller simple</label>
         </div>
-        <div class="formbold-steps">
-          <ul>
-            <li class="formbold-step-menu1 active">
-              <span>1</span>
-              Sign Up
-            </li>
-            <li class="formbold-step-menu2">
-              <span>2</span>
-              Message
-            </li>
-            <li class="formbold-step-menu3">
-              <span>3</span>
-              Confirm
-            </li>
-          </ul>
-        </div>
-
-        <div class="formbold-form-step-2">
-          <div class="formbold-input-flex">
-            <div>
-              <label for="firstname" class="formbold-form-label">
-                First name
-              </label>
-              <input
-                type="text"
-                name="firstname"
-                placeholder="Andrio"
-                id="firstname"
-                class="formbold-form-input"
-              />
-            </div>
-            <div>
-              <label for="lastname" class="formbold-form-label">
-                Last name
-              </label>
-              <input
-                type="text"
-                name="lastname"
-                placeholder="Dolee"
-                id="lastname"
-                class="formbold-form-input"
-              />
-            </div>
-          </div>
-
-          <div class="formbold-input-flex">
-            <div>
-              <label for="dob" class="formbold-form-label">
-                Date of Birth
-              </label>
-              <input
-                type="date"
-                name="dob"
-                id="dob"
-                class="formbold-form-input"
-              />
-            </div>
-            <div>
-              <label for="email" class="formbold-form-label">
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                placeholder="example@mail.com"
-                id="email"
-                class="formbold-form-input"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label for="address" class="formbold-form-label"> Address </label>
-            <input
-              type="text"
-              name="address"
-              id="address"
-              placeholder="Flat 4, 24 Castle Street, Perth, PH1 3JY"
-              class="formbold-form-input"
-            />
-          </div>
-        </div>
-
-        <div
-          class="formbold-form-step-1 test-center active"
-          style="flex-direction: column; gap: 30px; margin-top: 35px"
-        >
+        <div class="formbold-form-step-1 test-center" style="flex-direction: column; gap: 30px; margin-top: 35px">
           <div class="group">
             <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
               <g>
                 <path
-                  d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"
-                ></path>
+                  d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
+                </path>
               </g>
             </svg>
-            <input
-              @input="filterRoutes"
-              style="font-size: 13px"
-              placeholder="Entrez un port, un pays ou un opérateur"
-              id="searchRef"
-              ref="searchRef"
-              v-model="searchInp"
-              type="search"
-              @focus="
+            <input @input="filterRoutes" style="font-size: 13px" placeholder="Entrez un port, un pays ou un opérateur"
+              id="searchRef" ref="searchRef" v-model="searchInp" type="search" @focus="
                 searchFocused = true;
-                showPopular = true;
-              "
-              class="input"
-            />
-            <svg
-              v-if="searchFocused"
-              @click="clearSearch"
-              fill="blue"
-              style="height: 24px; width: 24px; position: absolute; right: 4px"
-              stroke="currentColor"
-              stroke-width="1.5"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
+              showPopular = true;
+              " class="input" />
+            <svg v-if="searchFocused" @click="clearSearch" fill="blue"
+              style="height: 24px; width: 24px; position: absolute; right: 4px" stroke="currentColor" stroke-width="1.5"
+              viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </div>
-
-          <!-- <button class="formbold-btn" @click="handleFormClick" style="display:block">
-                Rechercher
-            </button> -->
-          <a
-            class="formbold-btn"
-            v-if="!searchFocused"
-            @click="handleFormClick"
-          >
+          <a class="formbold-btn" v-if="!searchFocused && step_1" @click="handleFormClick">
             <span></span>
             <span></span>
             <span></span>
@@ -164,7 +36,7 @@
             Rechercher
           </a>
 
-          <div class="search-menu" v-if="showPopular">
+          <div class="search-menu" v-if="showPopular && step_1">
             <div v-if="showRoutes">
               <div>
                 <h5 style="color: azure; font-size: 16px">
@@ -172,33 +44,22 @@
                 </h5>
               </div>
               <div class="popular-ferry-list">
-                <div
-                  class="list-item"
-                  v-for="(route, index) in searchedRoutes"
-                  :key="`Routes-${index}`"
-                  @click="handleRouteClick(route)"
-                >
+                <div class="list-item" v-for="(route, index) in searchedRoutes" :key="`Routes-${index}`"
+                  @click="handleRouteClick(route)">
                   <div class="departure">
                     <span class="port">{{ route.departurePort }}</span>
                     <span class="country">{{ route.departureCountry }}</span>
                   </div>
                   <div class="arrow-icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      enable-background="new 0 0 24 24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      width="24"
-                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24"
+                      viewBox="0 0 24 24" width="24">
                       <g>
                         <rect fill="none" height="24" width="24" x="0" />
                       </g>
                       <g>
                         <g>
                           <g>
-                            <path
-                              d="M9.01,14H2v2h7.01v3L13,15l-3.99-4V14z M14.99,13v-3H22V8h-7.01V5L11,9L14.99,13z"
-                            />
+                            <path d="M9.01,14H2v2h7.01v3L13,15l-3.99-4V14z M14.99,13v-3H22V8h-7.01V5L11,9L14.99,13z" />
                           </g>
                         </g>
                       </g>
@@ -218,33 +79,21 @@
               </h5>
             </div>
             <div class="popular-ferry-list">
-              <div
-                class="list-item"
-                v-for="(trip, index) in popularTrips"
-                :key="index"
-                @click="handleRouteClick(trip)"
-              >
+              <div class="list-item" v-for="(trip, index) in popularTrips" :key="index" @click="handleRouteClick(trip)">
                 <div class="departure">
                   <span class="port">{{ trip.departurePort }}</span>
                   <span class="country">{{ trip.departureCountry }}</span>
                 </div>
                 <div class="arrow-icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    enable-background="new 0 0 24 24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    width="24"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24"
+                    viewBox="0 0 24 24" width="24">
                     <g>
                       <rect fill="none" height="24" width="24" x="0" />
                     </g>
                     <g>
                       <g>
                         <g>
-                          <path
-                            d="M9.01,14H2v2h7.01v3L13,15l-3.99-4V14z M14.99,13v-3H22V8h-7.01V5L11,9L14.99,13z"
-                          />
+                          <path d="M9.01,14H2v2h7.01v3L13,15l-3.99-4V14z M14.99,13v-3H22V8h-7.01V5L11,9L14.99,13z" />
                         </g>
                       </g>
                     </g>
@@ -257,91 +106,14 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="formbold-form-step-3">
-          <div class="formbold-form-confirm">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt.
-            </p>
-
-            <div>
-              <button class="formbold-confirm-btn active">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle
-                    cx="11"
-                    cy="11"
-                    r="10.5"
-                    fill="white"
-                    stroke="#DDE3EC"
-                  />
-                  <g clip-path="url(#clip0_1667_1314)">
-                    <path
-                      d="M9.83343 12.8509L15.1954 7.48828L16.0208 8.31311L9.83343 14.5005L6.12109 10.7882L6.94593 9.96336L9.83343 12.8509Z"
-                      fill="#536387"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_1667_1314">
-                      <rect
-                        width="14"
-                        height="14"
-                        fill="white"
-                        transform="translate(4 4)"
-                      />
-                    </clipPath>
-                  </defs>
-                </svg>
-                Yes! I want it.
-              </button>
-
-              <button class="formbold-confirm-btn">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle
-                    cx="11"
-                    cy="11"
-                    r="10.5"
-                    fill="white"
-                    stroke="#DDE3EC"
-                  />
-                  <g clip-path="url(#clip0_1667_1314)">
-                    <path
-                      d="M9.83343 12.8509L15.1954 7.48828L16.0208 8.31311L9.83343 14.5005L6.12109 10.7882L6.94593 9.96336L9.83343 12.8509Z"
-                      fill="#536387"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_1667_1314">
-                      <rect
-                        width="14"
-                        height="14"
-                        fill="white"
-                        transform="translate(4 4)"
-                      />
-                    </clipPath>
-                  </defs>
-                </svg>
-                No! I don’t want it.
-              </button>
+          <div v-if="step_2">
+            <div style="display: inline-flex; gap: 10px">
+                <VueCtkDateTimePicker />
+                <VueCtkDateTimePicker @click="selectedAgenda" v-if="!datePicked && tripType===`roundTrip`" />
+                <input v-if="datePicked && tripType===`roundTrip`" class="date-input" v-model="datE">
             </div>
+            <button  @click="datePick">testing button</button>
           </div>
-        </div>
-
-        <div class="formbold-form-btn-wrapper">
-          <button class="formbold-back-btn">Back</button>
         </div>
       </form>
     </div>
@@ -350,10 +122,17 @@
 
 <script>
 import { languageStore } from "../LanguageStore";
+import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
+import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
 
 export default {
   data() {
     return {
+      datE: "ex-ampel-date",
+      tripType: "roundTrip",
+      datePicked: false,
+      step_1: true,
+      step_2: false,
       searchedRoutes: {},
       searchInp: "",
       showRoutes: false,
@@ -429,9 +208,20 @@ export default {
       ],
     };
   },
+  components: {
+    VueCtkDateTimePicker,
+  },
   methods: {
+    preventDefault(event){
+      event.preventDefault()
+    },
+    selectedAgenda(){
+      this.datePicked = true
+    },
     handleRouteClick(route) {
-      console.log(route);
+      this.searchInp = `${route.departurePort} - ${route.arrivalPort}`
+      this.step_1 = false
+      this.step_2 = true
     },
     filterRoutes() {
       this.searchedRoutes = this.popularTrips
@@ -460,65 +250,8 @@ export default {
       this.searchFocused = false;
       this.searchInp = "";
       this.showRoutes = false;
-      this.showPopular = false;
-    },
-    nextPrevBut() {
-      const stepMenuOne = document.querySelector(".formbold-step-menu1");
-      const stepMenuTwo = document.querySelector(".formbold-step-menu2");
-      const stepMenuThree = document.querySelector(".formbold-step-menu3");
-
-      const stepOne = document.querySelector(".formbold-form-step-1");
-      const stepTwo = document.querySelector(".formbold-form-step-2");
-      const stepThree = document.querySelector(".formbold-form-step-3");
-
-      const formSubmitBtn = document.querySelector(".formbold-btn");
-      const formBackBtn = document.querySelector(".formbold-back-btn");
-
-      const inputSearch = document.getElementById("searchRef");
-
-      formSubmitBtn.addEventListener("click", function (event) {
-        event.preventDefault();
-        if (inputSearch.value !== "") {
-          if (stepMenuOne.className == "formbold-step-menu1 active") {
-            event.preventDefault();
-
-            stepMenuOne.classList.remove("active");
-            stepMenuTwo.classList.add("active");
-
-            stepOne.classList.remove("active");
-            stepTwo.classList.add("active");
-
-            formBackBtn.classList.add("active");
-            formBackBtn.addEventListener("click", function (event) {
-              event.preventDefault();
-
-              stepMenuOne.classList.add("active");
-              stepMenuTwo.classList.remove("active");
-
-              stepOne.classList.add("active");
-              stepTwo.classList.remove("active");
-
-              formBackBtn.classList.remove("active");
-            });
-          } else if (stepMenuTwo.className == "formbold-step-menu2 active") {
-            event.preventDefault();
-
-            stepMenuTwo.classList.remove("active");
-            stepMenuThree.classList.add("active");
-
-            stepTwo.classList.remove("active");
-            stepThree.classList.add("active");
-
-            formBackBtn.classList.remove("active");
-            formSubmitBtn.textContent = "Submit";
-          } else if (stepMenuThree.className == "formbold-step-menu3 active") {
-            event.preventDefault();
-            console.log("prevented from onMounted");
-          }
-        } else {
-          inputSearch.focus();
-        }
-      });
+      this.showPopular = true;
+      this.step_1 = true
     },
   },
   computed: {
@@ -527,12 +260,23 @@ export default {
     },
   },
   mounted() {
-    this.nextPrevBut();
+
   },
 };
 </script>
 
 <style>
+.date-input {
+  width: 100%;
+  padding-left: 14px;
+    text-align: left;
+    font-size: 14px;
+    border-radius: 4px;
+    position: relative;
+    color: rgba(0,0,0,.54);
+    background-color: white;
+}
+
 .search-form {
   width: 90%;
 }
@@ -632,178 +376,17 @@ body {
   height: 75vh;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.6),
     0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  background: linear-gradient(
-    to top right,
-    rgba(228, 85, 41, 0.7),
-    rgba(26, 142, 153, 0.9)
-  );
+  background: linear-gradient(to top right,
+      rgba(228, 85, 41, 0.7),
+      rgba(26, 142, 153, 0.9));
   /* Adjust colors and opacity */
   backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
 }
 
-.formbold-steps {
-  display: none;
-  padding-bottom: 18px;
-  margin-bottom: 35px;
-  border-bottom: 1px solid #dde3ec;
-}
-
-.formbold-steps ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
+.formbold-form-step-1 {
   display: flex;
-  gap: 40px;
-}
-
-.formbold-steps li {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #536387;
-}
-
-.formbold-steps li span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #dde3ec;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #536387;
-}
-
-.formbold-steps li.active {
-  color: #07074d;
-}
-
-.formbold-steps li.active span {
-  background: #6a64f1;
-  color: #ffffff;
-}
-
-.formbold-input-flex {
-  display: block;
-  gap: 20px;
-  margin-bottom: 22px;
-}
-
-.formbold-input-flex > div {
-  width: 50%;
-}
-
-.formbold-form-input {
-  width: 100%;
-  padding: 13px 22px;
-  border-radius: 5px;
-  border: 1px solid #dde3ec;
-  background: #ffffff;
-  font-weight: 400;
-  font-size: 16px;
-  color: #536387;
-  outline: none;
-  resize: none;
-}
-
-.formbold-form-input:focus {
-  border-color: #6a64f1;
-  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
-}
-
-.formbold-form-label {
-  color: #07074d;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 24px;
-  display: block;
-  margin-bottom: 10px;
-}
-
-.formbold-form-confirm {
-  border-bottom: 1px solid #dde3ec;
-  padding-bottom: 35px;
-}
-
-.formbold-form-confirm p {
-  font-size: 16px;
-  line-height: 24px;
-  color: #536387;
-  margin-bottom: 22px;
-  width: 75%;
-}
-
-.formbold-form-confirm > div {
-  display: flex;
-  gap: 15px;
-}
-
-.formbold-confirm-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #ffffff;
-  border: 0.5px solid #dde3ec;
-  border-radius: 5px;
-  font-size: 16px;
-  line-height: 24px;
-  color: #536387;
-  cursor: pointer;
-  padding: 10px 20px;
-  transition: all 0.3s ease-in-out;
-}
-
-.formbold-confirm-btn {
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.12);
-}
-
-.formbold-confirm-btn.active {
-  background: #6a64f1;
-  color: #ffffff;
-}
-
-.formbold-form-step-1,
-.formbold-form-step-2,
-.formbold-form-step-3 {
-  display: none;
-}
-
-.formbold-form-step-1.active,
-.formbold-form-step-2.active,
-.formbold-form-step-3.active {
-  display: block;
-  display: flex;
-}
-
-.formbold-form-btn-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: end;
-  gap: 25px;
-  margin-top: 25px;
-}
-
-.formbold-back-btn {
-  cursor: pointer;
-  background: #ffffff;
-  border: none;
-  color: #07074d;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  display: none;
-}
-
-.formbold-back-btn.active {
-  display: block;
 }
 </style>
 <style scoped>
@@ -867,7 +450,7 @@ input:hover {
   left: -9999px;
 }
 
-.toggle input + label {
+.toggle input+label {
   margin: 0;
   padding: 0.75rem 2rem;
   box-sizing: border-box;
@@ -887,23 +470,23 @@ input:hover {
   /* ----- */
 }
 
-.toggle input + label:first-of-type {
+.toggle input+label:first-of-type {
   border-radius: 6px 0 0 6px;
   border-right: none;
   color: white;
 }
 
-.toggle input + label:last-of-type {
+.toggle input+label:last-of-type {
   border-radius: 0 6px 6px 0;
   border-left: none;
   color: white;
 }
 
-.toggle input:hover + label {
+.toggle input:hover+label {
   border-color: rgb(85, 134, 197);
 }
 
-.toggle input:checked + label {
+.toggle input:checked+label {
   background-color: rgb(53, 90, 138);
   color: #fff;
   box-shadow: 0 0 10px rgba(102, 179, 251, 0.5);
@@ -911,13 +494,13 @@ input:hover {
   z-index: 1;
 }
 
-.toggle input:focus + label {
+.toggle input:focus+label {
   outline: dotted 1px #ccc;
   outline-offset: 0.45rem;
 }
 
 @media (max-width: 800px) {
-  .toggle input + label {
+  .toggle input+label {
     padding: 0.75rem 0.25rem;
     flex: 0 0 50%;
     display: flex;
