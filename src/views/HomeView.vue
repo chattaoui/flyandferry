@@ -12,7 +12,7 @@
       </div>
     </div>
   </div>
-  <CruiseForm class="CruiseForm" style="z-index:999; top:10vh; left: 6vw" />
+  <CruiseForm class="CruiseForm" style="z-index:997; top:10vh; left: 6vw" />
   <div id="about">
     <div class="content-lg container">
       <!-- Masonry Grid -->
@@ -78,9 +78,9 @@
         <div class="row">
           <div v-for="ferryCompany in ferryCompanies" v-bind:key="ferryCompany.companyName"
             class="col-xs-16 col-sm-6 gap-6 col-md-2 sm-margin-b-30 margin-b-30 center">
-            <div class="article-card">
+            <RouterLink to="#" class="article-card">
               <img :src="ferryCompany.companyLogo" :alt="ferryCompany.companyName" />
-            </div>
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -297,57 +297,17 @@ export default {
       ferryCompanies: [{
         companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
         companyName: "grandi navi veloci",
-      }, {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      }, {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      }, {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      }, {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },
-      {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },
-      {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },
-      {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },
-      {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },
-      {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },
-      {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },
-
-
-      {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },
-      {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },
-      {
-        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-        companyName: "grandi navi veloci",
-      },],
+        }, {
+          companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
+          companyName: "grandi navi veloci",
+        }, {
+          companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
+          companyName: "grandi navi veloci",
+        }, {
+          companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
+          companyName: "grandi navi veloci",
+        }
+      ],
       destinPrins: {},
     }
   },
@@ -412,6 +372,7 @@ export default {
   font-family: Arial, Helvetica, sans-serif;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 300ms;
+  cursor: pointer;
 }
 
 .article-card:hover {

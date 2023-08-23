@@ -18,10 +18,7 @@
               </g>
             </svg>
             <input @input="filterRoutes" style="font-size: 13px" placeholder="Entrez un port, un pays ou un opérateur"
-              id="searchRef" ref="searchRef" v-model="searchInp" type="search" @focus="
-                searchFocused = true;
-              showPopular = true;
-              " class="input" />
+              id="searchRef" ref="searchRef" v-model="searchInp" type="search" @focus="focusedInp" class="input" />
             <svg v-if="searchFocused" @click="clearSearch" fill="blue"
               style="height: 24px; width: 24px; position: absolute; right: 4px" stroke="currentColor" stroke-width="1.5"
               viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -107,11 +104,42 @@
             </div>
           </div>
           <div v-if="step_2">
+            <h5 style="color: azure; font-size: 16px; margin-bottom: 20px; text-align: left;">
+              Select dates
+                </h5>
             <div style="display: inline-flex; gap: 10px">
-                <VueCtkDateTimePicker />
-                <VueCtkDateTimePicker @click="selectedAgenda" v-if="!datePicked && tripType===`roundTrip`" />
-                <input v-if="datePicked && tripType===`roundTrip`" class="date-input" v-model="datE">
+              <VueCtkDateTimePicker
+                v-model="departDate"
+                format='YYYY-MM-DD hh:mm'
+                :overlay = "true"
+                :no-label="true"
+                :no-header="true"
+                :position="'bottom'"
+                :min-date="getCurrentDate()"
+                class="date-picker"
+                :noButtonNow="true"
+                :label="`Select departure date`"
+                :formatted="'YYYY-MM-DD, hh:mm'"
+              ></VueCtkDateTimePicker>
+
+                <VueCtkDateTimePicker v-if="tripType===`roundTrip`"
+                v-model="arrivalDate"
+                format='YYYY-MM-DD hh:mm'
+                :overlay = "true"
+                :no-label="true"
+                :no-header="true"
+                :position="'bottom'"
+                :min-date="departDate"
+                class="date-picker"
+                :noButtonNow="true"
+                :label="`Select arrival date`"
+                :formatted="'YYYY-MM-DD, hh:mm'"
+              ></VueCtkDateTimePicker>
             </div>
+            <h5 style="color: azure; font-size: 16px; margin: 20px 0px; text-align: left;">
+              Trip Details
+                </h5>
+            <div></div>
             <button  @click="datePick">testing button</button>
           </div>
         </div>
@@ -128,13 +156,15 @@ import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
 export default {
   data() {
     return {
+      departDate: null,
+      arrivalDate: null,
       datE: "ex-ampel-date",
       tripType: "roundTrip",
-      datePicked: false,
       step_1: true,
       step_2: false,
       searchedRoutes: {},
       searchInp: "",
+      previousSearch: "", 
       showRoutes: false,
       showPopular: true,
       searchFocused: false,
@@ -212,11 +242,25 @@ export default {
     VueCtkDateTimePicker,
   },
   methods: {
+    getCurrentDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0"); // Month is zero-based
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    },
+    datePick() {
+      console.log("Selected Date:", this.departDate);
+    },
+    focusedInp(){
+      this.searchFocused = true;
+      this.showPopular = true;
+      this.step_1 = true
+      this.step_2 = false
+      this.filterRoutes()
+    },
     preventDefault(event){
       event.preventDefault()
-    },
-    selectedAgenda(){
-      this.datePicked = true
     },
     handleRouteClick(route) {
       this.searchInp = `${route.departurePort} - ${route.arrivalPort}`
@@ -229,7 +273,8 @@ export default {
           if (
             Object.values(trip).some((value) =>
               value.toUpperCase().includes(this.searchInp.toUpperCase())
-            )
+            ) ||
+            `${trip.departurePort} - ${trip.arrivalPort}`.toUpperCase().includes(this.searchInp.toUpperCase())
           ) {
             return trip;
           }
@@ -266,6 +311,8 @@ export default {
 </script>
 
 <style>
+
+
 .date-input {
   width: 100%;
   padding-left: 14px;
@@ -283,7 +330,7 @@ export default {
 
 .search-menu {
   overflow-y: scroll;
-  max-height: 55vh;
+  max-height: 50vh;
   /* Hide the scrollbar */
   scrollbar-width: none;
   /* Firefox */
@@ -367,7 +414,6 @@ body {
 }
 
 .formbold-form-wrapper {
-  overflow: hidden;
 
   border-radius: 8px;
   padding: 20px;
