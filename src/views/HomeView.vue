@@ -13,7 +13,7 @@
     </div>
   </div>
   <CruiseForm class="CruiseForm" style="z-index:997; top:10vh; left: 6vw" />
-  <div id="about">
+  <div>
     <div class="content-lg container">
       <!-- Masonry Grid -->
       <div class="masonry-grid row">
@@ -48,7 +48,7 @@
       </div>
       <!-- End Masonry Grid -->
     </div>
-    <div id="popular-dest">
+    <div>
       <div class="content-lg container">
         <!-- Masonry Grid -->
         <div class="row">
@@ -64,7 +64,7 @@
         </div>
       </div>
     </div>
-    <div id="popular-dest">
+    <div>
       <div class="content-lg container">
         <!-- Masonry Grid -->
         <div class="row">
@@ -86,7 +86,7 @@
       </div>
     </div>
   </div>
-  <div id="popular-dest">
+  <div>
     <div class="content-lg container">
       <!-- Masonry Grid -->
       <div class="row">
@@ -519,7 +519,9 @@ export default {
   width: 17em;
   height: 17em;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  background: linear-gradient(to bottom left, rgba(228, 85, 41, 0.8), rgba(67, 160, 168, 0.8));
+  background: linear-gradient(to top right,
+      rgba(0, 0, 0, 0.7),
+      rgba(99, 99, 99, 0.9));
   /* Adjust colors and opacity */
   backdrop-filter: blur(5px);
   border-radius: 7px;

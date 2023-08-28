@@ -8,10 +8,10 @@
                         <span class="toggle-icon"></span>
                     </button>
                     <div class="logo">
-                        <RouterLink to="/" class="logo-wrap">
+                        <RouterLink to='/' class="logo-wrap">
                             <img class="logo-img logo-img-main" src="html_template/img/logo.png" alt="FlameOnePage Logo">
                             <img class="logo-img logo-img-active" src="html_template/img/logo-dark.png"
-                                alt="FlameOnePage Dark Logo">
+                                alt="Fly&ferry Logo">
                         </RouterLink>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                                 <RouterLink :to="`/${navItem.link}`" class="nav-item-child nav-item-hover">{{ navItem.name
                                 }}</RouterLink>
                             </li>
-                            <li class=" nav-item"><a class="nav-item-child nav-item-hover" href="#">
+                            <li class=" nav-item"><RouterLink to="jellyloader" class="nav-item-child nav-item-hover">
                                     <svg id="11" style="margin-top: 15px!important; display: inline-flex"
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                         width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -56,7 +56,7 @@
                                                 </g>
                                             </g>
                                         </g>
-                                    </svg></a>
+                                    </svg></RouterLink>
                             </li>
 
                             <li class=" nav-item"><a class="nav-item-child" href="#">

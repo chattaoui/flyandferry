@@ -1,40 +1,33 @@
 <template>
     <div class="loader">
-  <div class="ball"></div>
-  <div class="ball"></div>
-  <div class="ball"></div>
-  <div class="ball"></div>
-</div>
+        <div class="ball"></div>
+        <div class="ball"></div>
+        <div class="ball"></div>
+        <div class="ball"></div>
+    </div>
 </template>
 
 <script setup>
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $body-bg:        #fff;
-$jelly-color:    #433751;
+$jelly-color:    #000000;
 $size: 70px;
 
 *, *::after, *::before {
     box-sizing: border-box;
 }
-html, body {
-    height: 100%;
-    min-height: 100%;
-}
-body {
+
+.loader {
+    position: relative;
+    height:100vh;
+    width: 100vw;
     margin: 0;  
     display: flex;
     align-items: center;
     justify-content: center;
-    background: $body-bg;
-}
-
-.loader {
-    position: relative;
-    width: $size;
-    height: $size;
 }
 
 .ball {

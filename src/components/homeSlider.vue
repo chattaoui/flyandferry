@@ -107,7 +107,9 @@ import { defineComponent } from 'vue'
   </style>
   <style>
 .custom-promotion-card {
-    background: linear-gradient(to top left, rgba(228, 85, 41), rgba(67, 160, 168));
+    background: linear-gradient(to top right,
+      rgba(0, 0, 0, 0.7),
+      rgba(99, 99, 99, 0.9));
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-in-out;
@@ -165,6 +167,6 @@ import { defineComponent } from 'vue'
 
 .custom-promotion-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 3px 8px #f08700;
+  box-shadow: 0 3px 8px #2c2216;
 }
   </style>
