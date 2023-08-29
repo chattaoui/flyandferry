@@ -2,14 +2,14 @@
   <div class="formbold-main-wrapper" style="margin: 100px">
     <div class="formbold-form-wrapper">
       <form class="search-form" @submit="preventDefault" method="POST">
-        <div class="toggle">
+        <div class="toggle" v-if="pickingCar">
           <input type="radio" name="sizeBy" v-model="tripType" value="roundTrip" id="sizeWeight" checked="checked" />
           <label for="sizeWeight">Voyage aller-retour</label>
           <input type="radio" name="sizeBy" v-model="tripType" value="oneWay" id="sizeDimensions" />
           <label for="sizeDimensions">Aller simple</label>
         </div>
         <div class="formbold-form-step-1 test-center" style="flex-direction: column; gap: 30px; padding: 0.7rem;">
-          <div class="group">
+          <div class="group" v-if="pickingCar">
             <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
               <g>
                 <path
@@ -44,8 +44,8 @@
                 <div class="list-item" v-for="(route, index) in searchedRoutes" :key="`Routes-${index}`"
                   @click="handleRouteClick(route)">
                   <div class="departure">
-                    <span class="port">{{ route.departurePort }}</span>
-                    <span class="country">{{ route.departureCountry }}</span>
+                    <span class="port">{{ route["@DepartPortName"] }}</span>
+                    <span class="country">{{ route["@DepartPortCountry"] }}</span>
                   </div>
                   <div class="arrow-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24"
@@ -63,8 +63,8 @@
                     </svg>
                   </div>
                   <div class="arrival">
-                    <span class="port">{{ route.arrivalPort }}</span>
-                    <span class="country">{{ route.arrivalCountry }}</span>
+                    <span class="port">{{ route["@DestinationPortName"] }}</span>
+                    <span class="country">{{ route["@DestinationPortName"] }}</span>
                   </div>
                 </div>
               </div>
@@ -76,10 +76,10 @@
               </h5>
             </div>
             <div class="popular-ferry-list">
-              <div class="list-item" v-for="(trip, index) in popularTrips" :key="index" @click="handleRouteClick(trip)">
+              <div class="list-item" v-for="(trip, index) in Routes" :key="index" @click="handleRouteClick(trip)">
                 <div class="departure">
-                  <span class="port">{{ trip.departurePort }}</span>
-                  <span class="country">{{ trip.departureCountry }}</span>
+                  <span class="port">{{ trip["@DepartPortName"] }}</span>
+                  <span class="country">{{ trip["@DepartPortCountry"] }}</span>
                 </div>
                 <div class="arrow-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24"
@@ -97,8 +97,8 @@
                   </svg>
                 </div>
                 <div class="arrival">
-                  <span class="port">{{ trip.arrivalPort }}</span>
-                  <span class="country">{{ trip.arrivalCountry }}</span>
+                  <span class="port">{{ trip["@DestinationPortName"] }}</span>
+                  <span class="country">{{ trip["@DestinationPortCountry"] }}</span>
                 </div>
               </div>
             </div>
@@ -121,8 +121,9 @@
             <h5 style="color: azure; font-size: 16px; margin: 20px 0px; text-align: left;">
               Trip Details
             </h5>
-            <div style="display: inline-flex; gap: 10px;justify-content: space-evenly;">
-              <div class="category-container">
+            <div style="display: inline-flex; gap: 10px;justify-content: center;">
+
+              <div class="category-container" v-if="categoryExists('Adult')">
                 <svg class="categ-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                   version="1.1" id="Layer_1" shape-rendering="geometricPrecision" image-rendering="optimizeQuality"
                   text-rendering="geometricPrecision" x="0px" y="0px" viewBox="0 0 512 335.1" xml:space="preserve">
@@ -141,14 +142,15 @@
               </div>
 
 
-              <div class="category-container">
+              <div class="category-container" v-if="categoryExists('Child')">
                 <svg class="categ-icon" viewBox="0 0 74.88 56.41" xmlns="http://www.w3.org/2000/svg">
                   <g>
                     <path stroke="null" id="svg_1"
                       d="m68.96737,33.04218l-3.04314,-2.76988l2.37282,13.32958a0.18389,0.22074 0 0 1 -0.18389,0.22074l-5.43969,0l0,8.35947a2.67535,3.21135 0 0 1 -4.56175,2.28568l0,0a2.67535,3.21135 0 0 1 -0.78896,-2.27856l0,-8.38083l-1.95164,0l0,8.37371a2.68129,3.21847 0 0 1 -5.33884,0l0,-8.37371l-5.51681,0a0.18389,0.22074 0 0 1 -0.14237,-0.25634l2.37282,-13.30822l-3.08467,2.8482c-1.4059,1.28881 -2.64569,1.4241 -3.55923,0.89718a2.37282,2.8482 0 0 1 -0.87201,-0.85446a2.63383,3.1615 0 0 1 -0.46863,-1.22473a2.80586,3.368 0 0 1 1.11523,-3.4036l7.24303,-6.63631c1.94571,-1.78725 5.46935,-2.58474 9.02858,-2.57762c3.79058,0 7.58709,0.93991 9.39043,2.58474l7.20744,6.55798a2.71095,3.25407 0 0 1 1.0915,3.3324a2.46773,2.96213 0 0 1 -1.33471,2.07207c-0.88981,0.5198 -2.12961,0.44147 -3.50584,-0.81174l-0.02966,0.01424zm-50.03091,-32.04226a6.97609,8.37371 0 0 1 7.01168,8.33099a7.01761,8.42355 0 0 1 -14.0293,0a6.98202,8.38083 0 0 1 7.01761,-8.33099zm16.57415,32.98929c-0.88388,0.49131 -2.12961,0.35603 -3.55923,-0.96127l-4.82869,-4.2723l0,13.03052a0.18389,0.22074 0 0 1 -0.18389,0.22074l-1.69063,0l0,10.18232a2.68129,3.21847 0 0 1 -5.33884,0l0,-10.18232l-1.93978,0l0,10.18232a2.68129,3.21847 0 0 1 -5.33884,0l0,-10.18232l-1.69657,0a0.18389,0.22074 0 0 1 -0.18389,-0.22074l0,-13.08036l-4.86428,4.33639c-1.34658,1.27457 -2.60417,1.36714 -3.48805,0.85446l0,0a2.43214,2.91941 0 0 1 -0.88388,-0.85446a2.62197,3.14726 0 0 1 -0.46863,-1.21049a2.71095,3.25407 0 0 1 1.08557,-3.34664l7.29049,-6.67903c1.84487,-1.80861 5.81341,-2.67731 9.70483,-2.66307s7.83624,0.95415 9.37264,2.75563l7.18964,6.55086a2.88891,3.46768 0 0 1 1.15082,3.46056a2.58637,3.10454 0 0 1 -0.45677,1.23185a2.37282,2.8482 0 0 1 -0.87201,0.85446l0,-0.00712zm20.81556,-32.98929a7.01168,8.41643 0 0 1 6.7922,6.24468c2.49739,0.9043 5.30325,3.46768 4.44904,5.96698c-1.15082,3.368 -3.55923,1.81573 -3.79651,-1.70892a10.04296,12.05501 0 0 0 -0.45677,-2.89804c0,0.2421 0,0.48419 0,0.71205a7.01168,8.41643 0 0 1 -14.02337,0c0,-0.12817 0,-0.24922 0,-0.37739a9.90652,11.89124 0 0 0 -0.43897,2.8482c-0.24321,3.52465 -2.64569,5.07692 -3.79651,1.71604c-0.84828,-2.48506 1.91012,-5.02707 4.38972,-5.95274a7.00575,8.40931 0 0 1 6.88118,-6.55086z" />
                   </g>
                 </svg>
-                <span>children 2-11 years</span>
+                <span v-if="categoryExists('Baby')">children 3-14 years</span>
+                <span v-if="!categoryExists('Baby')">children 0-14 years</span>
                 <div class="number-input">
                   <button type="button" @click="$refs.children.value > 0 ? $refs.children.value-- : null">-</button>
                   <input type="number" ref="children" id="children" name="children" min="0" value="0">
@@ -157,7 +159,7 @@
               </div>
 
 
-              <div class="category-container">
+              <div class="category-container" v-if="categoryExists('Baby')">
                 <svg class="categ-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                   version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 1024 1024"
                   style="enable-background:new 0 0 1024 1024;" xml:space="preserve">
@@ -174,23 +176,52 @@
 
 
             </div>
+            <div class="pick_car" @click="step_2 = false; pickingCar = false">
+              <!-- Left Icon (You can replace this with your own icon code) -->
+              <div class="car-left-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
+                </svg>
+              </div>
+
+              <!-- Text -->
+              <div style="color: gray;">
+                How are you traveling?
+              </div>
+
+              <!-- Right Icon (You can replace this with your own icon code) -->
+              <div class="car-right-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+                </svg>
+              </div>
+            </div>
             <div>
               <a class="currency_euro" tabindex="0" data-popup="currency_popup">Currency: € (Euros)</a>
             </div>
             <div style="bottom: 4vh; position: fixed;
               left: 50%;
               translate: -50%; 
-              width: 70%"> 
-            <a class="formbold-btn" style="
-              width: 100%;"
-            >
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            Rechercher
-          </a>
-              </div>
+              width: 70%">
+              <a class="formbold-btn" style="
+              width: 100%;">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Rechercher
+              </a>
+            </div>
+          </div>
+          <div class="step_2" v-if="!pickingCar">
+            <div class="title-car" @click="step_2 = !step_2; pickingCar = !pickingCar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="white" viewBox="0 -960 960 960"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
+              <h3>Vehicle details</h3>
+            </div>
           </div>
         </div>
       </form>
@@ -212,6 +243,7 @@ export default {
       tripType: "roundTrip",
       step_1: true,
       step_2: false,
+      pickingCar: true,
       searchedRoutes: {},
       searchInp: "",
       previousSearch: "",
@@ -286,43 +318,20 @@ export default {
           arrivalCountry: "Country U",
         },
       ],
+      Routes: [],
+      VehiculesPassengers: {},
     };
   },
   components: {
     VueCtkDateTimePicker,
   },
   methods: {
-    async getToken(){
-      let data = new URLSearchParams();
-data.append('grant_type', 'password');
-data.append('username', 'FGW0009');
-data.append('password', '123456');
-
-let config = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Accept': 'application/json'
-  },
-  body: data
-};
-
-async function makeRequest() {
-  try {
-    const response = await fetch('https://bookitfgwtestctn.hogiacloud.com/fgw/token', config);
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const responseData = await response.json();
-    console.log(JSON.stringify(responseData));
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-makeRequest();
+    categoryExists(category) {
+      let exists = false
+      this.VehiculesPassengers.PassengerCategory.map(el => {
+        if (category === el["@Category"]) exists = true
+      })
+      return exists
     },
     getCurrentDate() {
       const now = new Date();
@@ -335,7 +344,7 @@ makeRequest();
       if (this.departDate) {
         const parts = this.departDate.split('-')
         const parts2 = parts[2].split(' ')
-        return `${parts[0]}-${parts[1]}-${Number(parts2[0])+1} ${parts2[1]}`
+        return `${parts[0]}-${parts[1]}-${Number(parts2[0]) + 1} ${parts2[1]}`
       }
       else {
         const now = new Date();
@@ -359,12 +368,12 @@ makeRequest();
       event.preventDefault()
     },
     handleRouteClick(route) {
-      this.searchInp = `${route.departurePort} - ${route.arrivalPort}`
+      this.searchInp = `${route[["@DepartPortName"]]} - ${route["@DestinationPortName"]}`
       this.step_1 = false
       this.step_2 = true
     },
     filterRoutes() {
-      this.searchedRoutes = this.popularTrips
+      this.searchedRoutes = this.Routes
         .map((trip) => {
           if (
             Object.values(trip).some((value) =>
@@ -400,9 +409,13 @@ makeRequest();
       return languageStore.getLanguage();
     },
   },
-  mounted() {
-    this.getToken()
-    // this.$axios.get('https://jsonplaceholder.typicode.com/todos/1').then(res => console.log(res.data))
+  async mounted() {
+    this.Routes = await this.$axios.get('http://localhost:3000/api/v1/testtoken').then(res => { return res.data.GetRoutesResponse.Routes.Route })
+    const { LeadVehicleCategories: { LeadVehicleCategory }, PassengerCategories: { PassengerCategory }, TrailerVehicleCategories: { TrailerCategory } } = await this.$axios.get('http://localhost:3000/api/v1/testgetvehicules')
+      .then(res => { return res.data.GetPassengerAndVehicleTypesResponse })
+
+    this.VehiculesPassengers = { LeadVehicleCategory, PassengerCategory, TrailerCategory }
+    console.log(this.VehiculesPassengers)
   },
 };
 </script>
@@ -417,6 +430,45 @@ input[type="number"]::-webkit-outer-spin-button {
 </style>
 
 <style>
+.title-car {
+  display:flex;
+  align-items:center;
+  height:48px;
+  padding:10px;
+  align-items:center;
+  cursor: pointer;
+}
+
+.title-car h3{
+  flex-grow: 1;
+  text-align: center; 
+  margin-top: 20px; 
+  color: white
+}
+
+.pick_car {
+  cursor: pointer;
+  margin: 20px 0px;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.car-left-icon {
+  margin-right: 15px;
+}
+
+/* Style for the right icon */
+.car-right-icon {
+  margin-left: auto;
+  /* Pushes the right icon to the right */
+  cursor: pointer;
+  /* Add a pointer cursor to indicate it's clickable */
+}
+
 /* Add some basic CSS for styling */
 .category-container {
   background-color: white;
@@ -465,11 +517,11 @@ input[type="number"]::-webkit-outer-spin-button {
 <style>
 .currency_euro {
   background-color: #ffffff !important;
-    color: #475c77 !important;
-    padding: 8px !important;
-    margin: 0 !important;
-    width: 100%;
-    cursor: default!important;
+  color: #475c77 !important;
+  padding: 8px !important;
+  margin: 0 !important;
+  width: 100%;
+  cursor: default !important;
 }
 
 .step_2 {

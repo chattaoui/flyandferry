@@ -341,9 +341,9 @@ export default {
       return languageStore.getLanguage()
     }
   },
-  mounted() {
-    this.getTopDest()
-    this.getSlides()
+  async mounted() {
+    await this.getTopDest()
+    await this.getSlides()
   }
 }
 </script>
