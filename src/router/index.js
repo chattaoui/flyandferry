@@ -9,19 +9,19 @@ const routes = [
   },
   {
     path: '/jellyloader',
-    name: 'form',
+    name: 'loader',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../components/jellyLoader.vue')
   }, 
   {
-    path: '/lang',
-    name: 'slider',
+    path: '/form',
+    name: 'form',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../components/selectLang.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../components/CruiseForm.vue')
   }
 ]
 

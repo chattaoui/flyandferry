@@ -133,7 +133,7 @@
                     d="M324.1,316.8v14c0,2.4-1.9,4.3-4.3,4.3H4.3c-2.4,0-4.3-1.9-4.3-4.3v-12.6c0-41.2,33.3-65.6,67-70.1  c24.6-3.3,49.4-6.6,58.2-36.5l-0.5-0.4l-4.3-3.7c-11.1-9.6-20.4-17.6-22.2-37l-1,0c-2.3,0-4.5-0.5-6.5-1.7c-3.3-1.9-5.6-5.1-7.2-8.7  c-1.9-4.3-2.7-9.3-2.9-13.1v-0.1c-0.1-1.4-0.1-4,0-6.6v0c0.1-2.2,0.2-4.4,0.4-5.6c0-0.4,0.1-0.7,0.3-1c2.3-6.5,5.9-8.6,10.6-8.4  l-3.1-2.1c-1.7-21,3.2-57.3-19.5-64.2c43.1-53.2,92.7-82.2,130-34.8c44.9,2.4,62.9,73.7,27.1,103.8l-0.2,1.8  c1.4-0.4,2.8-0.7,4.2-0.8c2.7-0.2,5.2,0.2,7.3,1.4l0.4,0.2c2.2,1.3,3.8,3.2,4.7,6c0.9,2.8,0.9,6.3-0.2,10.7l-5.6,15.9  c-0.9,2.6-1.7,4.4-3.5,5.8l-0.3,0.2c-1.8,1.3-4,1.8-7.2,1.6l-1.6-0.2c-0.4,17.7-9,25.8-20.3,36.5c9,30,33.1,34.7,56.7,39.2  C292.7,252.2,324.1,282.5,324.1,316.8z" />
                   <path class="st0" d="M332.7,281.9l-32.2-36.7C300.5,245.1,324.1,256.3,332.7,281.9z" />
                 </svg>
-                <span>Adults:</span>
+                <span>Adults</span>
                 <div class="number-input">
                   <button type="button" @click="$refs.adult.value > 0 ? $refs.adult.value-- : null">-</button>
                   <input type="number" ref="adult" id="adult" name="adult" min="0" value="0">
@@ -222,6 +222,28 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="white" viewBox="0 -960 960 960"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
               <h3>Vehicle details</h3>
             </div>
+
+            <div class="car-custom-list">
+              <div
+                v-for="(category, index) in VehiculesPassengers.LeadVehicleCategory"
+                :key="`carItem_`+index"
+                class="car-list-item"
+                :class="{ 'selected': selectedIndex === index,'highlighted': highlightedIndex === index }"
+                @click="selectItem(index, category)"
+                @mouseover="highlightItem(index)"
+                @mouseout="resetItem(index)"
+              >
+                <i class="car-category-icon" v-html="getCarIcon(getVehicleName(category))">
+                </i>
+                <span class="car-text">{{ getVehicleName(category)+`   << height between ${category["@MinHeight"]} and ${category["@MaxHeight"]} >>` }}</span>
+              </div>
+            </div>
+
+            <div>
+              <!-- HTML !-->
+<button class="button-33" role="button">Confirm</button>
+            </div>
+
           </div>
         </div>
       </form>
@@ -237,6 +259,7 @@ import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
 export default {
   data() {
     return {
+      selectedIndex: -1,
       departDate: null,
       arrivalDate: null,
       datE: "ex-ampel-date",
@@ -250,82 +273,49 @@ export default {
       showRoutes: false,
       showPopular: true,
       searchFocused: false,
-      popularTrips: [
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port B",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port C",
-          departureCountry: "Country X",
-          arrivalPort: "Port D",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port B",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port B",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port B",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port B",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port B",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port B",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port B",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port B",
-          arrivalCountry: "Country Y",
-        },
-        {
-          departurePort: "Port A",
-          departureCountry: "Country X",
-          arrivalPort: "Port E",
-          arrivalCountry: "Country U",
-        },
-      ],
       Routes: [],
       VehiculesPassengers: {},
+      selectedVehicule: {},
+      svgVehicules: {
+        Car: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M241-223v49q0 8.925-6.325 14.962Q228.35-153 219-153h-44q-9.35 0-15.675-6.038Q153-165.075 153-174v-305.143L230-669q6.571-19.65 24.064-30.825Q271.557-711 293-711h374q21.443 0 38.936 11.175T730-669l77 189.857V-174q0 8.925-6.325 14.962Q794.35-153 785-153h-44q-9.35 0-15.675-6.038Q719-165.075 719-174v-49H241Zm2-299h474l-49-122H292l-49 122Zm70.882 195Q333-327 346.5-340.382q13.5-13.383 13.5-32.5Q360-392 346.618-405.5q-13.383-13.5-32.5-13.5Q295-419 281.5-405.618q-13.5 13.383-13.5 32.5Q268-354 281.382-340.5q13.383 13.5 32.5 13.5Zm332 0Q665-327 678.5-340.382q13.5-13.383 13.5-32.5Q692-392 678.618-405.5q-13.383-13.5-32.5-13.5Q627-419 613.5-405.618q-13.5 13.383-13.5 32.5Q600-354 613.382-340.5q13.383 13.5 32.5 13.5Z"/></svg>`,
+        BUS: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 122.9 120.5" width="20px" height="20px" style="enable-background:new 0 0 122.9 120.5" xml:space="preserve"><style xmlns="http://www.w3.org/2000/svg" type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st0" d="M110.8,103.6h-7.6V114c0,3.6-2.9,6.5-6.5,6.5h-9c-3.6,0-6.5-2.9-6.5-6.5v-10.3H41.5V114c0,3.6-2.9,6.5-6.5,6.5 h-9c-3.6,0-6.5-2.9-6.5-6.5v-10.3H12v-82c0-7.6,4.4-13.1,13.3-16.5c17.6-6.9,54.6-6.9,72.3,0c8.9,3.4,13.3,8.9,13.3,16.5V103.6 L110.8,103.6L110.8,103.6z M118.6,40.4h-3.8V62h3.8c2.4,0,4.3-1.9,4.3-4.3V44.7C122.9,42.3,121,40.4,118.6,40.4L118.6,40.4z M4.3,40.4h3.8V62H4.3C1.9,62,0,60.1,0,57.7V44.7C0,42.3,1.9,40.4,4.3,40.4L4.3,40.4z M46.4,8.6h30.1c0.9,0,1.6,0.7,1.6,1.6v5.2 c0,0.9-0.7,1.6-1.6,1.6H46.4c-0.9,0-1.6-0.7-1.6-1.6v-5.2C44.8,9.3,45.5,8.6,46.4,8.6L46.4,8.6z M22.9,23.2h76.7 c1,0,1.9,0.9,1.9,1.9v42.8c0,1-0.9,1.9-1.9,1.9H22.9c-1,0-1.9-0.9-1.9-1.9V25.1C21,24.1,21.8,23.2,22.9,23.2L22.9,23.2L22.9,23.2 L22.9,23.2z M98.6,84.9c0-1.9-0.7-3.6-2-4.9c-1.3-1.3-3-2-4.9-2c-1.9,0-3.5,0.7-4.9,2c-1.4,1.3-2,3-2,4.9c0,1.9,0.7,3.5,2,4.8 c1.4,1.3,3,2,4.9,2c1.9,0,3.6-0.7,4.9-2C98,88.4,98.6,86.8,98.6,84.9L98.6,84.9L98.6,84.9L98.6,84.9z M38.1,84.9 c0-1.9-0.7-3.6-2-4.9c-1.3-1.3-3-2-4.9-2c-1.9,0-3.6,0.7-4.9,2c-1.3,1.3-2,3-2,4.9c0,1.9,0.6,3.5,2,4.8c1.3,1.3,3,2,4.9,2 c2,0,3.6-0.7,4.9-2C37.4,88.4,38.1,86.8,38.1,84.9L38.1,84.9L38.1,84.9L38.1,84.9z"/></g></svg>`,
+        Van: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M242.5-200q-48.75 0-82.875-34.125T125.5-317h-68v-399q0-27.638 19.681-47.319T124.5-783h543v140h115l120 168v158h-69q0 48.75-34.125 82.875T716.5-200q-48.75 0-82.875-34.125T599.5-317h-240q0 49-34.125 83T242.5-200Zm0-67q20.9 0 35.45-14.55Q292.5-296.1 292.5-317q0-20.9-14.55-35.45Q263.4-367 242.5-367q-20.9 0-35.45 14.55Q192.5-337.9 192.5-317q0 20.9 14.55 35.45Q221.6-267 242.5-267Zm474 0q20.9 0 35.45-14.55Q766.5-296.1 766.5-317q0-20.9-14.55-35.45Q737.4-367 716.5-367q-20.9 0-35.45 14.55Q666.5-337.9 666.5-317q0 20.9 14.55 35.45Q695.6-267 716.5-267Zm-49-187 167-1L748-576h-80.5v122Z"/></svg>`,
+        Motorcycle: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M173-198q-68.35 0-116.175-47.825T9-362q0-64 42.25-110.75T156.5-524.5L104-577H10v-45h149l132 106 142-57h157l-97-122H388v-67h137l107 134 129-86v138h-88l51 63q16-5 31.5-9t32.476-4q68.374 0 116.199 47.856T952-361.894q0 68.394-47.856 116.144T787.894-198q-68.394 0-116.144-47.825T624-362q0-32 12-61t33-52l-19-24-123 206H386l-51-52q-5.5 63-52.25 105T173-198Zm.062-67q40.038 0 68.488-28.512Q270-322.024 270-362.062t-28.512-68.488Q212.976-459 172.938-459t-68.488 28.512Q76-401.976 76-361.938t28.512 68.488Q133.024-265 173.062-265Zm615 0q40.038 0 68.488-28.512Q885-322.024 885-362.062t-28.512-68.488Q827.976-459 787.938-459t-68.488 28.512Q691-401.976 691-361.938t28.512 68.488Q748.024-265 788.062-265Z"/></svg>`
+      }
     };
   },
   components: {
     VueCtkDateTimePicker,
   },
   methods: {
+    getCarIcon(carCateg){
+      return  this.svgVehicules[carCateg]
+    },
+    getVehicleName(category){
+      if(category["@Code"]) return category["@Code"]
+      else return category["@OperatorCode"]
+    },
+    highlightItem(index) {
+      if (this.selectedIndex !== index) {
+        this.VehiculesPassengers.LeadVehicleCategory[index].highlighted = true;
+      }
+    },
+    resetItem(index) {
+      if (this.selectedIndex !== index) {
+        this.VehiculesPassengers.LeadVehicleCategory[index].highlighted = false;
+      }
+    },
+    selectItem(index, category) {
+      // Deselect the previously selected item, if any
+      if (this.selectedIndex !== -1) {
+        this.VehiculesPassengers.LeadVehicleCategory[this.selectedIndex].selected = false;
+      }
+
+      // Select the clicked item
+      this.VehiculesPassengers.LeadVehicleCategory[index].selected = true;
+      this.selectedIndex = index;
+      this.selectedVehicule = category
+    },
     categoryExists(category) {
       let exists = false
       this.VehiculesPassengers.PassengerCategory.map(el => {
@@ -430,6 +420,69 @@ input[type="number"]::-webkit-outer-spin-button {
 </style>
 
 <style>
+
+.button-33 {
+  background-color: #c2fbd7;
+  border-radius: 100px;
+  box-shadow: rgba(25, 51, 84, .2) 0 -25px 18px -14px inset,rgba(25, 51, 84, .15) 0 1px 2px,rgba(25, 51, 84, .15) 0 2px 4px,rgba(25, 51, 84, .15) 0 4px 8px,rgba(25, 51, 84, .15) 0 8px 16px,rgba(25, 51, 84, .15) 0 16px 32px;
+  color: #193354;
+  cursor: pointer;
+  display: inline-block;
+  font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+  padding: 7px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 250ms;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-33:hover {
+  box-shadow: rgba(25, 51, 84,.35) 0 -25px 18px -14px inset,rgba(25, 51, 84,.25) 0 1px 2px,rgba(25, 51, 84,.25) 0 2px 4px,rgba(25, 51, 84,.25) 0 4px 8px,rgba(25, 51, 84,.25) 0 8px 16px,rgba(25, 51, 84,.25) 0 16px 32px;
+  transform: scale(1.05) rotate(-1deg);
+}
+
+.car-custom-list {
+  overflow-y: auto;
+  border-radius: 5px;
+}
+
+.car-list-item {
+  margin: 10px 0px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: white;
+  transition: background-color 0.2s;
+  border-radius: 20px;
+}
+
+.car-list-item.selected,
+.car-list-item.selected:hover {
+  background-color: #7d7d7d; /* Change to your desired selected item color */
+  color: white; /* Change text color for selected item */
+}
+
+.car-list-item:hover {
+  background-color: #ccc;
+}
+
+.car-category-icon {
+  margin-right: 10px;
+  fill: #193354
+}
+
+.car-text {
+  flex-grow: 1;
+  color: #193354!important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
 .title-car {
   display:flex;
   align-items:center;
@@ -525,6 +578,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .step_2 {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
