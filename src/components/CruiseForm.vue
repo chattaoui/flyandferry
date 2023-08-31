@@ -219,29 +219,39 @@
           </div>
           <div class="step_2" v-if="!pickingCar">
             <div class="title-car" @click="step_2 = !step_2; pickingCar = !pickingCar">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="white" viewBox="0 -960 960 960"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="white" viewBox="0 -960 960 960">
+                <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+              </svg>
               <h3>Vehicle details</h3>
             </div>
 
             <div class="car-custom-list">
-              <div
-                v-for="(category, index) in VehiculesPassengers.LeadVehicleCategory"
-                :key="`carItem_`+index"
+              <div v-for="(category, index) in VehiculesPassengers.LeadVehicleCategory" :key="`carItem_` + index"
                 class="car-list-item"
-                :class="{ 'selected': selectedIndex === index,'highlighted': highlightedIndex === index }"
-                @click="selectItem(index, category)"
-                @mouseover="highlightItem(index)"
-                @mouseout="resetItem(index)"
-              >
+                :class="{ 'selected': selectedIndex === index, 'highlighted': highlightedIndex === index }"
+                @click="selectItem(index, category)" @mouseover="highlightItem(index)" @mouseout="resetItem(index)">
                 <i class="car-category-icon" v-html="getCarIcon(getVehicleName(category))">
                 </i>
-                <span class="car-text">{{ getVehicleName(category)+`   << height between ${category["@MinHeight"]} and ${category["@MaxHeight"]} >>` }}</span>
+                <span class="car-text">{{ getVehicleName(category) + ` << height between ${category["@MinHeight"]} and
+                                    ${category["@MaxHeight"]}>>` }}</span>
               </div>
             </div>
 
+            <div v-if="showTrailer(selectedVehicule)">
+              <h3>Do you need a trailer?</h3>
+
+              <div v-for="option in TrailerOptions" :key="option.value">
+                <label @click="selectTrailerOption(option.value)" class="trailer-option" :class="{ highlighted: selectedTrailerOption === option.value }">
+                  <input type="radio" v-model="withTrailer" :value="option.value" style="position: absolute; /* Hide the radio button */
+            opacity: 0;">
+                  {{ option.label }}
+                </label>
+              </div>
+
+            </div>
+
             <div>
-              <!-- HTML !-->
-<button class="button-33" role="button">Confirm</button>
+              <button class="confirm-vehicule" @click="console.log(withTrailer)" role="button">Confirm</button>
             </div>
 
           </div>
@@ -259,10 +269,16 @@ import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
 export default {
   data() {
     return {
+      selectedTrailerOption: null,
+      TrailerOptions: [
+                        { label: 'with trailer', value: 'with' },
+                        { label: 'without trailer', value: 'without' },
+                    ],
+      withTrailer: null,
+      highlightedIndex: -1,
       selectedIndex: -1,
       departDate: null,
       arrivalDate: null,
-      datE: "ex-ampel-date",
       tripType: "roundTrip",
       step_1: true,
       step_2: false,
@@ -288,11 +304,19 @@ export default {
     VueCtkDateTimePicker,
   },
   methods: {
-    getCarIcon(carCateg){
-      return  this.svgVehicules[carCateg]
+    selectTrailerOption(option){
+      this.selectedTrailerOption = option;
     },
-    getVehicleName(category){
-      if(category["@Code"]) return category["@Code"]
+    showTrailer(category) {
+      let Name = this.getVehicleName(category)
+      if (Name === "Van" || Name === "Car") return true
+      return false
+    },
+    getCarIcon(carCateg) {
+      return this.svgVehicules[carCateg]
+    },
+    getVehicleName(category) {
+      if (category["@Code"]) return category["@Code"]
       else return category["@OperatorCode"]
     },
     highlightItem(index) {
@@ -420,15 +444,40 @@ input[type="number"]::-webkit-outer-spin-button {
 </style>
 
 <style>
+.trailer-option {
+  display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            cursor: pointer;
 
-.button-33 {
-  background-color: #c2fbd7;
-  border-radius: 100px;
-  box-shadow: rgba(25, 51, 84, .2) 0 -25px 18px -14px inset,rgba(25, 51, 84, .15) 0 1px 2px,rgba(25, 51, 84, .15) 0 2px 4px,rgba(25, 51, 84, .15) 0 4px 8px,rgba(25, 51, 84, .15) 0 8px 16px,rgba(25, 51, 84, .15) 0 16px 32px;
+            margin: 10px 0px;
+  padding: 7px;
+  background-color: white;
+  transition: background-color 0.2s;
+  border-radius: 20px;
+}
+.trailer-option:hover {
+  background-color: #ccc;
+  color: white;
+}
+
+.highlighted {
+            background-color: #ccc; /* Highlight selected item */
+        }
+h3 {
+  flex-grow: 1;
+  text-align: center;
+  margin-top: 20px;
+  color: white
+}
+
+.confirm-vehicule {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: rgba(25, 51, 84, .2) 0 -25px 18px -14px inset, rgba(25, 51, 84, .15) 0 1px 2px, rgba(25, 51, 84, .15) 0 2px 4px, rgba(25, 51, 84, .15) 0 4px 8px, rgba(25, 51, 84, .15) 0 8px 16px, rgba(25, 51, 84, .15) 0 16px 32px;
   color: #193354;
   cursor: pointer;
   display: inline-block;
-  font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
   padding: 7px 20px;
   text-align: center;
   text-decoration: none;
@@ -438,11 +487,16 @@ input[type="number"]::-webkit-outer-spin-button {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  bottom: 4vh;
+  position: fixed;
+  left: 50%;
+  translate: -50%;
+  width: 70%;
 }
 
-.button-33:hover {
-  box-shadow: rgba(25, 51, 84,.35) 0 -25px 18px -14px inset,rgba(25, 51, 84,.25) 0 1px 2px,rgba(25, 51, 84,.25) 0 2px 4px,rgba(25, 51, 84,.25) 0 4px 8px,rgba(25, 51, 84,.25) 0 8px 16px,rgba(25, 51, 84,.25) 0 16px 32px;
-  transform: scale(1.05) rotate(-1deg);
+.confirm-vehicule:hover {
+  box-shadow: rgba(25, 51, 84, .35) 0 -25px 18px -14px inset, rgba(25, 51, 84, .25) 0 1px 2px, rgba(25, 51, 84, .25) 0 2px 4px, rgba(25, 51, 84, .25) 0 4px 8px, rgba(25, 51, 84, .25) 0 8px 16px, rgba(25, 51, 84, .25) 0 16px 32px;
+  transform: scale(1.05);
 }
 
 .car-custom-list {
@@ -454,7 +508,7 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 10px 0px;
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 7px;
   background-color: white;
   transition: background-color 0.2s;
   border-radius: 20px;
@@ -462,12 +516,18 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .car-list-item.selected,
 .car-list-item.selected:hover {
-  background-color: #7d7d7d; /* Change to your desired selected item color */
-  color: white; /* Change text color for selected item */
+  background-color: #7d7d7d;
+  /* Change to your desired selected item color */
+  color: white;
+  /* Change text color for selected item */
 }
 
 .car-list-item:hover {
   background-color: #ccc;
+}
+
+.car-list-item:hover span{
+  color: white!important;
 }
 
 .car-category-icon {
@@ -475,28 +535,26 @@ input[type="number"]::-webkit-outer-spin-button {
   fill: #193354
 }
 
+.car-list-item:hover .car-category-icon{
+  margin-right: 10px;
+  fill: white
+}
+
 .car-text {
   flex-grow: 1;
-  color: #193354!important;
+  color: #193354 !important;
   font-size: 14px;
   font-weight: 600;
 }
 
 
 .title-car {
-  display:flex;
-  align-items:center;
-  height:48px;
-  padding:10px;
-  align-items:center;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 10px;
+  align-items: center;
   cursor: pointer;
-}
-
-.title-car h3{
-  flex-grow: 1;
-  text-align: center; 
-  margin-top: 20px; 
-  color: white
 }
 
 .pick_car {
