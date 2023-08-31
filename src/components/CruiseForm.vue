@@ -203,10 +203,8 @@
             <div>
               <a class="currency_euro" tabindex="0" data-popup="currency_popup">Currency: € (Euros)</a>
             </div>
-            <div style="bottom: 4vh; position: fixed;
-              left: 50%;
-              translate: -50%; 
-              width: 70%">
+            <div style="
+              width: 100%">
               <a class="formbold-btn" style="
               width: 100%;">
                 <span></span>
@@ -224,12 +222,12 @@
               </svg>
               <h3>Vehicle details</h3>
             </div>
-
             <div class="car-custom-list">
               <div v-for="(category, index) in VehiculesPassengers.LeadVehicleCategory" :key="`carItem_` + index"
                 class="car-list-item"
                 :class="{ 'selected': selectedIndex === index, 'highlighted': highlightedIndex === index }"
-                @click="selectItem(index, category)" @mouseover="highlightItem(index)" @mouseout="resetItem(index)">
+                @click="selectCarItem(index, category)" @mouseover="highlightCarItem(index)"
+                @mouseout="resetCarItem(index)">
                 <i class="car-category-icon" v-html="getCarIcon(getVehicleName(category))">
                 </i>
                 <span class="car-text">{{ getVehicleName(category) + ` << height between ${category["@MinHeight"]} and
@@ -237,16 +235,33 @@
               </div>
             </div>
 
+
             <div v-if="showTrailer(selectedVehicule)">
               <h3>Do you need a trailer?</h3>
 
               <div v-for="option in TrailerOptions" :key="option.value">
-                <label @click="selectTrailerOption(option.value)" class="trailer-option" :class="{ highlighted: selectedTrailerOption === option.value }">
+                <label @click="selectTrailerOption(option.value)" class="trailer-option"
+                  :class="{ highlighted: selectedTrailerOption === option.value }">
                   <input type="radio" v-model="withTrailer" :value="option.value" style="position: absolute; /* Hide the radio button */
             opacity: 0;">
                   {{ option.label }}
                 </label>
               </div>
+
+            </div>
+
+            <div v-if="withTrailer === 'with'" style="display:flex;flex-direction:column;align-items:center;">
+
+              <div v-for="(trailer, index) in VehiculesPassengers.TrailerCategory" :key="`trailerItem_` + index"
+                class="car-list-item" style="width: 70%;" 
+                :class="{ 'selected': selectedTrailerIndex === index, 'highlighted': highlightedTrailerIndex === index }"
+                @click="selectTrailerItem(index, trailer)" @mouseover="highlightTrailerItem(index)"
+                @mouseout="resetTrailerItem(index)">
+                <span class="car-text">
+                  {{ trailer["@Description"] }}
+                </span>
+              </div>
+
 
             </div>
 
@@ -271,12 +286,14 @@ export default {
     return {
       selectedTrailerOption: null,
       TrailerOptions: [
-                        { label: 'with trailer', value: 'with' },
-                        { label: 'without trailer', value: 'without' },
-                    ],
+        { label: 'without trailer', value: 'without' },
+        { label: 'with trailer', value: 'with' },
+      ],
       withTrailer: null,
       highlightedIndex: -1,
       selectedIndex: -1,
+      selectedTrailerIndex: -1,
+      highlightedTrailerIndex: -1,
       departDate: null,
       arrivalDate: null,
       tripType: "roundTrip",
@@ -292,6 +309,7 @@ export default {
       Routes: [],
       VehiculesPassengers: {},
       selectedVehicule: {},
+      selectedTrailer: {},
       svgVehicules: {
         Car: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M241-223v49q0 8.925-6.325 14.962Q228.35-153 219-153h-44q-9.35 0-15.675-6.038Q153-165.075 153-174v-305.143L230-669q6.571-19.65 24.064-30.825Q271.557-711 293-711h374q21.443 0 38.936 11.175T730-669l77 189.857V-174q0 8.925-6.325 14.962Q794.35-153 785-153h-44q-9.35 0-15.675-6.038Q719-165.075 719-174v-49H241Zm2-299h474l-49-122H292l-49 122Zm70.882 195Q333-327 346.5-340.382q13.5-13.383 13.5-32.5Q360-392 346.618-405.5q-13.383-13.5-32.5-13.5Q295-419 281.5-405.618q-13.5 13.383-13.5 32.5Q268-354 281.382-340.5q13.383 13.5 32.5 13.5Zm332 0Q665-327 678.5-340.382q13.5-13.383 13.5-32.5Q692-392 678.618-405.5q-13.383-13.5-32.5-13.5Q627-419 613.5-405.618q-13.5 13.383-13.5 32.5Q600-354 613.382-340.5q13.383 13.5 32.5 13.5Z"/></svg>`,
         BUS: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 122.9 120.5" width="20px" height="20px" style="enable-background:new 0 0 122.9 120.5" xml:space="preserve"><style xmlns="http://www.w3.org/2000/svg" type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st0" d="M110.8,103.6h-7.6V114c0,3.6-2.9,6.5-6.5,6.5h-9c-3.6,0-6.5-2.9-6.5-6.5v-10.3H41.5V114c0,3.6-2.9,6.5-6.5,6.5 h-9c-3.6,0-6.5-2.9-6.5-6.5v-10.3H12v-82c0-7.6,4.4-13.1,13.3-16.5c17.6-6.9,54.6-6.9,72.3,0c8.9,3.4,13.3,8.9,13.3,16.5V103.6 L110.8,103.6L110.8,103.6z M118.6,40.4h-3.8V62h3.8c2.4,0,4.3-1.9,4.3-4.3V44.7C122.9,42.3,121,40.4,118.6,40.4L118.6,40.4z M4.3,40.4h3.8V62H4.3C1.9,62,0,60.1,0,57.7V44.7C0,42.3,1.9,40.4,4.3,40.4L4.3,40.4z M46.4,8.6h30.1c0.9,0,1.6,0.7,1.6,1.6v5.2 c0,0.9-0.7,1.6-1.6,1.6H46.4c-0.9,0-1.6-0.7-1.6-1.6v-5.2C44.8,9.3,45.5,8.6,46.4,8.6L46.4,8.6z M22.9,23.2h76.7 c1,0,1.9,0.9,1.9,1.9v42.8c0,1-0.9,1.9-1.9,1.9H22.9c-1,0-1.9-0.9-1.9-1.9V25.1C21,24.1,21.8,23.2,22.9,23.2L22.9,23.2L22.9,23.2 L22.9,23.2z M98.6,84.9c0-1.9-0.7-3.6-2-4.9c-1.3-1.3-3-2-4.9-2c-1.9,0-3.5,0.7-4.9,2c-1.4,1.3-2,3-2,4.9c0,1.9,0.7,3.5,2,4.8 c1.4,1.3,3,2,4.9,2c1.9,0,3.6-0.7,4.9-2C98,88.4,98.6,86.8,98.6,84.9L98.6,84.9L98.6,84.9L98.6,84.9z M38.1,84.9 c0-1.9-0.7-3.6-2-4.9c-1.3-1.3-3-2-4.9-2c-1.9,0-3.6,0.7-4.9,2c-1.3,1.3-2,3-2,4.9c0,1.9,0.6,3.5,2,4.8c1.3,1.3,3,2,4.9,2 c2,0,3.6-0.7,4.9-2C37.4,88.4,38.1,86.8,38.1,84.9L38.1,84.9L38.1,84.9L38.1,84.9z"/></g></svg>`,
@@ -304,7 +322,28 @@ export default {
     VueCtkDateTimePicker,
   },
   methods: {
-    selectTrailerOption(option){
+    resetTrailerItem(index) {
+      if (this.selectedTrailerIndex !== index) {
+        this.VehiculesPassengers.TrailerCategory[index].highlighted = false;
+      }
+    },
+    highlightTrailerItem(index) {
+      if (this.selectedTrailerIndex !== index) {
+        this.VehiculesPassengers.TrailerCategory[index].highlighted = true;
+      }
+    },
+    selectTrailerItem(index, category) {
+      // Deselect the previously selected item, if any
+      if (this.selectedTrailerIndex !== -1) {
+        this.VehiculesPassengers.TrailerCategory[this.selectedTrailerIndex].selected = false;
+      }
+
+      // Select the clicked item
+      this.VehiculesPassengers.TrailerCategory[index].selected = true;
+      this.selectedTrailerIndex = index;
+      this.selectedTrailer = category
+    },
+    selectTrailerOption(option) {
       this.selectedTrailerOption = option;
     },
     showTrailer(category) {
@@ -319,17 +358,17 @@ export default {
       if (category["@Code"]) return category["@Code"]
       else return category["@OperatorCode"]
     },
-    highlightItem(index) {
+    highlightCarItem(index) {
       if (this.selectedIndex !== index) {
         this.VehiculesPassengers.LeadVehicleCategory[index].highlighted = true;
       }
     },
-    resetItem(index) {
+    resetCarItem(index) {
       if (this.selectedIndex !== index) {
         this.VehiculesPassengers.LeadVehicleCategory[index].highlighted = false;
       }
     },
-    selectItem(index, category) {
+    selectCarItem(index, category) {
       // Deselect the previously selected item, if any
       if (this.selectedIndex !== -1) {
         this.VehiculesPassengers.LeadVehicleCategory[this.selectedIndex].selected = false;
@@ -446,24 +485,27 @@ input[type="number"]::-webkit-outer-spin-button {
 <style>
 .trailer-option {
   display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            cursor: pointer;
+  margin-bottom: 10px;
+  font-weight: bold;
+  cursor: pointer;
 
-            margin: 10px 0px;
+  margin: 10px 0px;
   padding: 7px;
   background-color: white;
   transition: background-color 0.2s;
   border-radius: 20px;
 }
+
 .trailer-option:hover {
   background-color: #ccc;
   color: white;
 }
 
 .highlighted {
-            background-color: #ccc; /* Highlight selected item */
-        }
+  background-color: #7d7d7d;
+  /* Highlight selected item */
+}
+
 h3 {
   flex-grow: 1;
   text-align: center;
@@ -487,25 +529,39 @@ h3 {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  bottom: 4vh;
-  position: fixed;
-  left: 50%;
-  translate: -50%;
-  width: 70%;
+
+  width: 85%;
 }
 
 .confirm-vehicule:hover {
   box-shadow: rgba(25, 51, 84, .35) 0 -25px 18px -14px inset, rgba(25, 51, 84, .25) 0 1px 2px, rgba(25, 51, 84, .25) 0 2px 4px, rgba(25, 51, 84, .25) 0 4px 8px, rgba(25, 51, 84, .25) 0 8px 16px, rgba(25, 51, 84, .25) 0 16px 32px;
-  transform: scale(1.05);
+  transform: scale(1.01);
 }
 
 .car-custom-list {
   overflow-y: auto;
   border-radius: 5px;
+  scrollbar-width: none;
+  -webkit-scrollbar-width: none;
+}
+
+.car-custom-list::-webkit-scrollbar {
+  width: 0.5rem;
+  /* Adjust the width as needed */
+}
+
+.car-custom-list::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  /* Hide the scrollbar thumb */
+}
+
+.car-custom-list::-webkit-scrollbar-track {
+  background-color: transparent;
+  /* Hide the scrollbar track */
 }
 
 .car-list-item {
-  margin: 10px 0px;
+  margin: 8px 0px;
   display: flex;
   align-items: center;
   padding: 7px;
@@ -526,8 +582,8 @@ h3 {
   background-color: #ccc;
 }
 
-.car-list-item:hover span{
-  color: white!important;
+.car-list-item:hover span {
+  color: white !important;
 }
 
 .car-category-icon {
@@ -535,7 +591,7 @@ h3 {
   fill: #193354
 }
 
-.car-list-item:hover .car-category-icon{
+.car-list-item:hover .car-category-icon {
   margin-right: 10px;
   fill: white
 }
@@ -640,6 +696,24 @@ h3 {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-scrollbar-width: none;
+}
+
+.step_2::-webkit-scrollbar {
+  width: 0.5rem;
+  /* Adjust the width as needed */
+}
+
+.step_2::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  /* Hide the scrollbar thumb */
+}
+
+.step_2::-webkit-scrollbar-track {
+  background-color: transparent;
+  /* Hide the scrollbar track */
 }
 
 .custom-input {
@@ -656,6 +730,7 @@ h3 {
 .search-form {
   width: 90%;
   position: relative;
+  height: 100%;
 }
 
 .search-menu {
@@ -685,9 +760,9 @@ h3 {
   /* Hide the scrollbar track */
 }
 
-/* .popular-ferry-list {
-    
-}  */
+.popular-ferry-list {
+  height: 100%;
+}
 
 .list-item {
   display: flex;
@@ -764,6 +839,7 @@ body {
 .formbold-form-step-1 {
   display: flex;
   position: relative;
+  height: 100%;
 }
 </style>
 <style scoped>
