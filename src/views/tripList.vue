@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="trip-container">
         <div class="grid">
             <div class="grid-one">
                 <div class="current-travel">
@@ -38,7 +38,7 @@
             <div class="grid-four">
                 <div class="travel-card">
                     <div class="travel-image">
-                        <div class="image-one"></div>
+                        <div v-html="getFerryCompany('CTN')"></div>
                     </div>
                     <div class="travel-arrival-info">
                         <p class="travel-time">10:30 AM</p>
@@ -68,8 +68,7 @@
                 </div>
                 <div class="travel-card">
                     <div class="travel-image">
-                        <div class="image-one"></div>
-                        <div class="image-two"></div>
+                        <div v-html="getFerryCompany('CTN')"></div>
                     </div>
                     <div class="travel-arrival-info">
                         <p class="travel-time">07:45 AM</p>
@@ -99,8 +98,7 @@
                 </div>
                 <div class="travel-card">
                     <div class="travel-image">
-                        <div class="image-one"></div>
-                        <div class="image-two"></div>
+                        <div v-html="getFerryCompany('CTN')"></div>
                     </div>
                     <div class="travel-arrival-info">
                         <p class="travel-time">10:35 PM</p>
@@ -131,7 +129,7 @@
                 </div>
                 <div class="travel-card">
                     <div class="travel-image">
-                        <div class="image-one"></div>
+                        <div v-html="getFerryCompany('CTN')"></div>
                     </div>
                     <div class="travel-arrival-info">
                         <p class="travel-time">09:30 AM</p>
@@ -162,8 +160,7 @@
                 </div>
                 <div class="travel-card">
                     <div class="travel-image">
-                        <div class="image-one"></div>
-                        <div class="image-two"></div>
+                        <div v-html="getFerryCompany('CTN')"></div>
                     </div>
                     <div class="travel-arrival-info">
                         <p class="travel-time">09:30 AM</p>
@@ -201,7 +198,17 @@
 <script>
 
 export default {
+    data(){
+        return {
+            ferryCompanies: {
+                CTN: '<img src="img/CTNlogo.png" alt="">'
+            }
+        }
+    },
     methods: {
+        getFerryCompany(company){
+            return this.ferryCompanies[company]
+        },
         clickHoverInit() {
             let rate_cards = document.querySelectorAll(".rate-cards");
             rate_cards.forEach((rate_card) => {
@@ -252,7 +259,7 @@ html {
 
 body {
     background: $background;
-    width: 100vw;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -263,9 +270,9 @@ body {
 
 /*--------------------------------------*/
 
-.container {
+.trip-container {
     margin-top: 100px;
-    width: 100vw;
+    width: 100%;
     padding: 20px;
     background: $grey;
 }
@@ -362,9 +369,9 @@ body {
 }
 
 .rate {
-    font-size: 30px;
+    font-size: 25px;
     font-weight: bold;
-    padding: 10px;
+    padding: 5px;
     white-space: nowrap;
     sup {
         font-size: 12px;
@@ -379,7 +386,7 @@ body {
     // justify-content: space-between;
     align-items: center;
     padding: 20px;
-    border: 4px solid;
+    border: #f08700;
     border-radius: 30px;
         
 }
@@ -398,20 +405,6 @@ body {
     align-items: center;
     justify-content: center;
     margin-right: 30px;
-
-    .image-one,
-    .image-two {
-        height: 30px;
-        width: 30px;
-        background: $orange;
-        border-radius: 50%;
-    }
-
-    .image-two {
-        background: $purple;
-        margin-top: -10px;
-        border: 2px solid $white;
-    }
 }
 
 .travel-arrival-info,
