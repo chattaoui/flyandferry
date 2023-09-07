@@ -64,7 +64,7 @@
                   </div>
                   <div class="arrival">
                     <span class="port">{{ route["@DestinationPortName"] }}</span>
-                    <span class="country">{{ route["@DestinationPortName"] }}</span>
+                    <span class="country">{{ route["@DestinationPortCountry"] }}</span>
                   </div>
                 </div>
               </div>
@@ -104,18 +104,19 @@
             </div>
           </div>
           <div class="step_2" v-if="step_2">
-            <h5 style="color: azure; font-size: 16px; margin-bottom: 20px; text-align: left;">
+            <div style="flex-grow: 1">
+              <h5 style="color: azure; font-size: 16px; margin-bottom: 20px; text-align: left;">
               Select dates
             </h5>
             <div style="display: inline-flex; gap: 10px">
-              <VueCtkDateTimePicker v-model="departDate" format='YYYY-MM-DD hh:mm' :overlay="true" :no-label="true"
-                :no-header="true" :position="'bottom'" :min-date="getCurrentDate()" class="date-picker"
-                :noButtonNow="true" :label="`Select departure date`" :formatted="'YYYY-MM-DD, hh:mm'">
+              <VueCtkDateTimePicker v-model="departDate" format='YYYY-MM-DD' :overlay="true" :no-label="true"
+                :no-header="true" :only-date="true" :position="'bottom'" :min-date="getCurrentDate()" class="date-picker"
+                :noButtonNow="true" :label="`Select departure date`" :formatted="'YYYY-MM-DD'">
               </VueCtkDateTimePicker>
 
-              <VueCtkDateTimePicker v-if="tripType === `roundTrip`" v-model="arrivalDate" format='YYYY-MM-DD hh:mm'
-                :overlay="true" :no-label="true" :no-header="true" :position="'bottom'" :min-date="minArrivalDate()"
-                class="date-picker" :noButtonNow="true" :label="`Select arrival date`" :formatted="'YYYY-MM-DD, hh:mm'">
+              <VueCtkDateTimePicker v-if="tripType === `roundTrip`" v-model="arrivalDate" format='YYYY-MM-DD'
+                :overlay="true" :only-date="true" :no-label="true" :no-header="true" :position="'bottom'" :min-date="minArrivalDate()"
+                class="date-picker" :noButtonNow="true" :label="`Select arrival date`" :formatted="'YYYY-MM-DD'">
               </VueCtkDateTimePicker>
             </div>
             <h5 style="color: azure; font-size: 16px; margin: 20px 0px; text-align: left;">
@@ -200,13 +201,16 @@
                 </svg>
               </div>
             </div>
+            </div>
             <div>
               <a class="currency_euro" tabindex="0" data-popup="currency_popup">Currency: € (Euros)</a>
             </div>
             <div style="
               width: 100%">
               <a class="formbold-btn" style="
-              width: 100%;">
+              width: 100%; margin-bottom: 10px;"
+              @click="getTimeTable(departDate, arrivalDate)"
+              >
                 <span></span>
                 <span></span>
                 <span></span>
@@ -216,7 +220,9 @@
             </div>
           </div>
           <div class="step_2" v-if="!pickingCar">
-            <div class="title-car" @click="step_2 = !step_2; pickingCar = !pickingCar">
+            
+            <div style="flex-grow: 1">
+              <div class="title-car" @click="step_2 = !step_2; pickingCar = !pickingCar">
               <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="white" viewBox="0 -960 960 960">
                 <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
               </svg>
@@ -265,8 +271,10 @@
 
             </div>
 
+            </div>
+
             <div>
-              <button class="confirm-vehicule" @click="console.log(withTrailer)" role="button">Confirm</button>
+              <button class="confirm-vehicule" @click="vehiculeInsert()" role="button">Confirm</button>
             </div>
 
           </div>
@@ -310,6 +318,7 @@ export default {
       VehiculesPassengers: {},
       selectedVehicule: {},
       selectedTrailer: {},
+      timeTable: {},
       svgVehicules: {
         Car: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M241-223v49q0 8.925-6.325 14.962Q228.35-153 219-153h-44q-9.35 0-15.675-6.038Q153-165.075 153-174v-305.143L230-669q6.571-19.65 24.064-30.825Q271.557-711 293-711h374q21.443 0 38.936 11.175T730-669l77 189.857V-174q0 8.925-6.325 14.962Q794.35-153 785-153h-44q-9.35 0-15.675-6.038Q719-165.075 719-174v-49H241Zm2-299h474l-49-122H292l-49 122Zm70.882 195Q333-327 346.5-340.382q13.5-13.383 13.5-32.5Q360-392 346.618-405.5q-13.383-13.5-32.5-13.5Q295-419 281.5-405.618q-13.5 13.383-13.5 32.5Q268-354 281.382-340.5q13.383 13.5 32.5 13.5Zm332 0Q665-327 678.5-340.382q13.5-13.383 13.5-32.5Q692-392 678.618-405.5q-13.383-13.5-32.5-13.5Q627-419 613.5-405.618q-13.5 13.383-13.5 32.5Q600-354 613.382-340.5q13.383 13.5 32.5 13.5Z"/></svg>`,
         BUS: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 122.9 120.5" width="20px" height="20px" style="enable-background:new 0 0 122.9 120.5" xml:space="preserve"><style xmlns="http://www.w3.org/2000/svg" type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st0" d="M110.8,103.6h-7.6V114c0,3.6-2.9,6.5-6.5,6.5h-9c-3.6,0-6.5-2.9-6.5-6.5v-10.3H41.5V114c0,3.6-2.9,6.5-6.5,6.5 h-9c-3.6,0-6.5-2.9-6.5-6.5v-10.3H12v-82c0-7.6,4.4-13.1,13.3-16.5c17.6-6.9,54.6-6.9,72.3,0c8.9,3.4,13.3,8.9,13.3,16.5V103.6 L110.8,103.6L110.8,103.6z M118.6,40.4h-3.8V62h3.8c2.4,0,4.3-1.9,4.3-4.3V44.7C122.9,42.3,121,40.4,118.6,40.4L118.6,40.4z M4.3,40.4h3.8V62H4.3C1.9,62,0,60.1,0,57.7V44.7C0,42.3,1.9,40.4,4.3,40.4L4.3,40.4z M46.4,8.6h30.1c0.9,0,1.6,0.7,1.6,1.6v5.2 c0,0.9-0.7,1.6-1.6,1.6H46.4c-0.9,0-1.6-0.7-1.6-1.6v-5.2C44.8,9.3,45.5,8.6,46.4,8.6L46.4,8.6z M22.9,23.2h76.7 c1,0,1.9,0.9,1.9,1.9v42.8c0,1-0.9,1.9-1.9,1.9H22.9c-1,0-1.9-0.9-1.9-1.9V25.1C21,24.1,21.8,23.2,22.9,23.2L22.9,23.2L22.9,23.2 L22.9,23.2z M98.6,84.9c0-1.9-0.7-3.6-2-4.9c-1.3-1.3-3-2-4.9-2c-1.9,0-3.5,0.7-4.9,2c-1.4,1.3-2,3-2,4.9c0,1.9,0.7,3.5,2,4.8 c1.4,1.3,3,2,4.9,2c1.9,0,3.6-0.7,4.9-2C98,88.4,98.6,86.8,98.6,84.9L98.6,84.9L98.6,84.9L98.6,84.9z M38.1,84.9 c0-1.9-0.7-3.6-2-4.9c-1.3-1.3-3-2-4.9-2c-1.9,0-3.6,0.7-4.9,2c-1.3,1.3-2,3-2,4.9c0,1.9,0.6,3.5,2,4.8c1.3,1.3,3,2,4.9,2 c2,0,3.6-0.7,4.9-2C37.4,88.4,38.1,86.8,38.1,84.9L38.1,84.9L38.1,84.9L38.1,84.9z"/></g></svg>`,
@@ -322,6 +331,14 @@ export default {
     VueCtkDateTimePicker,
   },
   methods: {
+    vehiculeInsert(){
+      this.step_2 = !this.step_2
+      this.pickingCar = !this.pickingCar
+    },
+    async getTimeTable(fromDate, toDate){
+      this.timeTable = await this.$axios.post('http://localhost:3000/api/v1/testtimetables',{fromDate: fromDate, toDate: toDate}).then(res => {return res.data})
+      console.log(this.timeTable)
+    },
     resetTrailerItem(index) {
       if (this.selectedTrailerIndex !== index) {
         this.VehiculesPassengers.TrailerCategory[index].highlighted = false;
@@ -482,7 +499,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 </style>
 
-<style>
+<style scoped>
 .trailer-option {
   display: block;
   margin-bottom: 10px;
@@ -529,7 +546,6 @@ h3 {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-
   width: 85%;
 }
 
@@ -686,7 +702,7 @@ h3 {
   background-color: #ffffff !important;
   color: #475c77 !important;
   padding: 8px !important;
-  margin: 0 !important;
+  margin-bottom: 15px!important;
   width: 100%;
   cursor: default !important;
 }
@@ -696,7 +712,9 @@ h3 {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-y: auto;
+  width: 100%;
+  overflow-x: visible!important;
+  overflow-y: scroll!important;
   scrollbar-width: none;
   -webkit-scrollbar-width: none;
 }
@@ -849,6 +867,7 @@ body {
   align-items: center;
   position: relative;
   width: 100%;
+  margin-top: 15px;
 }
 
 .input {
@@ -887,7 +906,6 @@ input:hover {
 </style>
 <style lang="scss">
 .toggle {
-  margin: 5px 0 1.5rem;
   box-sizing: border-box;
   font-size: 0;
   display: flex;

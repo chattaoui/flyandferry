@@ -8,6 +8,11 @@ const routes = [
     component: HomeView
   },
   {
+    path: '/triplist',
+    name: 'triplist',
+    component: () => import('../views/tripList.vue')
+  },
+  {
     path: '/jellyloader',
     name: 'loader',
     // route level code-splitting

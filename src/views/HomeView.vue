@@ -338,12 +338,13 @@ export default {
 
   computed: {
     language() {
+      console.log(languageStore.getLanguage().offers)
       return languageStore.getLanguage()
     }
   },
-  async mounted() {
-    await this.getTopDest()
-    await this.getSlides()
+   mounted() {
+     this.getTopDest()
+     this.getSlides()
   }
 }
 </script>
