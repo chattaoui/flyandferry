@@ -36,6 +36,7 @@
                 <div class="rate">Best time</div>
             </div>
             <div class="grid-four">
+
                 <div class="travel-card">
                     <div class="travel-image">
                         <div v-html="getFerryCompany('CTN')"></div>
@@ -247,33 +248,20 @@ $faded-gray: #c9cbda;
     padding: 0;
 }
 
-html,
-body {
-    height: 100%;
-    width: 100%;
-}
-
-html {
-    font-family: "Open Sans", sans-serif;
-}
-
 body {
     background: $background;
-    width: 100%;
+    width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    min-width: 1270px;
-    min-height: 800px;
 }
 
 /*--------------------------------------*/
 
 .trip-container {
-    margin-top: 100px;
     width: 100%;
-    padding: 20px;
+    padding: 12.5rem;
     background: $grey;
 }
 
@@ -388,7 +376,23 @@ body {
     padding: 20px;
     border: #f08700;
     border-radius: 30px;
-        
+          box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.travel-card:hover {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  animation-name: example;
+  animation-duration: 0.25s;
+  border-left: 8px solid $purple;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+@keyframes example {
+    0%   {border-left: 2px solid #ffffff;}
+    25%  {border-left: 3px solid #858ea0;}
+    50%  {border-left: 4px solid #5e729a;}
+    100% {border-left: 5px solid #3a5a99;}
 }
 
 .travel-card+.travel-card {
