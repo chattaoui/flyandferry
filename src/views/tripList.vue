@@ -376,7 +376,6 @@ body {
     padding: 20px;
     border: #f08700;
     border-radius: 30px;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
@@ -386,7 +385,7 @@ body {
   animation-name: example;
   animation-duration: 0.25s;
   border-left: 8px solid $purple;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  box-shadow: 0 7px 14px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
 }
 @keyframes example {
     0%   {border-left: 2px solid #ffffff;}

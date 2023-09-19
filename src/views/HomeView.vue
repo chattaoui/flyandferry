@@ -17,32 +17,34 @@
     <div class="content-lg container">
       <!-- Masonry Grid -->
       <div class="masonry-grid row">
-        <div class="masonry-grid-sizer col-xs-6 col-sm-6 col-md-1"></div>
-        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4 sm-margin-b-30">
+        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-3 sm-margin-b-30">
           <div class="margin-b-60">
             <h2>Harmonious Planning</h2>
             <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed tempor incididunt ut laboret dolore magna ut
               consequat siad esqudiat dolor</p>
           </div>
-          <img class="full-width img-responsive wow fadeInUp" src="img/500x500/01.jpg" alt="Portfolio Image"
+          <img class="full-width img-responsive wow fadeInUp" src="https://placehold.co/400" alt="Portfolio Image"
             data-wow-duration=".3" data-wow-delay=".2s">
         </div>
-        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+        <div class="masonry-grid-sizer col-xs-6 col-sm-6 col-md-1"></div>
+        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-3">
           <div class="margin-b-60">
             <h2>Lorem ipsum dolor sit amet consectetur</h2>
             <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed tempor incididunt ut laboret dolore magna ut
               consequat siad esqudiat dolor</p>
           </div>
-          <img class="full-width img-responsive wow fadeInUp" src="img/500x500/02.jpg" alt="Portfolio Image"
+          <img class="full-width img-responsive wow fadeInUp" src="https://placehold.co/400" alt="Portfolio Image"
             data-wow-duration=".3" data-wow-delay=".3s">
         </div>
-        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+        <div class="masonry-grid-sizer col-xs-6 col-sm-6 col-md-1"></div>
+
+        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-3">
           <div class="margin-t-60 margin-b-60">
             <h2>Superior Support</h2>
             <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed tempor incididunt ut laboret dolore magna ut
               consequat siad esqudiat dolor</p>
           </div>
-          <img class="full-width img-responsive wow fadeInUp" src="img/500x500/03.jpg" alt="Portfolio Image"
+          <img class="full-width img-responsive wow fadeInUp" src="https://placehold.co/400" alt="Portfolio Image"
             data-wow-duration=".3" data-wow-delay=".4s">
         </div>
       </div>
@@ -324,7 +326,6 @@ export default {
         e.imageVille = `https://cms.4help.tn/${e.imageVille.replaceAll(`\\`, '/').replaceAll(" ", "%20")}`
         e.imagePays = `https://cms.4help.tn/${e.imagePays.replaceAll(`\\`, '/').replaceAll(" ", "%20")}`
       })
-      console.log(this.destinPrins)
     },
     async getSlides() {
       this.Slides = await this.$axios.get('https://cms.4help.tn/api/slider_API/AllSlides')
@@ -332,7 +333,6 @@ export default {
       this.Slides.map(e => {
         e.Slider_Image = `https://cms.4help.tn/${e.Slider_Image.replaceAll(" ", "%20")}`
       })
-      console.log(this.Slides)
     }
   },
 

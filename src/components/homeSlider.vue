@@ -51,8 +51,8 @@ import { defineComponent } from 'vue'
         console.log(this.slidePromotions)
       }
     },
-    mounted(){
-      this.getPromos()
+    async mounted(){
+      await this.getPromos()
     }
   })
   </script>

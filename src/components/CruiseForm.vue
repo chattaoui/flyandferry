@@ -44,8 +44,8 @@
                 <div class="list-item" v-for="(route, index) in searchedRoutes" :key="`Routes-${index}`"
                   @click="handleRouteClick(route)">
                   <div class="departure">
-                    <span class="port">{{ route["@DepartPortName"] }}</span>
-                    <span class="country">{{ route["@DepartPortCountry"] }}</span>
+                    <span class="port">{{ route["$"]["DepartPortName"] }}</span>
+                    <span class="country">{{ route["$"]["DepartPortCountry"] }}</span>
                   </div>
                   <div class="arrow-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24"
@@ -63,8 +63,8 @@
                     </svg>
                   </div>
                   <div class="arrival">
-                    <span class="port">{{ route["@DestinationPortName"] }}</span>
-                    <span class="country">{{ route["@DestinationPortCountry"] }}</span>
+                    <span class="port">{{ route["$"]["DestinationPortName"] }}</span>
+                    <span class="country">{{ route["$"]["DestinationPortCountry"] }}</span>
                   </div>
                 </div>
               </div>
@@ -78,8 +78,8 @@
             <div class="popular-ferry-list">
               <div class="list-item" v-for="(trip, index) in Routes" :key="index" @click="handleRouteClick(trip)">
                 <div class="departure">
-                  <span class="port">{{ trip["@DepartPortName"] }}</span>
-                  <span class="country">{{ trip["@DepartPortCountry"] }}</span>
+                  <span class="port">{{ trip["$"]["DepartPortName"] }}</span>
+                  <span class="country">{{ trip["$"]["DepartPortCountry"] }}</span>
                 </div>
                 <div class="arrow-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24"
@@ -97,8 +97,8 @@
                   </svg>
                 </div>
                 <div class="arrival">
-                  <span class="port">{{ trip["@DestinationPortName"] }}</span>
-                  <span class="country">{{ trip["@DestinationPortCountry"] }}</span>
+                  <span class="port">{{ trip["$"]["DestinationPortName"] }}</span>
+                  <span class="country">{{ trip["$"]["DestinationPortCountry"] }}</span>
                 </div>
               </div>
             </div>
@@ -229,15 +229,15 @@
               <h3>Vehicle details</h3>
             </div>
             <div class="car-custom-list">
-              <div v-for="(category, index) in VehiculesPassengers.LeadVehicleCategory" :key="`carItem_` + index"
+              <div v-for="(category, index) in VehiculesPassengers.LeadVehicleCategories" :key="`carItem_` + index"
                 class="car-list-item"
                 :class="{ 'selected': selectedIndex === index, 'highlighted': highlightedIndex === index }"
                 @click="selectCarItem(index, category)" @mouseover="highlightCarItem(index)"
                 @mouseout="resetCarItem(index)">
                 <i class="car-category-icon" v-html="getCarIcon(getVehicleName(category))">
                 </i>
-                <span class="car-text">{{ getVehicleName(category) + ` << height between ${category["@MinHeight"]} and
-                                    ${category["@MaxHeight"]}>>` }}</span>
+                <span class="car-text">{{ getVehicleName(category) + ` << height between ${category["MinHeight"]} and
+                                    ${category["MaxHeight"]}>>` }}</span>
               </div>
             </div>
 
@@ -256,15 +256,15 @@
 
             </div>
 
-            <div v-if="withTrailer === 'with'" style="display:flex;flex-direction:column;align-items:center;">
+            <div v-if="withTrailer === 'with' && showTrailer(selectedVehicule)" style="display:flex;flex-direction:column;align-items:center;">
 
-              <div v-for="(trailer, index) in VehiculesPassengers.TrailerCategory" :key="`trailerItem_` + index"
+              <div v-for="(trailer, index) in VehiculesPassengers.TrailerVehicleCategories" :key="`trailerItem_` + index"
                 class="car-list-item" style="width: 70%;" 
                 :class="{ 'selected': selectedTrailerIndex === index, 'highlighted': highlightedTrailerIndex === index }"
                 @click="selectTrailerItem(index, trailer)" @mouseover="highlightTrailerItem(index)"
                 @mouseout="resetTrailerItem(index)">
                 <span class="car-text">
-                  {{ trailer["@Description"] }}
+                  {{ trailer["Description"] }}
                 </span>
               </div>
 
@@ -341,22 +341,22 @@ export default {
     },
     resetTrailerItem(index) {
       if (this.selectedTrailerIndex !== index) {
-        this.VehiculesPassengers.TrailerCategory[index].highlighted = false;
+        this.VehiculesPassengers.TrailerVehicleCategories[index].highlighted = false;
       }
     },
     highlightTrailerItem(index) {
       if (this.selectedTrailerIndex !== index) {
-        this.VehiculesPassengers.TrailerCategory[index].highlighted = true;
+        this.VehiculesPassengers.TrailerVehicleCategories[index].highlighted = true;
       }
     },
     selectTrailerItem(index, category) {
       // Deselect the previously selected item, if any
       if (this.selectedTrailerIndex !== -1) {
-        this.VehiculesPassengers.TrailerCategory[this.selectedTrailerIndex].selected = false;
+        this.VehiculesPassengers.TrailerVehicleCategories[this.selectedTrailerIndex].selected = false;
       }
 
       // Select the clicked item
-      this.VehiculesPassengers.TrailerCategory[index].selected = true;
+      this.VehiculesPassengers.TrailerVehicleCategories[index].selected = true;
       this.selectedTrailerIndex = index;
       this.selectedTrailer = category
     },
@@ -372,34 +372,34 @@ export default {
       return this.svgVehicules[carCateg]
     },
     getVehicleName(category) {
-      if (category["@Code"]) return category["@Code"]
-      else return category["@OperatorCode"]
+      if (category["Code"]) return category["Code"]
+      else return category["OperatorCode"]
     },
     highlightCarItem(index) {
       if (this.selectedIndex !== index) {
-        this.VehiculesPassengers.LeadVehicleCategory[index].highlighted = true;
+        this.VehiculesPassengers.LeadVehicleCategories[index].highlighted = true;
       }
     },
     resetCarItem(index) {
       if (this.selectedIndex !== index) {
-        this.VehiculesPassengers.LeadVehicleCategory[index].highlighted = false;
+        this.VehiculesPassengers.LeadVehicleCategories[index].highlighted = false;
       }
     },
     selectCarItem(index, category) {
       // Deselect the previously selected item, if any
       if (this.selectedIndex !== -1) {
-        this.VehiculesPassengers.LeadVehicleCategory[this.selectedIndex].selected = false;
+        this.VehiculesPassengers.LeadVehicleCategories[this.selectedIndex].selected = false;
       }
 
       // Select the clicked item
-      this.VehiculesPassengers.LeadVehicleCategory[index].selected = true;
+      this.VehiculesPassengers.LeadVehicleCategories[index].selected = true;
       this.selectedIndex = index;
       this.selectedVehicule = category
     },
     categoryExists(category) {
       let exists = false
-      this.VehiculesPassengers.PassengerCategory.map(el => {
-        if (category === el["@Category"]) exists = true
+      this.VehiculesPassengers.PassengerCategories.map(el => {
+        if (category === el["Category"]) exists = true
       })
       return exists
     },
@@ -438,7 +438,7 @@ export default {
       event.preventDefault()
     },
     handleRouteClick(route) {
-      this.searchInp = `${route[["@DepartPortName"]]} - ${route["@DestinationPortName"]}`
+      this.searchInp = `${route["$"]["DepartPortName"]} - ${route["$"]["DestinationPortName"]}`
       this.step_1 = false
       this.step_2 = true
     },
@@ -446,7 +446,7 @@ export default {
       this.searchedRoutes = this.Routes
         .map((trip) => {
           if (
-            Object.values(trip).some((value) =>
+            Object.values(trip["$"]).some((value) =>
               value.toUpperCase().includes(this.searchInp.toUpperCase())
             ) ||
             `${trip.departurePort} - ${trip.arrivalPort}`.toUpperCase().includes(this.searchInp.toUpperCase())
@@ -461,7 +461,6 @@ export default {
         : (this.showRoutes = false);
     },
     handleFormClick() {
-      console.log(this.searchInp);
       if (this.searchInp === "") {
         this.$refs.searchRef.focus();
       }
@@ -473,6 +472,31 @@ export default {
       this.showPopular = true;
       this.step_1 = true
     },
+    async getVehiculesPassengers(){
+      let data = JSON.stringify({
+  "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
+  "User": "",
+  "LanguagePrefCode": "en",
+  "Currency": "EUR",
+  "CountryCode": "TUN",
+  "OriginatingSystem": ""
+});
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'https://cms.4help.tn/api/getPassengerAndVehicleTypes_API/getPassengerAndVehicleTypes',
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  maxRedirects: 0,
+  data : data
+};
+
+    this.VehiculesPassengers = await this.$axios.request(config)
+      .then(res => { return res.data })
+    
+    }
   },
   computed: {
     language() {
@@ -480,12 +504,28 @@ export default {
     },
   },
   async mounted() {
-    this.Routes = await this.$axios.get('http://localhost:3000/api/v1/testtoken').then(res => { return res.data.GetRoutesResponse.Routes.Route })
-    const { LeadVehicleCategories: { LeadVehicleCategory }, PassengerCategories: { PassengerCategory }, TrailerVehicleCategories: { TrailerCategory } } = await this.$axios.get('http://localhost:3000/api/v1/testgetvehicules')
-      .then(res => { return res.data.GetPassengerAndVehicleTypesResponse })
-
-    this.VehiculesPassengers = { LeadVehicleCategory, PassengerCategory, TrailerCategory }
-    console.log(this.VehiculesPassengers)
+    let data = JSON.stringify({
+      "AgentAccountNumber": "FGW0006",
+      "TimeStamp": "2023-09-19T11:10:00",
+      "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
+      "User": "",
+      "LanguagePrefCode": "en",
+      "Currency": "EUR",
+      "CountryCode": "TUN",
+      "OriginatingSystem": ""
+    });
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'https://cms.4help.tn/api/getRoutes_API/getRoutes',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      maxRedirects: 0,
+      data : data
+    };
+    this.Routes = await this.$axios.request(config).then(res => { return res.data.GetRoutesResponse.Routes[0].Route })
+    await this.getVehiculesPassengers()
   },
 };
 </script>
