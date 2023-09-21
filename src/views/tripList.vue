@@ -1,9 +1,9 @@
 <template>
-    <div class="trip-container">
+    <div class="trip-container" v-if="trips.length == 1">
         <div class="grid">
             <div class="grid-one">
                 <div class="current-travel">
-                    <p class="current-travel-location">Barcelona (BCN) - Rome (ROM)</p>
+                    <p class="current-travel-location">{{ getTripTitle() }}</p>
                     <p class="current-travel-class">1 adult - Economy</p>
                 </div>
                 <div class="calendars">
@@ -37,14 +37,14 @@
             </div>
             <div class="grid-four">
 
-                <div class="travel-card">
+                <div v-for="(trip, index) in trips[0]" :key="`trip_item_${index}`" class="travel-card">
                     <div class="travel-image">
                         <div v-html="getFerryCompany('CTN')"></div>
                     </div>
                     <div class="travel-arrival-info">
-                        <p class="travel-time">10:30 AM</p>
-                        <p class="travel-arrival">Barcelona (BCN)</p>
-                        <p class="travel-arrival-date">Tuesday, Apr 21, 2020</p>
+                        <p class="travel-time">{{ trip.DepartDateTime.split('T')[1] }}</p>
+                        <p class="travel-arrival">{{ `${trip.DepartPortName } (${trip.DepartPort})` }}</p>
+                        <p class="travel-arrival-date">{{ trip.DepartDateTime.split('T')[0] }}</p>
                     </div>
                     <div class="travel-range">
                         <p class="range-time">1h 50m</p>
@@ -58,142 +58,91 @@
                         </p>
                     </div>
                     <div class="travel-departure-info">
-                        <p class="travel-time">12:20 AM</p>
-                        <p class="travel-departure">ROME (ROM)</p>
-                        <p class="travel-departure-date">Tuesday, Apr 21, 2020</p>
+                        <p class="travel-time">{{ trip.ArriveDateTime.split('T')[1] }}</p>
+                        <p class="travel-arrival">{{ `${trip.DestinationPortName } (${trip.DestinationPort})` }}</p>
+                        <p class="travel-arrival-date">{{ trip.ArriveDateTime.split('T')[0] }}</p>
                     </div>
                     <div class="travel-rate-final">
                         <div class="travel-rate"><sup>$</sup>56</div>
                         <button class="select-rate">Select</button>
                     </div>
                 </div>
-                <div class="travel-card">
-                    <div class="travel-image">
-                        <div v-html="getFerryCompany('CTN')"></div>
-                    </div>
-                    <div class="travel-arrival-info">
-                        <p class="travel-time">07:45 AM</p>
-                        <p class="travel-arrival">Barcelona (BCN)</p>
-                        <p class="travel-arrival-date">Tuesday, Apr 21, 2020</p>
-                    </div>
-                    <div class="travel-range">
-                        <p class="range-time">7h 55m</p>
-                        <div class="range">
-                            <div class="range-pos range-start"></div>
-                            <div class="range-pos range-end"></div>
-                            <div class="ranger"></div>
-                        </div>
-                        <p class="range-stops">
-                            <span class="range-stop">VIE</span>
-                        </p>
-                    </div>
-                    <div class="travel-departure-info">
-                        <p class="travel-time">3:40 PM</p>
-                        <p class="travel-departure">ROME (ROM)</p>
-                        <p class="travel-departure-date">Tuesday, Apr 21, 2020</p>
-                    </div>
-                    <div class="travel-rate-final">
-                        <div class="travel-rate"><sup>$</sup>68</div>
-                        <button class="select-rate">Select</button>
-                    </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="trip-container" v-else>
+        <div class="grid">
+            <div class="grid-one">
+                <div class="current-travel">
+                    <p class="current-travel-location">{{ getTripTitle() }}</p>
+                    <p class="current-travel-class">1 adult - Economy</p>
                 </div>
-                <div class="travel-card">
-                    <div class="travel-image">
-                        <div v-html="getFerryCompany('CTN')"></div>
-                    </div>
-                    <div class="travel-arrival-info">
-                        <p class="travel-time">10:35 PM</p>
-                        <p class="travel-arrival">Barcelona (BCN)</p>
-                        <p class="travel-arrival-date">Tuesday, Apr 21, 2020</p>
-                    </div>
-                    <div class="travel-range">
-                        <p class="range-time">17h 15m</p>
-                        <div class="range">
-                            <div class="range-pos range-start"></div>
-                            <div class="range-pos range-end"></div>
-                            <div class="ranger"></div>
-                        </div>
-                        <p class="range-stops">
-                            <span class="range-stop">PMI</span>
-                            <span class="range-stop">VLC</span>
-                        </p>
-                    </div>
-                    <div class="travel-departure-info">
-                        <p class="travel-time">3:50 PM</p>
-                        <p class="travel-departure">ROME (ROM)</p>
-                        <p class="travel-departure-date">Tuesday, Apr 22, 2020</p>
-                    </div>
-                    <div class="travel-rate-final">
-                        <div class="travel-rate"><sup>$</sup>82</div>
-                        <button class="select-rate">Select</button>
-                    </div>
+                <div class="calendars">
+                    <button class="calendar">
+                        <svg width="14" height="14" viewBox="0 0 24 24">
+                            <path
+                                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z" />
+                        </svg>
+                        <span>Tuesday, Apr 21</span>
+                    </button>
+                    <button class="calendar blank">
+                        <svg width="14" height="14" viewBox="0 0 24 24">
+                            <path
+                                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z" />
+                        </svg>
+                        <span>One way</span>
+                    </button>
                 </div>
-                <div class="travel-card">
+            </div>
+            <div class="grid-two rate-cards">
+                <div class="rate">Cheapest price</div>
+            </div>
+            <div class="grid-two rate-cards active">
+                <div class="rate">recommended</div>
+            </div>
+            <div class="grid-two rate-cards">
+                <div class="rate">Fastest</div>
+            </div>
+            <div class="grid-two rate-cards">
+                <div class="rate">Best time</div>
+            </div>
+            <div class="grid-four">
+
+                <div v-for="(trip, index) in trips[0]" :key="`trip_item_${index}`" class="travel-card">
                     <div class="travel-image">
                         <div v-html="getFerryCompany('CTN')"></div>
                     </div>
                     <div class="travel-arrival-info">
-                        <p class="travel-time">09:30 AM</p>
-                        <p class="travel-arrival">Barcelona (BCN)</p>
-                        <p class="travel-arrival-date">Tuesday, Apr 21, 2020</p>
+                        <p class="travel-time">{{ trip.DepartDateTime.split('T')[1] }}</p>
+                        <p class="travel-arrival">{{ `${trip.DepartPortName } (${trip.DepartPort})` }}</p>
+                        <p class="travel-arrival-date">{{ trip.DepartDateTime.split('T')[0] }}</p>
                     </div>
                     <div class="travel-range">
-                        <p class="range-time">23h 15m</p>
+                        <p class="range-time">1h 50m</p>
                         <div class="range">
                             <div class="range-pos range-start"></div>
                             <div class="range-pos range-end"></div>
                             <div class="ranger"></div>
                         </div>
                         <p class="range-stops">
-                            <span class="range-stop">CGN</span>
-                            <span class="range-stop">KTW</span>
+                            <span>Non-stop</span>
                         </p>
                     </div>
                     <div class="travel-departure-info">
-                        <p class="travel-time">8:45 AM</p>
-                        <p class="travel-departure">ROME (ROM)</p>
-                        <p class="travel-departure-date">Tuesday, Apr 22, 2020</p>
+                        <p class="travel-time">{{ trip.ArriveDateTime.split('T')[1] }}</p>
+                        <p class="travel-arrival">{{ `${trip.DestinationPortName } (${trip.DestinationPort})` }}</p>
+                        <p class="travel-arrival-date">{{ trip.ArriveDateTime.split('T')[0] }}</p>
                     </div>
                     <div class="travel-rate-final">
-                        <div class="travel-rate"><sup>$</sup>91</div>
-                        <button class="select-rate">Select</button>
-                    </div>
-                </div>
-                <div class="travel-card">
-                    <div class="travel-image">
-                        <div v-html="getFerryCompany('CTN')"></div>
-                    </div>
-                    <div class="travel-arrival-info">
-                        <p class="travel-time">09:30 AM</p>
-                        <p class="travel-arrival">Barcelona (BCN)</p>
-                        <p class="travel-arrival-date">Tuesday, Apr 21, 2020</p>
-                    </div>
-                    <div class="travel-range">
-                        <p class="range-time">28h 00m</p>
-                        <div class="range">
-                            <div class="range-pos range-start"></div>
-                            <div class="range-pos range-end"></div>
-                            <div class="ranger"></div>
-                        </div>
-                        <p class="range-stops">
-                            <span class="range-stop">PMI</span>
-                            <span class="range-stop">CGN</span>
-                            <span class="range-stop">KTW</span>
-                        </p>
-                    </div>
-                    <div class="travel-departure-info">
-                        <p class="travel-time">1:30 PM</p>
-                        <p class="travel-departure">ROME (ROM)</p>
-                        <p class="travel-departure-date">Tuesday, Apr 22, 2020</p>
-                    </div>
-                    <div class="travel-rate-final">
-                        <div class="travel-rate"><sup>$</sup>120</div>
+                        <div class="travel-rate"><sup>$</sup>56</div>
                         <button class="select-rate">Select</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+
 </template>
 
 <script>
@@ -201,12 +150,32 @@
 export default {
     data(){
         return {
+            trips: [],
             ferryCompanies: {
                 CTN: '<img src="img/CTNlogo.png" alt="">'
             }
         }
     },
     methods: {
+        getTripsMatrix(fromDates, toDates){
+            const allDates = fromDates.map(
+                fromDate => {
+                    return toDates.map(
+                        toDate => {
+                            let date1 = new Date(fromDate.ArriveDateTime)
+                            let date2 = new Date(toDate.DepartDateTime)
+                            console.log(date1)
+                            if (date2 > date1) return {"fromDate": fromDate, "toDate": toDate}
+                        }
+                    )
+                }
+            )
+            console.log(allDates)
+            return allDates
+        },
+        getTripTitle(){
+            return `${this.trips[0][0].DepartPortName } ( ${this.trips[0][0].DepartPort} ) -- ${this.trips[0][0].DestinationPortName } ( ${this.trips[0][0].DestinationPort} )`
+        },
         getFerryCompany(company){
             return this.ferryCompanies[company]
         },
@@ -220,9 +189,19 @@ export default {
             });
         }
     },
-    mounted() {
+    async mounted() {
         this.clickHoverInit()
+    },
+    beforeMount(){
+        this.trips = JSON.parse(localStorage.getItem('trips'))
+        this.getTripsMatrix(this.trips[0],this.trips[1])
     }
+    // beforeRouteLeave(){
+    //     localStorage.removeItem('trips')
+    // },
+    // beforeUnmount(){
+    //     localStorage.removeItem('trips')
+    // },
 }
 
 
@@ -254,7 +233,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
 }
 
 /*--------------------------------------*/
@@ -263,6 +241,7 @@ body {
     width: 100%;
     padding: 12.5rem;
     background: $grey;
+    height: 100%;
 }
 
 .grid {

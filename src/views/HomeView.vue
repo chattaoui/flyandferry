@@ -331,6 +331,7 @@ export default {
       this.Slides = await this.$axios.get('https://cms.4help.tn/api/slider_API/AllSlides')
         .then((res) => { return res.data })
       this.Slides.map(e => {
+        if (e.Slider_Image)
         e.Slider_Image = `https://cms.4help.tn/${e.Slider_Image.replaceAll(" ", "%20")}`
       })
     }

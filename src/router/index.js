@@ -10,7 +10,13 @@ const routes = [
   {
     path: '/triplist',
     name: 'triplist',
-    component: () => import('../views/tripList.vue')
+    component: () => import('../views/tripList.vue'),
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('trips'))
+        next()
+      else 
+        next({path: '/'})
+    }
   },
   {
     path: '/jellyloader',
