@@ -43,11 +43,11 @@
                     </div>
                     <div class="travel-arrival-info">
                         <p class="travel-time">{{ trip.DepartDateTime.split('T')[1] }}</p>
-                        <p class="travel-arrival">{{ `${trip.DepartPortName } (${trip.DepartPort})` }}</p>
+                        <p class="travel-arrival">{{ `${trip.DepartPortName} (${trip.DepartPort})` }}</p>
                         <p class="travel-arrival-date">{{ trip.DepartDateTime.split('T')[0] }}</p>
                     </div>
                     <div class="travel-range">
-                        <p class="range-time">1h 50m</p>
+                        <p class="range-time">{{ calculateHourDifference(trip.DepartDateTime, trip.ArriveDateTime) }}</p>
                         <div class="range">
                             <div class="range-pos range-start"></div>
                             <div class="range-pos range-end"></div>
@@ -59,7 +59,7 @@
                     </div>
                     <div class="travel-departure-info">
                         <p class="travel-time">{{ trip.ArriveDateTime.split('T')[1] }}</p>
-                        <p class="travel-arrival">{{ `${trip.DestinationPortName } (${trip.DestinationPort})` }}</p>
+                        <p class="travel-arrival">{{ `${trip.DestinationPortName} (${trip.DestinationPort})` }}</p>
                         <p class="travel-arrival-date">{{ trip.ArriveDateTime.split('T')[0] }}</p>
                     </div>
                     <div class="travel-rate-final">
@@ -71,7 +71,7 @@
         </div>
     </div>
 
-    <!-- <div class="trip-container" v-else>
+    <div class="trip-container" v-else>
         <div class="grid">
             <div class="grid-one">
                 <div class="current-travel">
@@ -108,31 +108,64 @@
                 <div class="rate">Best time</div>
             </div>
             <div class="grid-four">
-
-                <div v-for="(trip, index) in trips[0]" :key="`trip_item_${index}`" class="travel-card">
+                <div v-for="(trip, index) in listedTrips" :key="`trip_item_${index}`" class="travel-card">
                     <div class="travel-image">
                         <div v-html="getFerryCompany('CTN')"></div>
                     </div>
-                    <div class="travel-arrival-info">
-                        <p class="travel-time">{{ trip.DepartDateTime.split('T')[1] }}</p>
-                        <p class="travel-arrival">{{ `${trip.DepartPortName } (${trip.DepartPort})` }}</p>
-                        <p class="travel-arrival-date">{{ trip.DepartDateTime.split('T')[0] }}</p>
-                    </div>
-                    <div class="travel-range">
-                        <p class="range-time">1h 50m</p>
-                        <div class="range">
-                            <div class="range-pos range-start"></div>
-                            <div class="range-pos range-end"></div>
-                            <div class="ranger"></div>
+                    <div class="trip-details-container">
+                        <div class="trip-details">
+                            <div class="travel-arrival-info">
+                                <p class="travel-time">{{ trip.OUT.DepartDateTime.split('T')[1] }}</p>
+                                <p class="travel-arrival">{{ `${trip.OUT.DepartPortName} (${trip.OUT.DepartPort})` }}</p>
+                                <p class="travel-arrival-date">{{ trip.OUT.DepartDateTime.split('T')[0] }}</p>
+                            </div>
+                            <div class="travel-range">
+                                <p class="range-time">{{ calculateHourDifference(trip.OUT.DepartDateTime,
+                                    trip.OUT.ArriveDateTime) }}</p>
+                                <div class="range">
+                                    <div class="range-pos range-start"></div>
+                                    <div class="range-pos range-end"></div>
+                                    <div class="ranger"></div>
+                                </div>
+                                <p class="range-stops">
+                                    <span>Non-stop</span>
+                                </p>
+                            </div>
+                            <div class="travel-departure-info">
+                                <p class="travel-time">{{ trip.OUT.ArriveDateTime.split('T')[1] }}</p>
+                                <p class="travel-arrival">{{ `${trip.OUT.DestinationPortName} (${trip.OUT.DestinationPort})`
+                                }}</p>
+                                <p class="travel-arrival-date">{{ trip.OUT.ArriveDateTime.split('T')[0] }}</p>
+                            </div>
                         </div>
-                        <p class="range-stops">
-                            <span>Non-stop</span>
-                        </p>
-                    </div>
-                    <div class="travel-departure-info">
-                        <p class="travel-time">{{ trip.ArriveDateTime.split('T')[1] }}</p>
-                        <p class="travel-arrival">{{ `${trip.DestinationPortName } (${trip.DestinationPort})` }}</p>
-                        <p class="travel-arrival-date">{{ trip.ArriveDateTime.split('T')[0] }}</p>
+
+                        <div class="trip-Vertical-line"></div>
+
+                        <div class="trip-details">
+                            <div class="travel-arrival-info">
+                                <p class="travel-time">{{ trip.RTN.DepartDateTime.split('T')[1] }}</p>
+                                <p class="travel-arrival">{{ `${trip.RTN.DepartPortName} (${trip.RTN.DepartPort})` }}</p>
+                                <p class="travel-arrival-date">{{ trip.RTN.DepartDateTime.split('T')[0] }}</p>
+                            </div>
+                            <div class="travel-range">
+                                <p class="range-time">{{ calculateHourDifference(trip.RTN.DepartDateTime,
+                                    trip.RTN.ArriveDateTime) }}</p>
+                                <div class="range">
+                                    <div class="range-pos range-start"></div>
+                                    <div class="range-pos range-end"></div>
+                                    <div class="ranger"></div>
+                                </div>
+                                <p class="range-stops">
+                                    <span>Non-stop</span>
+                                </p>
+                            </div>
+                            <div class="travel-departure-info">
+                                <p class="travel-time">{{ trip.RTN.ArriveDateTime.split('T')[1] }}</p>
+                                <p class="travel-arrival">{{ `${trip.RTN.DestinationPortName} (${trip.RTN.DestinationPort})`
+                                }}</p>
+                                <p class="travel-arrival-date">{{ trip.RTN.ArriveDateTime.split('T')[0] }}</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="travel-rate-final">
                         <div class="travel-rate"><sup>$</sup>56</div>
@@ -141,42 +174,80 @@
                 </div>
             </div>
         </div>
-    </div> -->
-
+    </div>
 </template>
 
 <script>
 
 export default {
-    data(){
+    data() {
         return {
             trips: [],
             ferryCompanies: {
                 CTN: '<img src="img/CTNlogo.png" alt="">'
-            }
+            },
+            listedTrips: []
         }
     },
     methods: {
-        getTripsMatrix(fromDates, toDates){
+        calculateHourDifference(fromDate, toDate) {
+            const startDate = new Date(fromDate);
+            const endDate = new Date(toDate);
+
+            const timeDifference = endDate - startDate;
+            const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60)); // Calculate hours
+            const minutesDifference = Math.floor((timeDifference / (1000 * 60)) % 60); // Calculate remaining minutes
+            console.log(fromDate, toDate)
+            return `${hoursDifference ? `${hoursDifference}h` : ``} ${minutesDifference ? ` ${minutesDifference}m` : ``}`
+        },
+        transformTripsData(inputData) {
+            const outputData = [];
+
+            inputData.map(data => {
+                for (let i = 0; i < Object.keys(data).length; i++) {
+                    outputData.push(data[Object.keys(data)[i]])
+                }
+            })
+            console.log(outputData)
+            return outputData;
+        },
+        getTripsMatrix(fromDates, toDates) {
+            // function addOneDay(inputDate){
+            //     const date = new Date(inputDate);
+            //     date.setDate(date.getDate() + 1); // Add one day
+            //     const year = date.getFullYear();
+            //     const month = String(date.getMonth() + 1).padStart(2, '0');
+            //     const day = String(date.getDate()).padStart(2, '0');
+            //     const hours = String(date.getHours()).padStart(2, '0');
+            //     const minutes = String(date.getMinutes()).padStart(2, '0');
+            //     const seconds = String(date.getSeconds()).padStart(2, '0');
+            //     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+            // }
             const allDates = fromDates.map(
                 fromDate => {
                     return toDates.map(
                         toDate => {
                             let date1 = new Date(fromDate.ArriveDateTime)
                             let date2 = new Date(toDate.DepartDateTime)
-                            console.log(date1)
-                            if (date2 > date1) return {"fromDate": fromDate, "toDate": toDate}
+                            if (date2 > date1) return { "OUT": fromDate, "RTN": toDate }
                         }
                     )
                 }
+            ).map(e => {
+                return Object.keys(e).reduce((result, key) => {
+                    if (e[key] !== undefined) {
+                        result[key] = e[key];
+                    }
+                    return result;
+                }, {})
+            }
             )
-            console.log(allDates)
             return allDates
         },
-        getTripTitle(){
-            return `${this.trips[0][0].DepartPortName } ( ${this.trips[0][0].DepartPort} ) -- ${this.trips[0][0].DestinationPortName } ( ${this.trips[0][0].DestinationPort} )`
+        getTripTitle() {
+            return `${this.trips[0][0].DepartPortName} ( ${this.trips[0][0].DepartPort} ) -- ${this.trips[0][0].DestinationPortName} ( ${this.trips[0][0].DestinationPort} )`
         },
-        getFerryCompany(company){
+        getFerryCompany(company) {
             return this.ferryCompanies[company]
         },
         clickHoverInit() {
@@ -192,9 +263,9 @@ export default {
     async mounted() {
         this.clickHoverInit()
     },
-    beforeMount(){
+    beforeMount() {
         this.trips = JSON.parse(localStorage.getItem('trips'))
-        this.getTripsMatrix(this.trips[0],this.trips[1])
+        if (this.trips.length == 2) this.listedTrips = this.transformTripsData(this.getTripsMatrix(this.trips[0], this.trips[1]))
     }
     // beforeRouteLeave(){
     //     localStorage.removeItem('trips')
@@ -237,11 +308,34 @@ body {
 
 /*--------------------------------------*/
 
+
+.trip-details-container {
+    display: flex;
+    height: 100%;
+    /* Ensure the container takes the full height of its parent */
+    width: 100%;
+}
+
+.trip-details {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    // justify-content: space-between;
+    align-items: center;
+    justify-content: space-evenly
+}
+
 .trip-container {
     width: 100%;
     padding: 12.5rem;
     background: $grey;
     height: 100%;
+}
+
+.trip-Vertical-line {
+    width: 2px;
+    height: 100px;
+    background: #3a5a99;
 }
 
 .grid {
@@ -340,6 +434,7 @@ body {
     font-weight: bold;
     padding: 5px;
     white-space: nowrap;
+
     sup {
         font-size: 12px;
     }
@@ -355,22 +450,34 @@ body {
     padding: 20px;
     border: #f08700;
     border-radius: 30px;
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
 }
 
 .travel-card:hover {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  animation-name: example;
-  animation-duration: 0.25s;
-  border-left: 8px solid $purple;
-  box-shadow: 0 7px 14px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    animation-name: example;
+    animation-duration: 0.25s;
+    border-left: 8px solid $purple;
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
 }
+
 @keyframes example {
-    0%   {border-left: 2px solid #ffffff;}
-    25%  {border-left: 3px solid #858ea0;}
-    50%  {border-left: 4px solid #5e729a;}
-    100% {border-left: 5px solid #3a5a99;}
+    0% {
+        border-left: 2px solid #ffffff;
+    }
+
+    25% {
+        border-left: 3px solid #858ea0;
+    }
+
+    50% {
+        border-left: 4px solid #5e729a;
+    }
+
+    100% {
+        border-left: 5px solid #3a5a99;
+    }
 }
 
 .travel-card+.travel-card {

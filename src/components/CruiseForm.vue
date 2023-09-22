@@ -178,7 +178,8 @@
 
 
               </div>
-              <div class="pick_car" @click="step_2 = false; pickingCar = false" v-if="Object.keys(selectedVehicule).length === 0">
+              <div class="pick_car" @click="step_2 = false; pickingCar = false"
+                v-if="Object.keys(selectedVehicule).length === 0">
                 <!-- Left Icon (You can replace this with your own icon code) -->
                 <div class="car-left-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="24" viewBox="0 0 24 24" width="24">
@@ -207,14 +208,23 @@
                   <i style="display: inherit!important;" v-html="getCarIcon(getVehicleName(selectedVehicule))">
                   </i>
                 </div>
-                
+
 
                 <div style="color: black;">
-                  {{ `${getVehicleName(selectedVehicule)} (${selectedVehicule["MinHeight"]}~${selectedVehicule["MaxHeight"]})${Object.keys(selectedTrailer).length ? ` with ${selectedTrailer["Description"]}` : ''}` }}
+                  {{ `${getVehicleName(selectedVehicule)}
+                                    (${selectedVehicule["MinHeight"]}~${selectedVehicule["MaxHeight"]})${Object.keys(selectedTrailer).length
+                      ? ` with ${selectedTrailer["Description"]}` : ''}` }}
                 </div>
 
                 <div class="car-right-icon" @click="resetCarPick">
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 122.881 122.88" enable-background="new 0 0 122.881 122.88" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M61.44,0c33.933,0,61.441,27.507,61.441,61.439 c0,33.933-27.508,61.44-61.441,61.44C27.508,122.88,0,95.372,0,61.439C0,27.507,27.508,0,61.44,0L61.44,0z M81.719,36.226 c1.363-1.363,3.572-1.363,4.936,0c1.363,1.363,1.363,3.573,0,4.936L66.375,61.439l20.279,20.278c1.363,1.363,1.363,3.573,0,4.937 c-1.363,1.362-3.572,1.362-4.936,0L61.44,66.376L41.162,86.654c-1.362,1.362-3.573,1.362-4.936,0c-1.363-1.363-1.363-3.573,0-4.937 l20.278-20.278L36.226,41.162c-1.363-1.363-1.363-3.573,0-4.936c1.363-1.363,3.573-1.363,4.936,0L61.44,56.504L81.719,36.226 L81.719,36.226z"/></g></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                    id="Layer_1" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 122.881 122.88"
+                    enable-background="new 0 0 122.881 122.88" xml:space="preserve">
+                    <g>
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M61.44,0c33.933,0,61.441,27.507,61.441,61.439 c0,33.933-27.508,61.44-61.441,61.44C27.508,122.88,0,95.372,0,61.439C0,27.507,27.508,0,61.44,0L61.44,0z M81.719,36.226 c1.363-1.363,3.572-1.363,4.936,0c1.363,1.363,1.363,3.573,0,4.936L66.375,61.439l20.279,20.278c1.363,1.363,1.363,3.573,0,4.937 c-1.363,1.362-3.572,1.362-4.936,0L61.44,66.376L41.162,86.654c-1.362,1.362-3.573,1.362-4.936,0c-1.363-1.363-1.363-3.573,0-4.937 l20.278-20.278L36.226,41.162c-1.363-1.363-1.363-3.573,0-4.936c1.363-1.363,3.573-1.363,4.936,0L61.44,56.504L81.719,36.226 L81.719,36.226z" />
+                    </g>
+                  </svg>
                 </div>
 
               </div>
@@ -348,7 +358,7 @@ export default {
     VueCtkDateTimePicker,
   },
   methods: {
-    resetCarPick(){
+    resetCarPick() {
       this.selectedVehicule = {}
       this.selectedTrailer = {}
       this.selectedTrailerIndex = -1
@@ -356,31 +366,31 @@ export default {
       this.selectedTrailerOption = -1
       this.withTrailer = null
     },
-//     adjustDateRange(fromDate, toDate) {
-//   // Parse the input dates in "YYYY-MM-DD" format
-//   const fromDateObj = new Date(fromDate);
-//   const toDateObj = new Date(toDate);
+    //     adjustDateRange(fromDate, toDate) {
+    //   // Parse the input dates in "YYYY-MM-DD" format
+    //   const fromDateObj = new Date(fromDate);
+    //   const toDateObj = new Date(toDate);
 
-//   // Calculate the adjusted dates
-//   const adjustedFromDate = new Date(fromDateObj);
-//   adjustedFromDate.setDate(fromDateObj.getDate() - 3);
+    //   // Calculate the adjusted dates
+    //   const adjustedFromDate = new Date(fromDateObj);
+    //   adjustedFromDate.setDate(fromDateObj.getDate() - 3);
 
-//   const adjustedToDate = new Date(toDateObj);
-//   adjustedToDate.setDate(toDateObj.getDate() + 3);
+    //   const adjustedToDate = new Date(toDateObj);
+    //   adjustedToDate.setDate(toDateObj.getDate() + 3);
 
-//   // Format the results in "YYYY-MM-DD" format
-//   const formatDate = date => {
-//     const year = date.getFullYear();
-//     const month = String(date.getMonth() + 1).padStart(2, '0');
-//     const day = String(date.getDate()).padStart(2, '0');
-//     return `${year}-${month}-${day}`;
-//   };
+    //   // Format the results in "YYYY-MM-DD" format
+    //   const formatDate = date => {
+    //     const year = date.getFullYear();
+    //     const month = String(date.getMonth() + 1).padStart(2, '0');
+    //     const day = String(date.getDate()).padStart(2, '0');
+    //     return `${year}-${month}-${day}`;
+    //   };
 
-//   const adjustedFromDateString = formatDate(adjustedFromDate);
-//   const adjustedToDateString = formatDate(adjustedToDate);
+    //   const adjustedFromDateString = formatDate(adjustedFromDate);
+    //   const adjustedToDateString = formatDate(adjustedToDate);
 
-//   return [adjustedFromDateString, adjustedToDateString];
-// },
+    //   return [adjustedFromDateString, adjustedToDateString];
+    // },
     getDatesOneWay(inputDate) {
       // Parse the input date in "YYYY-MM-DD" format
       const inputDateObj = new Date(inputDate);
@@ -409,25 +419,25 @@ export default {
       this.step_2 = !this.step_2
       this.pickingCar = !this.pickingCar
     },
-    async getTimeTable(fromDate, toDate){
+    async getTimeTable(fromDate, toDate) {
       if (this.tripType !== "roundTrip") {
-          [fromDate, toDate] = this.getDatesOneWay(fromDate)
-          const OUT = await this.useTimeTableAPI(fromDate, toDate)
-          console.log(OUT)
-          localStorage.setItem('trips', JSON.stringify([OUT]))
-          if (OUT) this.$router.push({ name: 'triplist' })
-        }
-        else {
-          const fromDates = this.getDatesOneWay(fromDate)
-          const toDates = this.getDatesOneWay(toDate)
-          const OUT = await this.useTimeTableAPI(fromDates[0], fromDates[1])
-          const RTN = await this.useTimeTableAPI(toDates[0], toDates[1])
-          localStorage.setItem('trips', JSON.stringify([OUT,RTN]))
-          if (OUT && RTN) this.$router.push({ name: 'triplist' })
-        }
+        [fromDate, toDate] = this.getDatesOneWay(fromDate)
+        const OUT = await this.useTimeTableAPI(fromDate, toDate, this.selectedRoute["$"].DepartPort, this.selectedRoute["$"].DestinationPort)
+        console.log(OUT)
+        localStorage.setItem('trips', JSON.stringify([OUT]))
+        if (OUT) this.$router.push({ name: 'triplist' })
+      }
+      else {
+        const fromDates = this.getDatesOneWay(fromDate)
+        const toDates = this.getDatesOneWay(toDate)
+        const OUT = await this.useTimeTableAPI(fromDates[0], fromDates[1], this.selectedRoute["$"].DepartPort, this.selectedRoute["$"].DestinationPort)
+        const RTN = await this.useTimeTableAPI(toDates[0], toDates[1], this.selectedRoute["$"].DestinationPort, this.selectedRoute["$"].DepartPort)
+        localStorage.setItem('trips', JSON.stringify([OUT, RTN]))
+        if (OUT && RTN) this.$router.push({ name: 'triplist' })
+      }
 
     },
-    async useTimeTableAPI(fromDate, toDate) {
+    async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
       const data = JSON.stringify({
         "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
         "User": "",
@@ -437,8 +447,8 @@ export default {
         "OriginatingSystem": "",
         "FromSailingDate": fromDate,
         "ToSailingDate": toDate,
-        "DepartPort": this.selectedRoute["$"].DepartPort,
-        "DestinationPort": this.selectedRoute["$"].DestinationPort
+        "DepartPort": fromPort,
+        "DestinationPort": toPort
       });
 
       const config = {
