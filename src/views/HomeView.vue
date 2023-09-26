@@ -1,4 +1,7 @@
 <template>
+  <div class="overlayLoader" v-if="displayLoader" id="overlay">
+        <jellyLoader />  
+      </div>
   <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
     <div class="container">
       <ol class="carousel-indicators">
@@ -291,10 +294,12 @@ import { languageStore } from '../LanguageStore';
 import CruiseForm from "@/components/CruiseForm.vue"
 import promoSlider from "@/components/homeSlider.vue"
 import customButton from "@/components/customButton.vue"
+import jellyLoader from "@/components/jellyLoader.vue"
 
 export default {
   data() {
-    return {
+    return {      
+      displayLoader: false,
       Slides: {},
       ferryCompanies: [{
         companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
@@ -316,7 +321,8 @@ export default {
   components: {
     CruiseForm,
     promoSlider,
-    customButton
+    customButton,
+    jellyLoader
   },
   methods: {
     async getTopDest() {
@@ -352,6 +358,17 @@ export default {
 
 
 <style name="companyCard">
+
+.overlayLoader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.562); /* Semi-transparent background */
+    z-index: 99999999999999999999; /* Ensure it appears above other content */
+}
+
 .row {
   margin-bottom: 30px
 }

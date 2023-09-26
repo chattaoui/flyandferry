@@ -64,7 +64,7 @@
                     </div>
                     <div class="travel-rate-final">
                         <div class="travel-rate"><sup>$</sup>56</div>
-                        <button class="select-rate">Select</button>
+                        <button class="select-rate" @click="getSailtings(trip)">Select</button>
                     </div>
                 </div>
             </div>
@@ -169,7 +169,7 @@
                     </div>
                     <div class="travel-rate-final">
                         <div class="travel-rate"><sup>$</sup>56</div>
-                        <button class="select-rate">Select</button>
+                        <button class="select-rate" @click="getSailtings(trip)">Select</button>
                     </div>
                 </div>
             </div>
@@ -182,6 +182,7 @@
 export default {
     data() {
         return {
+            tripOptions: {},
             trips: [],
             ferryCompanies: {
                 CTN: '<img src="img/CTNlogo.png" alt="">'
@@ -190,6 +191,109 @@ export default {
         }
     },
     methods: {
+    async getSailtings(trip){
+      function getCurrentFormattedDate() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+      }
+      let data = {}
+      if (this.trips.length == 1){
+
+        const departDateTimeOut = trip.DepartDateTime
+        const departPlaceOut = trip.DepartPort
+        const destinationPlaceOut = trip.DestinationPort
+
+        data = {
+            "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
+            "TimeStamp": `${getCurrentFormattedDate()}`,
+            "User": "",
+            "LanguagePrefCode": "en",
+            "Currency": "EUR",
+            "CountryCode": "TUN",
+            "OriginatingSystem": "",
+            "departDateTimeOut": `${departDateTimeOut}`,
+            "departPlaceOut": `${departPlaceOut}`,
+            "destinationPlaceOut": `${destinationPlaceOut}`,
+        }
+      } else {
+
+        const departDateTimeOut = trip.OUT.DepartDateTime
+        const departPlaceOut = trip.OUT.DepartPort
+        const destinationPlaceOut = trip.OUT.DestinationPort
+
+        const departDateTimeRtn = trip.RTN.DepartDateTime
+        const departPlaceRtn = trip.RTN.DepartPort
+        const destinationPlaceRtn = trip.RTN.DestinationPort
+
+        data = {
+        "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
+        "TimeStamp": `${getCurrentFormattedDate()}`,
+        "User": "",
+        "LanguagePrefCode": "en",
+        "Currency": "EUR",
+        "CountryCode": "TUN",
+        "OriginatingSystem": "",
+        "departDateTimeOut": `${departDateTimeOut}`,
+        "departPlaceOut": `${departPlaceOut}`,
+        "destinationPlaceOut": `${destinationPlaceOut}`,
+        "departDateTimeRtn": `${departDateTimeRtn}`,
+        "departPlaceRtn": `${departPlaceRtn}`,
+        "destinationPlaceRtn": `${destinationPlaceRtn}`,
+
+      }
+      }
+
+      data.passengers = this.tripOptions.passengers
+
+      if (this.tripOptions.passengers.length) data.vehicles = this.tripOptions.vehicles
+
+
+    //   "passengers": [
+    //       {
+    //         "Age": "35",
+    //         "Category": "Adult"
+    //       },
+    //       {
+    //         "Age": "6",
+    //         "Category": "Child"
+    //       }
+    //     ],
+    //     "vehicles": [
+    //       {
+    //         "OperatorCode": "A1",
+    //         "Height": "190",
+    //         "Length": "900"
+    //       }
+    //     ]
+
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://cms.4help.tn/api/getSailings_API/getSailings',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        maxRedirects: 0,
+        data : JSON.stringify(data)
+      };
+
+        try {
+          const response = await this.$axios.request(config);
+          console.log(response.data.GetSailingsResponse)
+        }
+        catch (error) {
+          console.log(error);
+        }
+      
+
+    },
         calculateHourDifference(fromDate, toDate) {
             const startDate = new Date(fromDate);
             const endDate = new Date(toDate);
@@ -197,7 +301,6 @@ export default {
             const timeDifference = endDate - startDate;
             const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60)); // Calculate hours
             const minutesDifference = Math.floor((timeDifference / (1000 * 60)) % 60); // Calculate remaining minutes
-            console.log(fromDate, toDate)
             return `${hoursDifference ? `${hoursDifference}h` : ``} ${minutesDifference ? ` ${minutesDifference}m` : ``}`
         },
         transformTripsData(inputData) {
@@ -208,7 +311,6 @@ export default {
                     outputData.push(data[Object.keys(data)[i]])
                 }
             })
-            console.log(outputData)
             return outputData;
         },
         getTripsMatrix(fromDates, toDates) {
@@ -264,6 +366,8 @@ export default {
         this.clickHoverInit()
     },
     beforeMount() {
+        this.tripOptions = JSON.parse(localStorage.getItem('tripOptions'))
+        console.log(localStorage.getItem('tripOptions'))
         this.trips = JSON.parse(localStorage.getItem('trips'))
         if (this.trips.length == 2) this.listedTrips = this.transformTripsData(this.getTripsMatrix(this.trips[0], this.trips[1]))
     }

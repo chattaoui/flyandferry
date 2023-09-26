@@ -21,7 +21,7 @@ $size: 70px;
 }
 
 .loader {
-    position: relative;
+    position: absolute;
     height:100vh;
     width: 100vw;
     margin: 0;  

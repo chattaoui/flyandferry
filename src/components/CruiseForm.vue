@@ -235,7 +235,7 @@
             <div style="
               width: 100%">
               <a class="formbold-btn" style="
-              width: 100%; margin-bottom: 10px;" @click="getTimeTable(departDate, arrivalDate)">
+              width: 100%; margin-bottom: 10px;" @click="$parent.displayLoader=true,getTimeTable(departDate, arrivalDate)">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -418,13 +418,34 @@ export default {
     vehiculeInsert() {
       this.step_2 = !this.step_2
       this.pickingCar = !this.pickingCar
+      console.log(this.selectedVehicule)
     },
     async getTimeTable(fromDate, toDate) {
       if (this.tripType !== "roundTrip") {
         [fromDate, toDate] = this.getDatesOneWay(fromDate)
         const OUT = await this.useTimeTableAPI(fromDate, toDate, this.selectedRoute["$"].DepartPort, this.selectedRoute["$"].DestinationPort)
-        console.log(OUT)
         localStorage.setItem('trips', JSON.stringify([OUT]))
+        var tripOptions = {passengers:[],vehicles: []}
+
+        for (let i = 1; i <= this.$refs.adult.value; i++) {
+          tripOptions.passengers.push({
+            "Age": "35",
+            "Category": "Adult"
+          })
+        }
+
+        for (let i = 1; i <= this.$refs.children.value; i++) {
+          tripOptions.passengers.push({
+            "Age": "6",
+            "Category": "Child"
+          })
+        }
+          if (Object.keys(this.selectedVehicule).length) tripOptions.vehicles.push({
+            "OperatorCode": this.selectedVehicule.OperatorCode,
+            "Height": this.selectedVehicule.MaxHeight,
+            "Length": this.selectedVehicule.MinHeight
+          })
+        localStorage.setItem('tripOptions', JSON.stringify(tripOptions))
         if (OUT) this.$router.push({ name: 'triplist' })
       }
       else {
@@ -433,9 +454,34 @@ export default {
         const OUT = await this.useTimeTableAPI(fromDates[0], fromDates[1], this.selectedRoute["$"].DepartPort, this.selectedRoute["$"].DestinationPort)
         const RTN = await this.useTimeTableAPI(toDates[0], toDates[1], this.selectedRoute["$"].DestinationPort, this.selectedRoute["$"].DepartPort)
         localStorage.setItem('trips', JSON.stringify([OUT, RTN]))
+        
+        var tripOptions = {passengers:[],vehicles: []}
+
+        for (let i = 1; i <= this.$refs.adult.value; i++) {
+          tripOptions.passengers.push({
+            "Age": "35",
+            "Category": "Adult"
+          })
+        }
+
+        for (let i = 1; i <= this.$refs.children.value; i++) {
+          tripOptions.passengers.push({
+            "Age": "6",
+            "Category": "Child"
+          })
+        }
+
+        if (Object.keys(this.selectedVehicule).length) tripOptions.vehicles.push({
+            "OperatorCode": this.selectedVehicule.OperatorCode,
+            "Height": this.selectedVehicule.MaxHeight,
+            "Length": this.selectedVehicule.MinHeight
+          })
+        localStorage.setItem('tripOptions', JSON.stringify(tripOptions))
+
         if (OUT && RTN) this.$router.push({ name: 'triplist' })
       }
-
+      this.$parent.displayLoader = false
+      
     },
     async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
       const data = JSON.stringify({
@@ -638,6 +684,7 @@ export default {
     },
   },
   async mounted() {
+    this.$parent.displayLoader = true
     let data = JSON.stringify({
       "AgentAccountNumber": "FGW0006",
       "TimeStamp": "2023-09-19T11:10:00",
@@ -660,6 +707,7 @@ export default {
     };
     this.Routes = await this.$axios.request(config).then(res => { return res.data.GetRoutesResponse.Routes[0].Route })
     await this.getVehiculesPassengers()
+    this.$parent.displayLoader = false
   },
 };
 </script>
@@ -674,6 +722,7 @@ input[type="number"]::-webkit-outer-spin-button {
 </style>
 
 <style scoped>
+
 .trailer-option {
   display: block;
   margin-bottom: 10px;
