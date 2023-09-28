@@ -437,8 +437,8 @@ body {
 }
 
 .trip-Vertical-line {
-    width: 2px;
-    height: 100px;
+    width: 0.2rem; 
+    height: 10.7vh; 
     background: #3a5a99;
 }
 
@@ -485,7 +485,7 @@ body {
 }
 
 .current-travel-class {
-    font-size: 12px;
+    font-size: 0.625em;
 }
 
 .calendars {
@@ -501,7 +501,7 @@ body {
     padding: 10px;
     text-align: center;
     border-radius: 8px;
-    font-size: 12px;
+    font-size: 0.625em;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -534,13 +534,13 @@ body {
 }
 
 .rate {
-    font-size: 25px;
+    font-size: 2em;
     font-weight: bold;
     padding: 5px;
     white-space: nowrap;
 
     sup {
-        font-size: 12px;
+        font-size: 1rem;
     }
 }
 
@@ -551,9 +551,8 @@ body {
     display: flex;
     // justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    border: #f08700;
-    border-radius: 30px;
+    padding: 1.0417% 2.6042%;
+    border-radius: 1.5625em;
     transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
 }
 
@@ -606,36 +605,36 @@ body {
     margin-right: 30px;
 
     .travel-time {
-        font-size: 14px;
+        font-size: 1.3rem;
         font-weight: bold;
         margin-bottom: 4px;
     }
 
     .travel-arrival,
     .travel-departure {
-        font-size: 14px;
+        font-size: 1.5rem;
         margin-bottom: 2px;
     }
 
     .travel-arrival-date,
     .travel-departure-date {
-        font-size: 12px;
+        font-size: 1.3rem;
     }
 }
 
 .travel-range {
-    width: calc(100% - 30px - 242px - 140px - 120px);
+    width: calc(100% - 1.5625% - 12.6042% - 7.2917% - 6.25%);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-right: 30px;
+    margin-right: 1.5625%;
 
     .range-stops,
     .range-time {
         color: $purple;
-        margin: 2px 0px;
-        font-size: 12px;
+        margin: 0.1042% 0;
+        font-size: 0.625em;
     }
 
     .range-stops {
@@ -650,12 +649,12 @@ body {
 
         .range-stop::before {
             content: "";
-            height: 7px;
-            width: 7px;
+            height: 0.3646vh;
+            width: 0.3646vh;
             background: $purple;
             border-radius: 50%;
             position: absolute;
-            top: -13.5px;
+            top: -0.6771vh;
         }
     }
 }
@@ -701,17 +700,17 @@ body {
 
     .travel-rate {
         color: $purple;
-        font-size: 25px;
+        font-size: 3rem;
         font-weight: bold;
 
         sup {
-            font-size: 10px;
+            font-size: 1.1rem;
         }
     }
 
     .select-rate {
         border: 0;
-        padding: 10px 50px;
+        padding: 1.1vh 2.604vw;
         border-radius: 7px;
         background: $orange;
         color: $white;
