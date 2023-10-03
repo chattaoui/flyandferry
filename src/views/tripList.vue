@@ -1,5 +1,8 @@
 <template>
-    <div class="trip-container" v-if="trips.length == 1">
+    <div class="overlayLoader" v-if="displayLoader" id="overlay">
+        <jellyLoader />
+    </div>
+    <div class="trip-container" v-if="trips.length == 1 && showList">
         <div class="grid">
             <div class="grid-one">
                 <div class="current-travel">
@@ -107,193 +110,258 @@
             <div class="grid-two rate-cards">
                 <div class="rate">Best time</div>
             </div>
-            <div class="grid-four">
-                <div v-for="(trip, index) in listedTrips" :key="`trip_item_${index}`" class="travel-card">
-                    <div class="travel-image">
-                        <div v-html="getFerryCompany('CTN')"></div>
-                    </div>
-                    <div class="trip-details-container">
-                        <div class="trip-details">
-                            <div class="travel-arrival-info">
-                                <p class="travel-time">{{ trip.OUT.DepartDateTime.split('T')[1] }}</p>
-                                <p class="travel-arrival">{{ `${trip.OUT.DepartPortName} (${trip.OUT.DepartPort})` }}</p>
-                                <p class="travel-arrival-date">{{ trip.OUT.DepartDateTime.split('T')[0] }}</p>
-                            </div>
-                            <div class="travel-range">
-                                <p class="range-time">{{ calculateHourDifference(trip.OUT.DepartDateTime,
-                                    trip.OUT.ArriveDateTime) }}</p>
-                                <div class="range">
-                                    <div class="range-pos range-start"></div>
-                                    <div class="range-pos range-end"></div>
-                                    <div class="ranger"></div>
+            <div class="grid-four fade-in-left" v-if="showList">
+                <div v-for="(trip, index) in listedTrips" :key="`trip_item_${index}`" style="display: flex;
+    flex-direction: column;">
+                    <div class="travel-card">
+                        <div class="travel-image">
+                            <div v-html="getFerryCompany('CTN')"></div>
+                        </div>
+                        <div class="trip-details-container">
+                            <div class="trip-details">
+                                <div class="travel-arrival-info">
+                                    <p class="travel-time">{{ trip.OUT.DepartDateTime.split('T')[1] }}</p>
+                                    <p class="travel-arrival">{{ `${trip.OUT.DepartPortName} (${trip.OUT.DepartPort})` }}
+                                    </p>
+                                    <p class="travel-arrival-date">{{ trip.OUT.DepartDateTime.split('T')[0] }}</p>
                                 </div>
-                                <p class="range-stops">
-                                    <span>Non-stop</span>
-                                </p>
+                                <div class="travel-range">
+                                    <p class="range-time">{{ calculateHourDifference(trip.OUT.DepartDateTime,
+                                        trip.OUT.ArriveDateTime) }}</p>
+                                    <div class="range">
+                                        <div class="range-pos range-start"></div>
+                                        <div class="range-pos range-end"></div>
+                                        <div class="ranger"></div>
+                                    </div>
+                                    <p class="range-stops">
+                                        <span>Non-stop</span>
+                                    </p>
+                                </div>
+                                <div class="travel-departure-info">
+                                    <p class="travel-time">{{ trip.OUT.ArriveDateTime.split('T')[1] }}</p>
+                                    <p class="travel-arrival">{{ `${trip.OUT.DestinationPortName}
+                                                                            (${trip.OUT.DestinationPort})`
+                                    }}</p>
+                                    <p class="travel-arrival-date">{{ trip.OUT.ArriveDateTime.split('T')[0] }}</p>
+                                </div>
                             </div>
-                            <div class="travel-departure-info">
-                                <p class="travel-time">{{ trip.OUT.ArriveDateTime.split('T')[1] }}</p>
-                                <p class="travel-arrival">{{ `${trip.OUT.DestinationPortName} (${trip.OUT.DestinationPort})`
-                                }}</p>
-                                <p class="travel-arrival-date">{{ trip.OUT.ArriveDateTime.split('T')[0] }}</p>
+
+                            <div class="trip-Vertical-line"></div>
+
+                            <div class="trip-details">
+                                <div class="travel-arrival-info">
+                                    <p class="travel-time">{{ trip.RTN.DepartDateTime.split('T')[1] }}</p>
+                                    <p class="travel-arrival">{{ `${trip.RTN.DepartPortName} (${trip.RTN.DepartPort})` }}
+                                    </p>
+                                    <p class="travel-arrival-date">{{ trip.RTN.DepartDateTime.split('T')[0] }}</p>
+                                </div>
+                                <div class="travel-range">
+                                    <p class="range-time">{{ calculateHourDifference(trip.RTN.DepartDateTime,
+                                        trip.RTN.ArriveDateTime) }}</p>
+                                    <div class="range">
+                                        <div class="range-pos range-start"></div>
+                                        <div class="range-pos range-end"></div>
+                                        <div class="ranger"></div>
+                                    </div>
+                                    <p class="range-stops">
+                                        <span>Non-stop</span>
+                                    </p>
+                                </div>
+                                <div class="travel-departure-info">
+                                    <p class="travel-time">{{ trip.RTN.ArriveDateTime.split('T')[1] }}</p>
+                                    <p class="travel-arrival">{{ `${trip.RTN.DestinationPortName}
+                                                                            (${trip.RTN.DestinationPort})`
+                                    }}</p>
+                                    <p class="travel-arrival-date">{{ trip.RTN.ArriveDateTime.split('T')[0] }}</p>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="trip-Vertical-line"></div>
-
-                        <div class="trip-details">
-                            <div class="travel-arrival-info">
-                                <p class="travel-time">{{ trip.RTN.DepartDateTime.split('T')[1] }}</p>
-                                <p class="travel-arrival">{{ `${trip.RTN.DepartPortName} (${trip.RTN.DepartPort})` }}</p>
-                                <p class="travel-arrival-date">{{ trip.RTN.DepartDateTime.split('T')[0] }}</p>
-                            </div>
-                            <div class="travel-range">
-                                <p class="range-time">{{ calculateHourDifference(trip.RTN.DepartDateTime,
-                                    trip.RTN.ArriveDateTime) }}</p>
-                                <div class="range">
-                                    <div class="range-pos range-start"></div>
-                                    <div class="range-pos range-end"></div>
-                                    <div class="ranger"></div>
-                                </div>
-                                <p class="range-stops">
-                                    <span>Non-stop</span>
-                                </p>
-                            </div>
-                            <div class="travel-departure-info">
-                                <p class="travel-time">{{ trip.RTN.ArriveDateTime.split('T')[1] }}</p>
-                                <p class="travel-arrival">{{ `${trip.RTN.DestinationPortName} (${trip.RTN.DestinationPort})`
-                                }}</p>
-                                <p class="travel-arrival-date">{{ trip.RTN.ArriveDateTime.split('T')[0] }}</p>
-                            </div>
+                        <div class="travel-rate-final">
+                            <div class="travel-rate"><sup>$</sup>56</div>
+                            <button class="select-rate" @click="getSailtings(trip)">Select</button>
                         </div>
-                    </div>
-                    <div class="travel-rate-final">
-                        <div class="travel-rate"><sup>$</sup>56</div>
-                        <button class="select-rate" @click="getSailtings(trip)">Select</button>
                     </div>
                 </div>
+            </div>
+            <div class="grid-four" v-else>
+
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import jellyLoader from "@/components/jellyLoader.vue"
 
 export default {
     data() {
         return {
+            displayLoader: false,
+            showList: true,
+            Sailings: {},
             tripOptions: {},
             trips: [],
             ferryCompanies: {
-                CTN: '<img src="img/CTNlogo.png" alt="">'
+                CTN: '<img src="img/CTNlogo.png" class="company-image" alt="">'
             },
             listedTrips: []
         }
     },
-    methods: {
-    async getSailtings(trip){
-      function getCurrentFormattedDate() {
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        const hours = String(currentDate.getHours()).padStart(2, '0');
-        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-      }
-      let data = {}
-      if (this.trips.length == 1){
-
-        const departDateTimeOut = trip.DepartDateTime
-        const departPlaceOut = trip.DepartPort
-        const destinationPlaceOut = trip.DestinationPort
-
-        data = {
-            "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
-            "TimeStamp": `${getCurrentFormattedDate()}`,
-            "User": "",
-            "LanguagePrefCode": "en",
-            "Currency": "EUR",
-            "CountryCode": "TUN",
-            "OriginatingSystem": "",
-            "departDateTimeOut": `${departDateTimeOut}`,
-            "departPlaceOut": `${departPlaceOut}`,
-            "destinationPlaceOut": `${destinationPlaceOut}`,
-        }
-      } else {
-
-        const departDateTimeOut = trip.OUT.DepartDateTime
-        const departPlaceOut = trip.OUT.DepartPort
-        const destinationPlaceOut = trip.OUT.DestinationPort
-
-        const departDateTimeRtn = trip.RTN.DepartDateTime
-        const departPlaceRtn = trip.RTN.DepartPort
-        const destinationPlaceRtn = trip.RTN.DestinationPort
-
-        data = {
-        "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
-        "TimeStamp": `${getCurrentFormattedDate()}`,
-        "User": "",
-        "LanguagePrefCode": "en",
-        "Currency": "EUR",
-        "CountryCode": "TUN",
-        "OriginatingSystem": "",
-        "departDateTimeOut": `${departDateTimeOut}`,
-        "departPlaceOut": `${departPlaceOut}`,
-        "destinationPlaceOut": `${destinationPlaceOut}`,
-        "departDateTimeRtn": `${departDateTimeRtn}`,
-        "departPlaceRtn": `${departPlaceRtn}`,
-        "destinationPlaceRtn": `${destinationPlaceRtn}`,
-
-      }
-      }
-
-      data.passengers = this.tripOptions.passengers
-
-      if (this.tripOptions.passengers.length) data.vehicles = this.tripOptions.vehicles
-
-
-    //   "passengers": [
-    //       {
-    //         "Age": "35",
-    //         "Category": "Adult"
-    //       },
-    //       {
-    //         "Age": "6",
-    //         "Category": "Child"
-    //       }
-    //     ],
-    //     "vehicles": [
-    //       {
-    //         "OperatorCode": "A1",
-    //         "Height": "190",
-    //         "Length": "900"
-    //       }
-    //     ]
-
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: 'https://cms.4help.tn/api/getSailings_API/getSailings',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        maxRedirects: 0,
-        data : JSON.stringify(data)
-      };
-
-        try {
-          const response = await this.$axios.request(config);
-          console.log(response.data.GetSailingsResponse)
-        }
-        catch (error) {
-          console.log(error);
-        }
-      
-
+    components: {
+        jellyLoader,
     },
+    methods: {
+        addFadeOut() {
+            var elements = document.getElementsByClassName('fade-in-left');
+
+            // Loop through the elements and add a new class
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].classList.replace('fade-in-left', 'fade-out-left');
+            }
+        },
+        async getSailtings(trip) {
+            this.displayLoader = true
+            this.addFadeOut()
+            function getCurrentFormattedDate() {
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const day = String(currentDate.getDate()).padStart(2, '0');
+                const hours = String(currentDate.getHours()).padStart(2, '0');
+                const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+                const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+                return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+            }
+            let data = {}
+            if (this.trips.length == 1) {
+
+                const departDateTimeOut = trip.DepartDateTime
+                const departPlaceOut = trip.DepartPort
+                const destinationPlaceOut = trip.DestinationPort
+
+                data = {
+                    "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
+                    "TimeStamp": `${getCurrentFormattedDate()}`,
+                    "User": "",
+                    "LanguagePrefCode": "en",
+                    "Currency": "EUR",
+                    "CountryCode": "TUN",
+                    "OriginatingSystem": "",
+                    "departDateTimeOut": `${departDateTimeOut}`,
+                    "departPlaceOut": `${departPlaceOut}`,
+                    "destinationPlaceOut": `${destinationPlaceOut}`,
+                }
+            } else {
+
+                const departDateTimeOut = trip.OUT.DepartDateTime
+                const departPlaceOut = trip.OUT.DepartPort
+                const destinationPlaceOut = trip.OUT.DestinationPort
+
+                const departDateTimeRtn = trip.RTN.DepartDateTime
+                const departPlaceRtn = trip.RTN.DepartPort
+                const destinationPlaceRtn = trip.RTN.DestinationPort
+
+                data = {
+                    "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
+                    "User": "",
+                    "LanguagePrefCode": "en",
+                    "Currency": "EUR",
+                    "CountryCode": "TUN",
+                    "OriginatingSystem": "",
+                    "departDateTimeOut": `${departDateTimeOut}`,
+                    "departPlaceOut": `${departPlaceOut}`,
+                    "destinationPlaceOut": `${destinationPlaceOut}`,
+                    "departDateTimeRtn": `${departDateTimeRtn}`,
+                    "departPlaceRtn": `${departPlaceRtn}`,
+                    "destinationPlaceRtn": `${destinationPlaceRtn}`,
+
+                }
+            }
+
+            data.passengers = this.tripOptions.passengers
+
+            if (this.tripOptions.passengers.length) data.vehicles = this.tripOptions.vehicles
+
+            let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: 'https://cms.4help.tn/api/getSailings_API/getSailings',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                maxRedirects: 0,
+                data: JSON.stringify(data)
+            };
+
+            try {
+                const response = await this.$axios.request(config);
+                this.Sailings = response.data.GetSailingsResponse.FerryComponents.FerryComponent
+            }
+            catch (error) {
+                console.log(error);
+            }
+
+            this.Sailings.Sailings.Sailing.map((e) => {
+                console.log(e.Services.OnBoardAccommodationServices.OnBoardAccommodationService)
+            })
+            this.showList = false
+
+            this.getServices()
+
+            this.displayLoader = false
+        },
+        async getServices() {
+            let data = JSON.stringify({
+                "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
+                "User": "",
+                "LanguagePrefCode": "en",
+                "Currency": "EUR",
+                "CountryCode": "TUN",
+                "OriginatingSystem": "",
+                "passengers": [
+                    {
+                        "Age": "35",
+                        "Category": "Adult"
+                    },
+                    {
+                        "Age": "6",
+                        "Category": "Child"
+                    }
+                ],
+                "vehicles": [
+                    {
+                        "OperatorCode": "A1",
+                        "Height": "190",
+                        "Length": "900"
+                    }
+                ],
+                "sailings": [
+                    {
+                        "id": "OUT",
+                        "DepartDateTime": "2023-09-27T10:00",
+                        "DepartPort": "ITGOA",
+                        "DestinationPort": "TNTUN",
+                        "FareType": "FGWTB",
+                        "AccommodationCode": "A4E",
+                        "AccommodationQuantity": "1"
+                    }
+                ]
+            });
+
+            let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: 'https://cms.4help.tn/api/getServices_API/getServicesAPI',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                maxRedirects: 0,
+                data: data
+            };
+            const response = await this.$axios.request(config)
+            console.log(">>>>>>SERVICES<<<<<<<",response.data)
+        },
         calculateHourDifference(fromDate, toDate) {
             const startDate = new Date(fromDate);
             const endDate = new Date(toDate);
@@ -352,18 +420,18 @@ export default {
         getFerryCompany(company) {
             return this.ferryCompanies[company]
         },
-        clickHoverInit() {
-            let rate_cards = document.querySelectorAll(".rate-cards");
-            rate_cards.forEach((rate_card) => {
-                rate_card.addEventListener("click", () => {
-                    rate_cards.forEach((rate_card) => rate_card.classList.remove("active"));
-                    rate_card.classList.add("active");
-                });
-            });
-        }
+        // clickHoverInit() {
+        //     let rate_cards = document.querySelectorAll(".rate-cards");
+        //     rate_cards.forEach((rate_card) => {
+        //         rate_card.addEventListener("click", () => {
+        //             rate_cards.forEach((rate_card) => rate_card.classList.remove("active"));
+        //             rate_card.classList.add("active");
+        //         });
+        //     });
+        // }
     },
     async mounted() {
-        this.clickHoverInit()
+        //this.clickHoverInit()
     },
     beforeMount() {
         this.tripOptions = JSON.parse(localStorage.getItem('tripOptions'))
@@ -381,6 +449,45 @@ export default {
 
 
 </script>
+
+<style>
+.company-image {
+    max-width: 60%;
+    max-height: 60%
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        margin-left: -100%;
+    }
+
+    to {
+        opacity: 1;
+        margin-left: 0;
+    }
+}
+
+@keyframes fadeOutLeft {
+    from {
+        opacity: 1;
+        margin-left: 0;
+    }
+
+    to {
+        opacity: 0;
+        margin-left: -100%;
+    }
+}
+
+.fade-out-left {
+    animation: fadeOutLeft 0.7s ease forwards;
+}
+
+.fade-in-left {
+    animation: fadeInLeft 0.7s ease forwards;
+}
+</style>
 
 <style lang="scss" scoped>
 $background: rgb(53, 90, 138);
@@ -413,6 +520,18 @@ body {
 /*--------------------------------------*/
 
 
+.overlayLoader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.562);
+    /* Semi-transparent background */
+    z-index: 99999999999999999999;
+    /* Ensure it appears above other content */
+}
+
 .trip-details-container {
     display: flex;
     height: 100%;
@@ -430,15 +549,16 @@ body {
 }
 
 .trip-container {
-    width: 100%;
+    width: 100vw;
     padding: 12.5rem;
     background: $grey;
+    min-height: 100%;
     height: 100%;
 }
 
 .trip-Vertical-line {
-    width: 0.2rem; 
-    height: 10.7vh; 
+    width: 0.2rem;
+    height: 10.7vh;
     background: #3a5a99;
 }
 
@@ -470,6 +590,7 @@ body {
     overflow-y: auto;
     scrollbar-width: none;
     border-radius: 0;
+    min-height: 50vh;
 
     &::-webkit-scrollbar {
         width: 0px;
@@ -584,11 +705,11 @@ body {
 }
 
 .travel-card+.travel-card {
-    margin: 20px 0px;
+    margin: 1.5rem 0px;
 }
 
 .travel-card:last-child {
-    margin-bottom: 0;
+    margin-bottom: 2rem;
 }
 
 .travel-image {
@@ -634,7 +755,7 @@ body {
     .range-time {
         color: $purple;
         margin: 0.1042% 0;
-        font-size: 0.625em;
+        font-size: 0.825em;
     }
 
     .range-stops {
@@ -718,4 +839,5 @@ body {
         cursor: pointer;
         outline: none;
     }
-}</style>
+}
+</style>

@@ -17,8 +17,7 @@
   </div>
   <CruiseForm class="CruiseForm" style="z-index:997; top:10vh; left: 6vw" />
   <div>
-    <div class="content-lg container">
-      <!-- Masonry Grid -->
+    <!-- <div class="content-lg container">
       <div class="masonry-grid row">
         <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-3 sm-margin-b-30">
           <div class="margin-b-60">
@@ -51,8 +50,7 @@
             data-wow-duration=".3" data-wow-delay=".4s">
         </div>
       </div>
-      <!-- End Masonry Grid -->
-    </div>
+    </div> -->
     <div>
       <div class="content-lg container">
         <!-- Masonry Grid -->

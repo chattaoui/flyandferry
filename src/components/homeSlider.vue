@@ -59,13 +59,10 @@ import { defineComponent } from 'vue'
   
   <style scoped>
   .carousel__slide {
-    padding: 20px;
+    padding: 0.3125vw;
     height: 43vh;
   }
   
-  .carousel__viewport {
-    perspective: 2000px;
-  }
   
   .carousel__track {
     transform-style: preserve-3d;
@@ -77,26 +74,19 @@ import { defineComponent } from 'vue'
   
   .carousel__slide {
     opacity: 0.9;
-    transform: rotateY(-20deg) scale(0.9);
   }
   
-  .carousel__slide--active ~ .carousel__slide {
-    transform: rotateY(20deg) scale(0.9);
-  }
   
   .carousel__slide--prev {
     opacity: 1;
-    transform: rotateY(-10deg) scale(0.95);
   }
   
   .carousel__slide--next {
     opacity: 1;
-    transform: rotateY(10deg) scale(0.95);
   }
   
   .carousel__slide--active {
     opacity: 1;
-    transform: rotateY(0) scale(1.1);
   }
 
   .carousel__item {
@@ -119,7 +109,6 @@ import { defineComponent } from 'vue'
     height: 100%;
     overflow: hidden;
     min-height: 30vh;
-    min-width: 24vw;
 }
 
 .custom-promotion-card__image {

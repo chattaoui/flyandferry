@@ -308,12 +308,15 @@
       </form>
     </div>
   </div>
+  <MapView :place="Object.keys(selectedRoute).length !== 0? `${selectedRoute['$'].DepartPortName.toString()}` : null " :destination="Object.keys(selectedRoute).length !== 0 ? `${selectedRoute['$'].DestinationPortName.toString()}` : null " />
+  <!-- <MapView :place="`venezia`" :destination="`zarzis`" /> -->
 </template>
 
 <script>
 import { languageStore } from "../LanguageStore";
 import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
 import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
+import MapView from '@/components/mapRoute.vue';
 
 export default {
   data() {
@@ -356,6 +359,7 @@ export default {
   },
   components: {
     VueCtkDateTimePicker,
+    MapView
   },
   methods: {
     resetCarPick() {
@@ -401,7 +405,7 @@ export default {
 
       // Calculate the date 3 days after
       const afterDate = new Date(inputDateObj);
-      afterDate.setDate(inputDateObj.getDate() + 3);
+      afterDate.setDate(inputDateObj.getDate() + 7);
 
       // Format the results in "YYYY-MM-DD" format
       const formatDate = date => {
@@ -474,7 +478,7 @@ export default {
         if (Object.keys(this.selectedVehicule).length) tripOptions.vehicles.push({
             "OperatorCode": this.selectedVehicule.OperatorCode,
             "Height": this.selectedVehicule.MaxHeight,
-            "Length": this.selectedVehicule.MinHeight
+            "Length": this.selectedVehicule.MaxLength
           })
         localStorage.setItem('tripOptions', JSON.stringify(tripOptions))
 
@@ -617,6 +621,7 @@ export default {
     },
     handleRouteClick(route) {
       this.selectedRoute = route
+      console.log("select Route >>>>>", this.selectedRoute)
       this.searchInp = `${route["$"]["DepartPortName"]} - ${route["$"]["DestinationPortName"]}`
       this.step_1 = false
       this.step_2 = true

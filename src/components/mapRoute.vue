@@ -1,0 +1,123 @@
+<template>
+    <div id="map"></div>
+  </template>
+  
+  <script>
+  import { ref, onMounted, watch } from 'vue';
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+  
+  export default {
+    name: 'MapView',
+    props: {
+      place: {
+        type: String,
+        default: 'La Goulette, Tunisia', // Default value is La Goulette
+      },
+      destination: {
+        type: String,
+        default: '', // Default value is an empty string
+      },
+    },
+    setup(props) {
+      const map = ref(null);
+      const mapInstance = ref(null);
+
+      const getCoordinates = async (location) => {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`);
+          const data = await response.json();
+          if (data && data.length > 0) {
+            return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+          }
+        } catch (error) {
+          console.error('Error fetching coordinates:', error);
+        }
+      };
+  
+      onMounted(async () => {
+        let centerCoordinates
+         
+        if (!props.destination && !props.place) {
+          // If fetching coordinates for the default place fails, use fallback coordinates for La Goulette
+          centerCoordinates = [36.818970, 10.304107];
+          props.place = "Tunis";
+        } else {
+          centerCoordinates = await getCoordinates(props.place);
+          L.marker(centerCoordinates).addTo(mapInstance.value).bindPopup(props.place);
+        }
+        
+        console.log(centerCoordinates)
+        mapInstance.value = L.map('map').setView(centerCoordinates, 5);
+  
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance.value);
+  
+        if (props.destination) {
+          const placeCoordinates = await getCoordinates(props.place);
+          const destinationCoordinates = await getCoordinates(props.destination);
+  
+          if (placeCoordinates && destinationCoordinates) {
+            const routeCoordinates = [placeCoordinates, destinationCoordinates];
+            const route = L.polyline(routeCoordinates, { color: 'blue', dashArray: '1, 10' }).addTo(mapInstance.value);
+  
+            // Automatically fit the map to the bounds of the route
+            mapInstance.value.fitBounds(route.getBounds());
+
+            L.marker(placeCoordinates).addTo(mapInstance.value).bindPopup(props.place);
+
+            L.marker(destinationCoordinates).addTo(mapInstance.value).bindPopup(props.destination);
+
+          }
+        }
+      });
+  
+      // Watch for changes in props and update the map accordingly
+      watch(() => [props.place, props.destination], async ([newPlace, newDestination]) => {
+        console.log(">>>>>>>>>>>>>",newPlace, newDestination)
+
+        console.log(mapInstance.value)
+        if (!newPlace && !newDestination){
+          mapInstance.value.eachLayer(layer => {
+            if (layer instanceof L.Polyline || layer instanceof L.Marker) {
+              mapInstance.value.removeLayer(layer);
+            }
+          });
+          mapInstance.value.setView([36.818970, 10.304107], 5);
+        }
+        else if (!newDestination && mapInstance.value) {
+          // Center the map at the new place if no destination is provided
+          const centerCoordinates = await getCoordinates(newPlace);
+          if (centerCoordinates) {
+            mapInstance.value.setView(centerCoordinates, 5);
+            L.marker(centerCoordinates).addTo(mapInstance.value).bindPopup(centerCoordinates);
+
+          }
+        } else {
+          const placeCoordinates = await getCoordinates(newPlace);
+          const destinationCoordinates = await getCoordinates(newDestination);
+          if (newPlace && newDestination && mapInstance.value) {
+            const routeCoordinates = [placeCoordinates, destinationCoordinates];
+            const route = L.polyline(routeCoordinates, { color: 'blue', dashArray: '1, 10' }).addTo(mapInstance.value);
+            mapInstance.value.fitBounds(route.getBounds());
+            L.marker(placeCoordinates).addTo(mapInstance.value).bindPopup(newPlace);
+            L.marker(destinationCoordinates).addTo(mapInstance.value).bindPopup(newDestination);
+          }
+        }
+      });
+  
+      return { map };
+    },
+  };
+  </script>
+  
+  <style>
+  #map {
+    height: 500px;
+    width: 50%;
+    margin-left: 600px;
+  }
+  .leaflet-control-attribution {
+    display: none;
+  }
+  </style>
+  
