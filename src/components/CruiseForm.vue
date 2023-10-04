@@ -396,6 +396,7 @@ export default {
     //   return [adjustedFromDateString, adjustedToDateString];
     // },
     getDatesOneWay(inputDate) {
+      // return (inputDate + 7 days, inputDate - 3 days)
       // Parse the input date in "YYYY-MM-DD" format
       const inputDateObj = new Date(inputDate);
 

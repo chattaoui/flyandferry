@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <CruiseForm class="CruiseForm" style="z-index:997; top:10vh; left: 6vw" />
+  <CruiseForm class="CruiseForm" style="z-index:997; top:10vh; left: 6vw; margin-bottom: 20px" />
   <div>
     <!-- <div class="content-lg container">
       <div class="masonry-grid row">

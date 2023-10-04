@@ -41,17 +41,18 @@
         if (!props.destination && !props.place) {
           // If fetching coordinates for the default place fails, use fallback coordinates for La Goulette
           centerCoordinates = [36.818970, 10.304107];
-          props.place = "Tunis";
+          const staticPlace = "Tunis";
         } else {
-          centerCoordinates = await getCoordinates(props.place);
-          L.marker(centerCoordinates).addTo(mapInstance.value).bindPopup(props.place);
+          centerCoordinates = await getCoordinates(staticPlace);
+          L.marker(centerCoordinates).addTo(mapInstance.value).bindPopup(staticPlace);
         }
         
         console.log(centerCoordinates)
         mapInstance.value = L.map('map').setView(centerCoordinates, 5);
-  
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance.value);
-  
+        //https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+        //https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.png
         if (props.destination) {
           const placeCoordinates = await getCoordinates(props.place);
           const destinationCoordinates = await getCoordinates(props.destination);
@@ -69,6 +70,11 @@
 
           }
         }
+        mapInstance.value.getContainer().style.height = `50vh`; // Set the height in vh
+        mapInstance.value.getContainer().style.width = `30vw`;   // Set the width in vw
+        mapInstance.value.invalidateSize();
+
+
       });
   
       // Watch for changes in props and update the map accordingly
@@ -111,11 +117,6 @@
   </script>
   
   <style>
-  #map {
-    height: 500px;
-    width: 50%;
-    margin-left: 600px;
-  }
   .leaflet-control-attribution {
     display: none;
   }
