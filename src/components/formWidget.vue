@@ -8,25 +8,32 @@
         </div>
 
         <div class="options-container flexContainer">
-            <button class="menuButton" @click="showMenu('trip')">Select Your Trip</button>
-            <button class="menuButton" @click="showMenu('date')">Select Date</button>
-            <button class="menuButton" @click="showMenu('passengers')">Passengers</button>
-            <button class="menuButton" @click="showMenu('vehicles')">Vehicles</button>
-            <searchButton />
+            <div style="white-space: nowrap;">
+                <button class="menuButton" @click="showMenu('trip')">Select Your Trip</button>
+                <button class="menuButton" @click="showMenu('date')">Select Date</button>
+                <button class="menuButton" @click="showMenu('passengers')">Passengers</button>
+                <button class="menuButton" @click="showMenu('vehicles')">Vehicles</button>
+            </div>
+            <searchButton @click="handleSearch()" style="margin-right: 3rem;" />
         </div>
 
         <div v-if="currentMenu === 'trip'" class="menu">
             <div class="menu-column">
-                <h3>Departure</h3>
-                <ul v-for="(port, index) in Object.keys(filteredRouteList)" :key="`DepartPort_`+index">
-                    <li @click="setPort(port)">{{ port }}</li>
+                <h2>Departure</h2>
+                <ul v-for="(port, index) in Object.keys(filteredRouteList)" :key="`DepartPort_` + index">
+                    <li @click="selectPortItem(index, port)" class="port-name"
+                        :class="{ 'selectedPort': selectedPortIndex === index }">{{ port }}</li>
                 </ul>
             </div>
             <div class="trip-Vertical-line"></div>
             <div class="menu-column">
-                <h3>Destination</h3>
-                <ul v-if="destPort" v-for="(portt, index) in filteredRouteList[destPort]" :key="`DestPort_`+index">
-                    <li>{{ portt }}</li>
+                <h2>Destination</h2>
+                <ul style="align-items: start;" v-if="depPort.length > 0"
+                    v-for="(country, indexx) in Object.keys(filteredRouteList[depPort])" :key="`depPort_` + indexx">
+                    <h3 style="text-align: start;">{{ countryCodes[country] }}</h3>
+                    <li @click="handleRouteClick(port, index, indexx)"
+                        v-for="(port, index) in filteredRouteList[depPort][country]" :key="port + index" class="port-name"
+                        :class="{ 'selectedPort': selectedPortIndex2 === `${index}${indexx}` }">{{ port }}</li>
                 </ul>
             </div>
             <div class="menu-column">
@@ -37,11 +44,78 @@
             </div>
         </div>
         <div v-if="currentMenu === 'date'" class="menu">
-            <VueCtkDateTimePicker style="width: 4px;" v-model="departDate" format='YYYY-MM-DD' :range="true"
-                :noShortcuts="true" :no-header="true" :inline="true" :only-date="true" :position="'bottom'" :no-button="true"
-                :min-date="getCurrentDate()" class="date-picker" :noButtonNow="true" :label="`Select departure date`"
-                :formatted="'YYYY-MM-DD'">
+            <VueCtkDateTimePicker style="width: 4px;" v-model="departDate" format='YYYY-MM-DD'
+                :range="tripType === `oneway` ? false : true" :noShortcuts="true" :no-header="true" :inline="true"
+                :only-date="true" :position="'bottom'" :no-button="true" :min-date="getCurrentDate()" class="date-picker"
+                :noButtonNow="true" :label="`Select departure date`" :formatted="'YYYY-MM-DD'">
             </VueCtkDateTimePicker>
+        </div>
+        <div v-if="currentMenu === 'passengers'" class="menu"
+            style="flex-direction: column; align-items: stretch; margin-top: 4vh; gap: 3rem;">
+            <div class="category-container" v-if="categoryExists('Adult')">
+                <svg class="categ-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    version="1.1" id="Layer_1" shape-rendering="geometricPrecision" image-rendering="optimizeQuality"
+                    text-rendering="geometricPrecision" x="0px" y="0px" viewBox="0 0 512 335.1" xml:space="preserve">
+                    <path
+                        d="M512,331.1c0,2.2-1.8,4-4,4H340.8c0.3-1.4,0.4-2.8,0.4-4.3v-14c0-12.2-3.1-24.1-8.5-35c-8-18.1-32.2-36.7-32.2-36.7  c-11.1-7.8-23.7-13.3-36.6-15.8c-4.1-0.8-8.2-1.6-12.2-2.5c-0.2-0.5-0.4-0.9-0.6-1.4c-0.2-0.5,0.1-1.2,0.6-1.3l0.3-0.1  c12-1,20.2-7.8,25.8-17.5l0-0.1c5.7-9.9,8.7-22.9,10.2-36.1c0.8-7,1.3-14.3,1.7-21.7c2.3-36.6,4.9-76,46.4-92.8  c6.3-2.5,12.9-4.1,19.7-4.8c14.3-1.4,29,1.6,41.6,8.8c12.7,7.2,23.3,18.8,29.7,34.5c2.9,7.2,4.9,15.3,5.8,24.3v0.2  c-0.1,22.1,3.4,53,13,75.7c6.9,16.3,16.9,28.4,30.9,29.5c0.6,0,1,0.6,1,1.1l-0.1,0.3c-2.6,7.3-14.6,13-29,15.7  c21.3,5.2,36.2,11.5,46.2,22.5C507.4,277.2,512,297.4,512,331.1z" />
+                    <path
+                        d="M324.1,316.8v14c0,2.4-1.9,4.3-4.3,4.3H4.3c-2.4,0-4.3-1.9-4.3-4.3v-12.6c0-41.2,33.3-65.6,67-70.1  c24.6-3.3,49.4-6.6,58.2-36.5l-0.5-0.4l-4.3-3.7c-11.1-9.6-20.4-17.6-22.2-37l-1,0c-2.3,0-4.5-0.5-6.5-1.7c-3.3-1.9-5.6-5.1-7.2-8.7  c-1.9-4.3-2.7-9.3-2.9-13.1v-0.1c-0.1-1.4-0.1-4,0-6.6v0c0.1-2.2,0.2-4.4,0.4-5.6c0-0.4,0.1-0.7,0.3-1c2.3-6.5,5.9-8.6,10.6-8.4  l-3.1-2.1c-1.7-21,3.2-57.3-19.5-64.2c43.1-53.2,92.7-82.2,130-34.8c44.9,2.4,62.9,73.7,27.1,103.8l-0.2,1.8  c1.4-0.4,2.8-0.7,4.2-0.8c2.7-0.2,5.2,0.2,7.3,1.4l0.4,0.2c2.2,1.3,3.8,3.2,4.7,6c0.9,2.8,0.9,6.3-0.2,10.7l-5.6,15.9  c-0.9,2.6-1.7,4.4-3.5,5.8l-0.3,0.2c-1.8,1.3-4,1.8-7.2,1.6l-1.6-0.2c-0.4,17.7-9,25.8-20.3,36.5c9,30,33.1,34.7,56.7,39.2  C292.7,252.2,324.1,282.5,324.1,316.8z" />
+                    <path class="st0" d="M332.7,281.9l-32.2-36.7C300.5,245.1,324.1,256.3,332.7,281.9z" />
+                </svg>
+                <span>Adults</span>
+                <div class="number-input">
+                    <button type="button" @click="$refs.adult.value > 1 ? $refs.adult.value-- : null">-</button>
+                    <input type="number" ref="adult" id="adult" name="adult" min="1" value="1">
+                    <button type="button" @click="$refs.adult.value++">+</button>
+                </div>
+            </div>
+
+
+            <div class="category-container" v-if="categoryExists('Child')">
+                <svg class="categ-icon" viewBox="0 0 74.88 56.41" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <path stroke="null" id="svg_1"
+                            d="m68.96737,33.04218l-3.04314,-2.76988l2.37282,13.32958a0.18389,0.22074 0 0 1 -0.18389,0.22074l-5.43969,0l0,8.35947a2.67535,3.21135 0 0 1 -4.56175,2.28568l0,0a2.67535,3.21135 0 0 1 -0.78896,-2.27856l0,-8.38083l-1.95164,0l0,8.37371a2.68129,3.21847 0 0 1 -5.33884,0l0,-8.37371l-5.51681,0a0.18389,0.22074 0 0 1 -0.14237,-0.25634l2.37282,-13.30822l-3.08467,2.8482c-1.4059,1.28881 -2.64569,1.4241 -3.55923,0.89718a2.37282,2.8482 0 0 1 -0.87201,-0.85446a2.63383,3.1615 0 0 1 -0.46863,-1.22473a2.80586,3.368 0 0 1 1.11523,-3.4036l7.24303,-6.63631c1.94571,-1.78725 5.46935,-2.58474 9.02858,-2.57762c3.79058,0 7.58709,0.93991 9.39043,2.58474l7.20744,6.55798a2.71095,3.25407 0 0 1 1.0915,3.3324a2.46773,2.96213 0 0 1 -1.33471,2.07207c-0.88981,0.5198 -2.12961,0.44147 -3.50584,-0.81174l-0.02966,0.01424zm-50.03091,-32.04226a6.97609,8.37371 0 0 1 7.01168,8.33099a7.01761,8.42355 0 0 1 -14.0293,0a6.98202,8.38083 0 0 1 7.01761,-8.33099zm16.57415,32.98929c-0.88388,0.49131 -2.12961,0.35603 -3.55923,-0.96127l-4.82869,-4.2723l0,13.03052a0.18389,0.22074 0 0 1 -0.18389,0.22074l-1.69063,0l0,10.18232a2.68129,3.21847 0 0 1 -5.33884,0l0,-10.18232l-1.93978,0l0,10.18232a2.68129,3.21847 0 0 1 -5.33884,0l0,-10.18232l-1.69657,0a0.18389,0.22074 0 0 1 -0.18389,-0.22074l0,-13.08036l-4.86428,4.33639c-1.34658,1.27457 -2.60417,1.36714 -3.48805,0.85446l0,0a2.43214,2.91941 0 0 1 -0.88388,-0.85446a2.62197,3.14726 0 0 1 -0.46863,-1.21049a2.71095,3.25407 0 0 1 1.08557,-3.34664l7.29049,-6.67903c1.84487,-1.80861 5.81341,-2.67731 9.70483,-2.66307s7.83624,0.95415 9.37264,2.75563l7.18964,6.55086a2.88891,3.46768 0 0 1 1.15082,3.46056a2.58637,3.10454 0 0 1 -0.45677,1.23185a2.37282,2.8482 0 0 1 -0.87201,0.85446l0,-0.00712zm20.81556,-32.98929a7.01168,8.41643 0 0 1 6.7922,6.24468c2.49739,0.9043 5.30325,3.46768 4.44904,5.96698c-1.15082,3.368 -3.55923,1.81573 -3.79651,-1.70892a10.04296,12.05501 0 0 0 -0.45677,-2.89804c0,0.2421 0,0.48419 0,0.71205a7.01168,8.41643 0 0 1 -14.02337,0c0,-0.12817 0,-0.24922 0,-0.37739a9.90652,11.89124 0 0 0 -0.43897,2.8482c-0.24321,3.52465 -2.64569,5.07692 -3.79651,1.71604c-0.84828,-2.48506 1.91012,-5.02707 4.38972,-5.95274a7.00575,8.40931 0 0 1 6.88118,-6.55086z" />
+                    </g>
+                </svg>
+                <span v-if="categoryExists('Baby')">children ( 3-14 years )</span>
+                <span v-else>children ( 0-14 years )</span>
+                <div class="number-input">
+                    <button type="button" @click="$refs.children.value > 0 ? $refs.children.value-- : null">-</button>
+                    <input type="number" ref="children" id="children" name="children" min="0" value="0">
+                    <button type="button" @click="$refs.children.value++">+</button>
+                </div>
+            </div>
+
+
+            <div class="category-container" v-if="categoryExists('Baby')">
+                <svg class="categ-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 1024 1024"
+                    style="enable-background:new 0 0 1024 1024;" xml:space="preserve">
+                    <path
+                        d="M972.8,565.8c0,56.3-46.1,102.4-102.4,102.4c-7.7,0-15.4,0-23-2.6c-51.2,135.7-181.8,233-335.4,233s-284.2-97.3-335.4-233  c-7.7,2.6-15.4,2.6-23,2.6c-56.3,0-102.4-46.1-102.4-102.4s46.1-102.4,102.4-102.4h7.7C197.1,302.1,340.5,181.8,512,181.8  c46.1,0,89.6,10.2,130.6,25.6h10.2c20.5,0,38.4-17.9,38.4-38.4s-17.9-38.4-38.4-38.4c-7.7,0-15.4,2.6-23,7.7  c-10.2,10.2-28.2,7.7-35.8-2.6c-10.2-10.2-7.7-28.2,2.6-35.8c15.4-12.8,35.8-20.5,56.3-20.5c48.6,0,89.6,41,89.6,89.6  c0,28.1-13.7,53.6-34.6,70.2c80.7,48.1,139.4,127.9,158,221.7h4.5C926.7,460.8,972.8,509.4,972.8,565.8z" />
+                </svg>
+                <span>Babies 0-2 years</span>
+                <div class="number-input">
+                    <button type="button" @click="$refs.baby.value > 0 ? $refs.baby.value-- : null">-</button>
+                    <input type="number" ref="baby" id="baby" name="baby" min="0" value="0">
+                    <button type="button" @click="$refs.baby.value++">+</button>
+                </div>
+            </div>
+        </div>
+        <div v-if="currentMenu === 'vehicles'" class="menu">
+            <!-- <div class="vehicle-container">
+                <label v-for="(vehicleModel, index) in carMODELS" :key="vehicleModel + `_item`">
+                    <input type="radio" v-model="selectedcarModel" :value="vehicleModel">{{ vehicleModel }}</label>
+            </div> -->
+            <div class="radio-section">
+                <div class="radio-list">
+                    <div class="radio-item" v-for="(vehicleModel, index) in carMODELS" :key="vehicleModel + `_item`">
+                        <input name="radio" type="radio" :id="vehicleModel + `_item`" v-model="selectedcarModel" :value="vehicleModel">
+                        <label :for="vehicleModel + `_item`">{{ vehicleModel }}</label>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- Other menus go here -->
     </div>
@@ -53,11 +127,16 @@ import MapView from '@/components/mapRoute.vue';
 import searchButton from '@/components/searchButton.vue'
 import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
 import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
+import carModels from '../../vehicle-models.json'
 
 export default {
     data() {
         return {
-            destPort: null,
+            carMODELS: {},
+            selectedcarModel: "",
+            selectedPortIndex2: "",
+            selectedPortIndex: -1,
+            depPort: "",
             filteredRouteList: {
             },
             departDate: "",
@@ -80,7 +159,11 @@ export default {
             VehiculesPassengers: {},
             selectedVehicule: {},
             selectedTrailer: {},
-
+            countryCodes: {
+                "TUN": "Tunisie",
+                "FRA": "France",
+                "ITA": "Italie"
+            }
         }
     },
     components: {
@@ -89,9 +172,21 @@ export default {
         VueCtkDateTimePicker
     },
     methods: {
-        setPort(port){
-            this.destPort = port
-            console.log(port)
+        handleSearch() {
+            console.log(carModels[this.selectedcarModel])
+        },
+        categoryExists(category) {
+            let exists = false
+            this.VehiculesPassengers.PassengerCategories.map(el => {
+                if (category === el["Category"]) exists = true
+            })
+            return exists
+        },
+        selectPortItem(index, port) {
+            this.depPort = port
+            this.selectedPortIndex = index
+            this.selectedPortIndex2 = ""
+            console.log(this.departDate)
         },
         getDatesOneWay(inputDate) {
             // return (inputDate + 7 days, inputDate - 3 days)
@@ -225,12 +320,11 @@ export default {
         preventDefault(event) {
             event.preventDefault()
         },
-        handleRouteClick(route) {
-            this.selectedRoute = route
-            console.log("select Route >>>>>", this.selectedRoute)
-            this.searchInp = `${route["$"]["DepartPortName"]} - ${route["$"]["DestinationPortName"]}`
-            this.step_1 = false
-            this.step_2 = true
+        handleRouteClick(port, index, indexx) {
+            this.selectedPortIndex2 = `${index}${indexx}`
+
+            //this.selectedRoute = 
+
         },
         filterRoutes() {
             this.searchedRoutes = this.Routes
@@ -300,10 +394,10 @@ export default {
         showMenu(menu) {
             this.currentMenu = menu;
         },
-        getDepartDest(){
+        getDepartDest() {
             this.Routes.map((route) => {
-                if(!Object.keys(this.filteredRouteList).includes(route["$"].DepartPortName)) this.filteredRouteList[route["$"].DepartPortName] = []
-                if(!Object.keys(this.filteredRouteList[route["$"].DepartPortName]).includes(route["$"].DestinationPortCountry)) this.filteredRouteList[route["$"].DepartPortName][route["$"].DestinationPortCountry] = []
+                if (!Object.keys(this.filteredRouteList).includes(route["$"].DepartPortName)) this.filteredRouteList[route["$"].DepartPortName] = []
+                if (!Object.keys(this.filteredRouteList[route["$"].DepartPortName]).includes(route["$"].DestinationPortCountry)) this.filteredRouteList[route["$"].DepartPortName][route["$"].DestinationPortCountry] = []
                 //this.filteredRouteList[route["$"].DepartPortName].push(route["$"].DestinationPortName)
                 this.filteredRouteList[route["$"].DepartPortName][route["$"].DestinationPortCountry].push(route["$"].DestinationPortName)
             })
@@ -321,6 +415,8 @@ export default {
         this.getDepartDest()
         console.log(this.filteredRouteList)
         this.$parent.displayLoader = false
+        this.carMODELS = Object.keys(carModels)
+        console.log(this.carMODELS)
     },
 }
 
@@ -328,16 +424,83 @@ export default {
 
 <style>
 .datetimepicker {
-    width: 70vh!important;
+    width: 70vh !important;
     margin-bottom: 4rem;
 }
+
 .date-time-picker * {
-  /* Change the border radius for the date picker */
-  border-radius: 2rem!important;
+    /* Change the border radius for the date picker */
+    border-radius: 2rem !important;
 }
 </style>
 
 <style scoped>
+.flexContainer {
+    display: flex;
+    align-items: center
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.number-input input[type="number"] {
+    width: 1.5vw;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.number-input button {
+    background-color: #333 !important;
+    color: white !important;
+    border: none !important;
+    padding: 0px 5px !important;
+    border-radius: 3px;
+}
+
+.number-input {
+    display: flex;
+    align-items: center;
+}
+
+.categ-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    fill: #333;
+    /* Adjust the fill color to match your design */
+}
+
+.category-container {
+    width: 30vw;
+    height: 6vh;
+    background-color: white;
+    padding: 3.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between
+}
+
+.port-name {
+    margin: 2rem 0;
+    cursor: pointer;
+    border-radius: .5rem;
+    text-align: start;
+    padding: 1rem;
+}
+
+.port-name:not(.selectedPort):hover {
+    background-color: #ffffff;
+}
+
 .travel-booking {
     font-family: Arial, sans-serif;
     display: flex;
@@ -351,13 +514,13 @@ export default {
 }
 
 .options-container {
-    margin: 20px;
+    margin: 1.2rem;
 }
 
 
 .radio-button {
     display: inline-block;
-    margin-right: 20px;
+    margin-right: 1.2rem;
     cursor: pointer;
     position: relative;
 }
@@ -399,6 +562,11 @@ export default {
     color: white;
 }
 
+.selectedPort {
+    background-color: #7d7d7d;
+    color: white;
+}
+
 
 .menu {
     display: flex;
@@ -417,7 +585,6 @@ export default {
     color: white;
     border: none;
     cursor: pointer;
-    margin-top: 10px;
 }
 
 .menu button:hover {
@@ -497,5 +664,79 @@ export default {
 .trip-Vertical-line {
     width: 0.06rem;
     background: #3a5a99;
+}
+</style>
+<style scoped>
+.radio-item input[type="radio"] {
+    display: none;
+}
+
+.radio-item label {
+    color: #ffffff;
+    display: block;
+    padding: 1rem 3rem;
+    background: #1d1d42;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    font-weight: 400;
+    min-width: 14vw;
+    white-space: nowrap;
+    position: relative;
+    transition: 0.4s ease-in-out;
+}
+
+.radio-item input[type="radio"]:checked+label {
+    background: #524eee;
+    border-color: #524eee;
+}
+
+.radio-item label:after,
+.radio-item label:before {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+}
+
+.radio-item label:after {
+    height: 19px;
+    width: 19px;
+    border: 2px solid #524eee;
+    left: 19px;
+    top: calc(50% - 12px);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.4s ease-in-out;
+}
+
+.radio-item label:before {
+    background: #524eee;
+    height: 20px;
+    width: 20px;
+    left: 21px;
+    top: calc(50% - 10px);
+    transform: scale(5);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.4s ease-in-out;
+}
+
+.radio-item:checked+label:after {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.radio-item:checked+label:before {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.radio-section {
+    display: grid;
+    max-height: 50vh;
+    overflow-y: scroll;
 }
 </style>

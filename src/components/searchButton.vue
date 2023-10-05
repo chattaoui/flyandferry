@@ -102,10 +102,14 @@ body {
 
     .btn__text {
       transform: translate(40px, -50%);
+      color: rgb(161, 181, 206);
     }
   }
 }
-
+.btn__text {
+      color: rgb(126 161 205);
+      font-size: 2rem;
+    }
 
 
 </style>

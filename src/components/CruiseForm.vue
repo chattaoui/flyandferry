@@ -919,6 +919,7 @@ h3 {
   text-align: center;
   border: 1px solid #ccc;
   border-radius: 3px;
+  appearance: none;
 }
 
 .number-input button {
