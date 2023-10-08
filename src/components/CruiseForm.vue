@@ -426,6 +426,7 @@ export default {
       console.log(this.selectedVehicule)
     },
     async getTimeTable(fromDate, toDate) {
+    console.log(fromDate, toDate)
       if (this.tripType !== "roundTrip") {
         [fromDate, toDate] = this.getDatesOneWay(fromDate)
         const OUT = await this.useTimeTableAPI(fromDate, toDate, this.selectedRoute["$"].DepartPort, this.selectedRoute["$"].DestinationPort)

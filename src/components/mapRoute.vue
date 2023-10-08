@@ -37,18 +37,17 @@
   
       onMounted(async () => {
         let centerCoordinates
-         
+        const staticPlace = "Tunis";
         if (!props.destination && !props.place) {
           // If fetching coordinates for the default place fails, use fallback coordinates for La Goulette
           centerCoordinates = [36.818970, 10.304107];
-          const staticPlace = "Tunis";
         } else {
           centerCoordinates = await getCoordinates(staticPlace);
           L.marker(centerCoordinates).addTo(mapInstance.value).bindPopup(staticPlace);
         }
         
         console.log(centerCoordinates)
-        mapInstance.value = L.map('map').setView(centerCoordinates, 5);
+        mapInstance.value = L.map('map').setView(centerCoordinates, 4);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance.value);
         //https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
@@ -79,18 +78,25 @@
   
       // Watch for changes in props and update the map accordingly
       watch(() => [props.place, props.destination], async ([newPlace, newDestination]) => {
-        console.log(">>>>>>>>>>>>>",newPlace, newDestination)
-
-        console.log(mapInstance.value)
-        if (!newPlace && !newDestination){
+        
           mapInstance.value.eachLayer(layer => {
             if (layer instanceof L.Polyline || layer instanceof L.Marker) {
               mapInstance.value.removeLayer(layer);
             }
           });
           mapInstance.value.setView([36.818970, 10.304107], 5);
-        }
-        else if (!newDestination && mapInstance.value) {
+        
+        //   if (!newPlace && !newDestination){
+        //   mapInstance.value.eachLayer(layer => {
+        //     if (layer instanceof L.Polyline || layer instanceof L.Marker) {
+        //       mapInstance.value.removeLayer(layer);
+        //     }
+        //   });
+        //   mapInstance.value.setView([36.818970, 10.304107], 5);
+        // }
+
+
+        if (!newDestination && mapInstance.value) {
           // Center the map at the new place if no destination is provided
           const centerCoordinates = await getCoordinates(newPlace);
           if (centerCoordinates) {

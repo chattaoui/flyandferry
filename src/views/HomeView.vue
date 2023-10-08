@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <CruiseForm class="CruiseForm" style="z-index:997; top:10vh; left: 6vw; margin-bottom: 20px" />
+  <forWidget class="forWidget" style="z-index:997; top:86vh; left: 18vw; margin-bottom: 5vh" />
   <div>
     <!-- <div class="content-lg container">
       <div class="masonry-grid row">
@@ -52,7 +52,7 @@
       </div>
     </div> -->
     <div>
-      <div class="content-lg container">
+      <div class="content-lg container" style="margin-top: 25vh;">
         <!-- Masonry Grid -->
         <div class="row">
           <div class="df-dom-promotions-head lozad" data-loaded="true">
@@ -289,7 +289,7 @@
 <script>
 
 import { languageStore } from '../LanguageStore';
-import CruiseForm from "@/components/CruiseForm.vue"
+import forWidget from "@/components/formWidget.vue"
 import promoSlider from "@/components/homeSlider.vue"
 import customButton from "@/components/customButton.vue"
 import jellyLoader from "@/components/jellyLoader.vue"
@@ -317,7 +317,7 @@ export default {
     }
   },
   components: {
-    CruiseForm,
+    forWidget,
     promoSlider,
     customButton,
     jellyLoader
