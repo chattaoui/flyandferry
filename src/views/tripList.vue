@@ -110,7 +110,7 @@
             <div class="grid-two rate-cards">
                 <div class="rate">Best time</div>
             </div>
-            <div class="grid-four fade-in-left" v-if="showList">
+            <div class="grid-four fade-in-left" v-if="showTripList">
                 <div v-for="(trip, index) in listedTrips" :key="`trip_item_${index}`" style="display: flex;
     flex-direction: column;">
                     <div class="travel-card">
@@ -184,7 +184,29 @@
                 </div>
             </div>
             <div class="grid-four" v-else>
+                <div v-if="Object.keys(services).length">
+                    <h2 style="color: #3a5a99;">On-Board Accommodation Services</h2>
+                    <div v-for="(service, index) in services.OnBoardAccommodationServices.OnBoardAccommodationService" :key="index" class="service-card">
+                    <h3>{{ service["@Description"] }}</h3>
+                    <label>Quantity: </label>
+                    <input type="number" min="0">
+                    <p>Available: {{ service["@QuantityAvailable"] }}</p>
+                    <p>Cost: ${{ parseFloat(service["@UnitCost"]).toFixed(2) }} per unit</p>
+                    <p>Total Cost: </p>
+                    </div>
 
+                    <!-- <h2 style="color: #3a5a99;">On-Board Other Services</h2>
+                    <div v-for="(service, index) in otherServices" :key="index" class="service-card">
+                    <h3>{{ service.Description }}</h3>
+                    <label>Quantity: </label>
+                    <input type="number" v-model="service.selectedQuantity" min="0">
+                    <p>Available: {{ service.QuantityAvailable }}</p>
+                    <p>Cost: ${{ parseFloat(service.UnitCost).toFixed(2) }} per unit</p>
+                    <p>Total Cost: ${{ calculateTotalCost(service) }}</p>
+                    </div>
+
+                    <h3>Total Price: ${{ totalCost }}</h3> -->
+                </div>
             </div>
         </div>
     </div>
@@ -196,6 +218,8 @@ import jellyLoader from "@/components/jellyLoader.vue"
 export default {
     data() {
         return {
+            services: {},
+            showTripList: true,
             displayLoader: false,
             showList: true,
             Sailings: {},
@@ -264,6 +288,7 @@ export default {
 
                 data = {
                     "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
+                    "TimeStamp": `${getCurrentFormattedDate()}`,
                     "User": "",
                     "LanguagePrefCode": "en",
                     "Currency": "EUR",
@@ -282,8 +307,9 @@ export default {
             data.passengers = this.tripOptions.passengers
 
             if (this.tripOptions.passengers.length) data.vehicles = this.tripOptions.vehicles
+            console.log(data.vehicles)
 
-            let config = {
+            let configg = {
                 method: 'post',
                 maxBodyLength: Infinity,
                 url: 'https://cms.4help.tn/api/getSailings_API/getSailings',
@@ -295,7 +321,10 @@ export default {
             };
 
             try {
-                const response = await this.$axios.request(config);
+                console.log(configg)
+                const response = await this.$axios.request(configg);
+
+                console.log(response)
                 this.Sailings = response.data.GetSailingsResponse.FerryComponents.FerryComponent
             }
             catch (error) {
@@ -305,7 +334,7 @@ export default {
             this.Sailings.Sailings.Sailing.map((e) => {
                 console.log(e.Services.OnBoardAccommodationServices.OnBoardAccommodationService)
             })
-            this.showList = false
+            this.showTripList = false
 
             this.getServices()
 
@@ -339,10 +368,10 @@ export default {
                 "sailings": [
                     {
                         "id": "OUT",
-                        "DepartDateTime": "2023-09-27T10:00",
-                        "DepartPort": "ITGOA",
-                        "DestinationPort": "TNTUN",
-                        "FareType": "FGWTB",
+                        "DepartDateTime": "2023-10-20T08:00",
+                        "DepartPort": "TNTUN",
+                        "DestinationPort": "ITGOA",
+                        "FareType": "FGW",
                         "AccommodationCode": "A4E",
                         "AccommodationQuantity": "1"
                     }
@@ -360,7 +389,8 @@ export default {
                 data: data
             };
             const response = await this.$axios.request(config)
-            console.log(">>>>>>SERVICES<<<<<<<",response.data)
+            console.log(">>>>>>SERVICES<<<<<<<", response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing.ServicesOptions)
+            this.services = response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing.ServicesOptions
         },
         calculateHourDifference(fromDate, toDate) {
             const startDate = new Date(fromDate);
@@ -451,6 +481,14 @@ export default {
 </script>
 
 <style>
+.service-card {
+  background-color: #174ea6;
+  color: white;
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 8px;
+}
+
 .company-image {
     max-width: 60%;
     max-height: 60%

@@ -71,7 +71,7 @@ body {
     width: 56px;
     height: 56px;
     border-radius: 100%;
-    background: #174ea63a;
+    background: #174ea688;
     display: flex;
     transition: 0.3s ease-in-out;
 
@@ -102,12 +102,12 @@ body {
 
     .btn__text {
       transform: translate(40px, -50%);
-      color: rgb(161, 181, 206);
+      color: #174ea688;
     }
   }
 }
 .btn__text {
-      color: rgb(126 161 205);
+      color: #174ea688;
       font-size: 2rem;
     }
 
