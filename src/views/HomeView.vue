@@ -289,7 +289,7 @@
 <script>
 
 import { languageStore } from '../LanguageStore';
-import CruiseForm from "@/components/CruiseForm.vue"
+import formWidget from "@/components/formWidget.vue"
 import promoSlider from "@/components/homeSlider.vue"
 import customButton from "@/components/customButton.vue"
 import jellyLoader from "@/components/jellyLoader.vue"
@@ -317,7 +317,7 @@ export default {
     }
   },
   components: {
-    CruiseForm,
+    formWidget,
     promoSlider,
     customButton,
     jellyLoader
