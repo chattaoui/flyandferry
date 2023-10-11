@@ -306,6 +306,7 @@ export default {
     methods: {
         test(){
             console.log(this.selectedQuantities)
+            console.log("test successfull")
         },
         calculateTotalCost(){
             let totalCost = 0
