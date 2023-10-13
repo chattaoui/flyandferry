@@ -1,7 +1,7 @@
 <template>
   <div class="overlayLoader" v-if="displayLoader" id="overlay">
-        <jellyLoader />  
-      </div>
+    <jellyLoader />
+  </div>
   <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
     <div class="container">
       <ol class="carousel-indicators">
@@ -296,22 +296,22 @@ import jellyLoader from "@/components/jellyLoader.vue"
 
 export default {
   data() {
-    return {      
+    return {
       displayLoader: false,
       Slides: {},
       ferryCompanies: [{
         companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
         companyName: "grandi navi veloci",
-        }, {
-          companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-          companyName: "grandi navi veloci",
-        }, {
-          companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-          companyName: "grandi navi veloci",
-        }, {
-          companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
-          companyName: "grandi navi veloci",
-        }
+      }, {
+        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
+        companyName: "grandi navi veloci",
+      }, {
+        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
+        companyName: "grandi navi veloci",
+      }, {
+        companyLogo: "https://images.directferries.com:443/768x0//operators/grandi_navi_veloci_l.png",
+        companyName: "grandi navi veloci",
+      }
       ],
       destinPrins: {},
     }
@@ -336,7 +336,7 @@ export default {
         .then((res) => { return res.data })
       this.Slides.map(e => {
         if (e.Slider_Image)
-        e.Slider_Image = `https://cms.4help.tn/${e.Slider_Image.replaceAll(" ", "%20")}`
+          e.Slider_Image = `https://cms.4help.tn/${e.Slider_Image.replaceAll(" ", "%20")}`
       })
     }
   },
@@ -347,25 +347,25 @@ export default {
       return languageStore.getLanguage()
     }
   },
-   mounted() {
-     this.getTopDest()
-     this.getSlides()
+  mounted() {
+    this.getTopDest()
+    this.getSlides()
   }
 }
 </script>
 
 
 <style name="companyCard">
-
-
 .overlayLoader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.562); /* Semi-transparent background */
-    z-index: 99999999999999999999; /* Ensure it appears above other content */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.562);
+  /* Semi-transparent background */
+  z-index: 99999999999999999999;
+  /* Ensure it appears above other content */
 }
 
 .row {
@@ -405,12 +405,11 @@ export default {
 </style>
 
 <style>
-
 .formWidget {
-  z-index:997; 
-  top:86vh; 
-  left: 50%; 
-  transform: translateX(-50%); 
+  z-index: 997;
+  top: 86vh;
+  left: 50%;
+  transform: translateX(-50%);
   margin-bottom: 5vh;
 }
 
@@ -639,4 +638,5 @@ export default {
   .main:hover .card_back {
     height: 22.25em;
   }
-}</style>
+}
+</style>

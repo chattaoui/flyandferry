@@ -12,19 +12,21 @@
 </script>
 
 <style lang="scss" scoped>
-$body-bg:        #fff;
-$jelly-color:    #000000;
+$body-bg: #fff;
+$jelly-color: #000000;
 $size: 70px;
 
-*, *::after, *::before {
+*,
+*::after,
+*::before {
     box-sizing: border-box;
 }
 
 .loader {
     position: absolute;
-    height:100vh;
+    height: 100vh;
     width: 100vw;
-    margin: 0;  
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,45 +53,54 @@ $size: 70px;
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(.6);
     }
+
     100% {
         transform: scale(1);
     }
 }
+
 @keyframes jelly2 {
     0% {
         transform: scale(1.4);
     }
+
     45% {
         transform: scale(1);
     }
+
     100% {
         transform: scale(1.4);
     }
 }
+
 @keyframes jelly3 {
     0% {
         transform: scale(1.8);
     }
+
     40% {
         transform: scale(1.5);
     }
+
     100% {
         transform: scale(1.8);
     }
 }
+
 @keyframes jelly4 {
     0% {
         transform: scale(2.2);
     }
+
     35% {
         transform: scale(1.9);
     }
+
     100% {
         transform: scale(2.2);
     }
-}
-
-</style>
+}</style>

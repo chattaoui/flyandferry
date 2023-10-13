@@ -1,8 +1,9 @@
 <template>
     <div class="travel-booking">
-        <svg style="position: absolute; top: 1.3rem; right: 2rem; cursor: pointer;" @click="currentMenu = null" xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="16px" height="10px"
-            viewBox="0 0 122.875 28.489" enable-background="new 0 0 122.875 28.489" xml:space="preserve">
+        <svg style="position: absolute; top: 1.3rem; right: 2rem; cursor: pointer;" @click="currentMenu = null"
+            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px"
+            y="0px" width="16px" height="10px" viewBox="0 0 122.875 28.489" enable-background="new 0 0 122.875 28.489"
+            xml:space="preserve">
             <g>
                 <path fill-rule="evenodd" clip-rule="evenodd"
                     d="M108.993,0c7.683-0.059,13.898,6.12,13.882,13.805 c-0.018,7.682-6.26,13.958-13.942,14.018c-31.683,0.222-63.368,0.444-95.051,0.666C6.2,28.549-0.016,22.369,0,14.685 C0.018,7.002,6.261,0.726,13.943,0.667C45.626,0.445,77.311,0.223,108.993,0L108.993,0z" />
@@ -19,20 +20,28 @@
 
         <div class="options-container flexContainer">
             <div style="white-space: nowrap">
-                <button class="menuButton" @click="showMenu('trip')">
+                <button class="menuButton" :class="{ 'background-focus': currentMenu === 'trip' }"
+                    @click="showMenu('trip', $event)">
                     Select Your Trip
                 </button>
-                <button class="menuButton" @click="showMenu('date')">
+                <button class="menuButton" :class="{ 'background-focus': currentMenu === 'date' }" @click="showMenu('date')">
                     Select Date
                 </button>
-                <button class="menuButton" @click="showMenu('passengers')">
+                <button class="menuButton" :class="{ 'background-focus': currentMenu === 'passengers' }"
+                    @click="showMenu('passengers')">
                     Passengers
                 </button>
-                <button class="menuButton" @click="showMenu('vehicles')">
+                <button class="menuButton" :class="{ 'background-focus': currentMenu === 'vehicles' }"
+                    @click="showMenu('vehicles')">
                     Vehicles
                 </button>
             </div>
-            <searchButton @click="handleSearch()" style="margin-right: 3rem" />
+            <!-- <searchButton @click="handleSearch()" style="margin-right: 3rem" /> -->
+            <button @click="handleSearch()"
+                style="display: inline-block; padding: 12px 24px; font-size: 1.5rem; font-weight: bold; color: #ffffff; background-color: #007bff; border: none; border-radius: 6px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); cursor: pointer; transition: background-color 0.3s ease;">
+                Search
+            </button>
+
         </div>
 
         <div v-if="currentMenu === 'trip'" class="menu">
@@ -646,7 +655,7 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: column;
     align-items: center;
     width: fit-content;
-    background-color: #a3a3a3de;
+    background-color: #7988cede;
     border-radius: 3rem;
     padding: 2rem;
     position: absolute;
@@ -728,6 +737,14 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: #45a049;
 }
 
+.background-focus {
+    /* box-shadow: 0 4px 4px 0 rgb(60 64 67 / 30%),
+        0 8px 12px 6px rgb(60 64 67 / 15%);
+    outline: none; */
+    background-color: #008080 !important;
+    color: white !important;
+}
+
 .menuButton {
     margin: 0px 20px;
     align-items: center;
@@ -769,11 +786,6 @@ input[type="number"]::-webkit-outer-spin-button {
     color: #174ea6;
 }
 
-.menuButton:active {
-    box-shadow: 0 4px 4px 0 rgb(60 64 67 / 30%),
-        0 8px 12px 6px rgb(60 64 67 / 15%);
-    outline: none;
-}
 
 .menuButton:focus {
     outline: none;

@@ -26,8 +26,8 @@ jobs:
       - name: Deploy to Plesk server
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.PLESK_HOST }}
-          username: ${{ secrets.PLESK_USERNAME }}
-          password: ${{ secrets.PLESK_PASSWORD }}
+          host: 4help.tn
+          username: a.chattaoui
+          password: 5Vq4*r60w
           source: "dist/"
-          target: "/var/www/vhosts/flyandferry.4help.tn/httpdocs"
+          target: "/var/www/vhosts/flyandferry.4help.tn/httpdocs/"
