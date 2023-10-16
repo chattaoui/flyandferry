@@ -17,7 +17,7 @@ export default {
 ol.stepper {
   --default-b: lightgrey!important;
   --default-c: black!important;
-  --active-b: #57b846!important;
+  --active-b: #7941ab!important;
   --active-c: white!important;
   --circle: 7.5em!important; /* size of circle */
   --b: 7px!important; /* line thickness */
@@ -29,7 +29,7 @@ ol.stepper {
     linear-gradient(var(--default-b) 0 0) no-repeat
     50% calc((var(--circle) - var(--b))/2)/100% var(--b)!important;
   counter-reset: step!important;
-  margin: 20px!important;
+  margin: 3rem 0!important;
   font-size: 1rem!important;
   font-weight: bold!important;
   counter-reset: step!important;
@@ -58,7 +58,9 @@ ol.stepper li::before {
   border-radius: 50%!important;
   font-family: monospace!important;
   z-index: 1!important;
+  
 }
+
 ol.stepper li.active ~ li::before{
   background: var(--default-b)!important;
   color: var(--default-c)!important;
@@ -73,29 +75,6 @@ ol.stepper li.active::after {
   background: var(--active-b)!important;
 }
 
-@media (max-width: 600px) {
-  ol.stepper {
-   display: grid!important;
-   gap: 20px!important;
-  background: 
-    linear-gradient(var(--default-b) 0 0) no-repeat
-    calc((var(--circle) - var(--b))/2) 50%/ var(--b) 100%!important;
-  }
-  ol.stepper li {
-    display: flex!important;
-  }
-  ol.stepper li.active::after {
-    content: ""!important;
-    position: absolute!important;
-    width: var(--b)!important;
-    bottom: 100%!important;
-    left: calc((var(--circle) - var(--b))/2)!important;
-    top: auto!important;
-    right: auto!important;
-    height: 100vw!important;
-    background: var(--active-b)!important;
-  }
-}
 
 
 </style>

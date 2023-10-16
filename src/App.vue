@@ -1,5 +1,5 @@
 <template>
-  <navbar  />
+  <navbar v-if="!this.$route.meta.hideNavbar" />
   <router-view/>
 </template>
 
