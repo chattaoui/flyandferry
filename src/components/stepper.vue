@@ -1,14 +1,17 @@
 <template>
 <ol class="stepper">
-   <li  :class="{ active: activeItem === '1' }"></li>
-   <li :class="{ active: activeItem === '2' }"></li>
-   <li :class="{ active: activeItem === '3' }"></li>
+   <li v-for="step in Steps" :key="`step_${step}`" :id="`step_${step}`" :class="{ active: activeItem == step }"></li>
 </ol>
 </template>
 
 <script>
 export default {
-  props: ['activeItem']
+  data(){
+    return {
+      Steps : 3,
+    }
+  },
+  props: ['activeItem'],
 }
 </script>
 
@@ -35,6 +38,7 @@ ol.stepper {
   counter-reset: step!important;
   overflow: hidden!important;
   gap: 1rem;
+  min-width: 100%;
 }
 ol.stepper li {
   display: grid!important;
@@ -43,6 +47,7 @@ ol.stepper li {
   font-family: sans-serif!important;
   position: relative!important;
   font-size: 1rem;
+  
 }
 ol.stepper li::before {
   content: counter(step) " "!important;
@@ -50,7 +55,8 @@ ol.stepper li::before {
   display: grid!important;
   place-content: center!important;
   aspect-ratio: 1!important;
-  height: var(--circle)!important;
+  min-height: 8rem;
+  min-width: 8rem;
   border: 5px solid #fff!important;
   box-sizing: border-box!important;
   background: var(--active-b)!important;
@@ -58,7 +64,7 @@ ol.stepper li::before {
   border-radius: 50%!important;
   font-family: monospace!important;
   z-index: 1!important;
-  
+  font-size: 2.3rem;
 }
 
 ol.stepper li.active ~ li::before{
