@@ -24,7 +24,8 @@
                     @click="showMenu('trip', $event)">
                     Select Your Trip
                 </button>
-                <button class="menuButton" :class="{ 'background-focus': currentMenu === 'date' }" @click="showMenu('date')">
+                <button class="menuButton" :class="{ 'background-focus': currentMenu === 'date' }"
+                    @click="showMenu('date')">
                     Select Date
                 </button>
                 <button class="menuButton" :class="{ 'background-focus': currentMenu === 'passengers' }"
@@ -149,26 +150,77 @@
             </div>
         </div>
         <div v-if="currentMenu === 'vehicles'" class="menu" style="flex-direction: column; gap: 3rem">
-            <div class="searchbar">
-                <div class="searchbar-wrapper">
-                    <div class="searchbar-left">
-                        <div class="search-icon-wrapper">
-                            <span class="search-icon searchbar-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path
-                                        d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
-                                    </path>
-                                </svg>
-                            </span>
+            <div v-if="!selectingTrailer">
+                <div class="searchbar">
+                    <div class="searchbar-wrapper">
+                        <div class="searchbar-left">
+                            <div class="search-icon-wrapper">
+                                <span class="search-icon searchbar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path
+                                            d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+                                        </path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="searchbar-center">
+                            <div class="searchbar-input-spacer"></div>
+
+                            <input type="text" v-model="searchedCar" class="searchbar-input" maxlength="2048" name="q"
+                                autocapitalize="off" autocomplete="off" title="Search" role="combobox"
+                                placeholder="Search your car brand" />
                         </div>
                     </div>
+                </div>
 
-                    <div class="searchbar-center">
-                        <div class="searchbar-input-spacer"></div>
-
-                        <input type="text" v-model="searchedCar" class="searchbar-input" maxlength="2048" name="q"
-                            autocapitalize="off" autocomplete="off" title="Search" role="combobox"
-                            placeholder="Search your car brand" />
+                <div style="display: flex;justify-content: flex-start; margin-top: 1em;">
+                    <p style="color: #ffffff;">besoin d'une remorque ?</p>
+                    <label class="custom-checkbox">
+                        <input v-model="TrailerIsSelected" @change="showTrailerOptions()" type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div>
+                    <div class="radio-section">
+                        <div class="radio-list">
+                            <div class="radio-item car-brands" :style="{ width: brandListWidth }"
+                                v-for="(vehicleBrand, index) in searchCar()" :key="vehicleBrand + `_item`">
+                                <input name="car-brand" type="radio" :id="vehicleBrand + `_item`" v-model="selectedcarBrand"
+                                    :value="vehicleBrand" />
+                                <label :for="vehicleBrand + `_item`">{{ vehicleBrand }}</label>
+                            </div>
+                        </div>
+                        <div v-if="selectedcarBrand !== ``" class="radio-list" style="transform: scale(0.8);">
+                            <div class="radio-item car-models" v-for="(vehicleModel, index) in getCarModel()"
+                                :key="vehicleModel['Model'] + `_item`">
+                                <input name="car-model" type="radio" :id="vehicleModel['Model'] + `_item`"
+                                    v-model="selectedcarModel" :value="vehicleModel" />
+                                <label style="white-space: nowrap;" :for="vehicleModel['Model'] + `_item`">{{
+                                    vehicleModel["Model"]
+                                }}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <div class="title-car" @click="selectingTrailer = false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="white"
+                        viewBox="0 -960 960 960">
+                        <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+                    </svg>
+                    <h3 style="color: white;">Retourner</h3>
+                </div>
+                <div class="radio-section">
+                    <div class="radio-list">
+                        <div class="radio-item car-brands" style="width: 40dvw" v-for="(trailer, index) in Trailers"
+                            :key="trailer.Description">
+                            <input name="trailer" type="radio" @change="testingtrailer(trailer)" :id="trailer.Description" v-model="selectedTrailer"
+                                :value="trailer" />
+                            <label :for="trailer.Description">{{ editHeightLabel(trailer.Description) }}</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -176,26 +228,6 @@
                   <label v-for="(vehicleBrand, index) in carMODELS" :key="vehicleBrand + `_item`">
                       <input type="radio" v-model="selectedcarModel" :value="vehicleBrand">{{ vehicleBrand }}</label>
               </div> -->
-            <div class="radio-section">
-                <div class="radio-list">
-                    <div class="radio-item car-brands" :style="{ width: brandListWidth }"
-                        v-for="(vehicleBrand, index) in searchCar()" :key="vehicleBrand + `_item`">
-                        <input name="car-brand" type="radio" :id="vehicleBrand + `_item`" v-model="selectedcarBrand"
-                            :value="vehicleBrand" />
-                        <label :for="vehicleBrand + `_item`">{{ vehicleBrand }}</label>
-                    </div>
-                </div>
-                <div v-if="selectedcarBrand !== ``" class="radio-list" style="transform: scale(0.8);">
-                    <div class="radio-item car-models" v-for="(vehicleModel, index) in getCarModel()"
-                        :key="vehicleModel['Model'] + `_item`">
-                        <input name="car-model" type="radio" :id="vehicleModel['Model'] + `_item`"
-                            v-model="selectedcarModel" :value="vehicleModel" />
-                        <label style="white-space: nowrap;" :for="vehicleModel['Model'] + `_item`">{{
-                            vehicleModel["Model"]
-                        }}</label>
-                    </div>
-                </div>
-            </div>
         </div>
         <!-- Other menus go here -->
     </div>
@@ -212,6 +244,9 @@ import carModels from "../../vehicle-models.json";
 export default {
     data() {
         return {
+            TrailerIsSelected: false,
+            selectedTrailer: {},
+            selectingTrailer: false,
             adults: 1,
             children: 0,
             searchedCar: "",
@@ -241,10 +276,10 @@ export default {
                 Van: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M242.5-200q-48.75 0-82.875-34.125T125.5-317h-68v-399q0-27.638 19.681-47.319T124.5-783h543v140h115l120 168v158h-69q0 48.75-34.125 82.875T716.5-200q-48.75 0-82.875-34.125T599.5-317h-240q0 49-34.125 83T242.5-200Zm0-67q20.9 0 35.45-14.55Q292.5-296.1 292.5-317q0-20.9-14.55-35.45Q263.4-367 242.5-367q-20.9 0-35.45 14.55Q192.5-337.9 192.5-317q0 20.9 14.55 35.45Q221.6-267 242.5-267Zm474 0q20.9 0 35.45-14.55Q766.5-296.1 766.5-317q0-20.9-14.55-35.45Q737.4-367 716.5-367q-20.9 0-35.45 14.55Q666.5-337.9 666.5-317q0 20.9 14.55 35.45Q695.6-267 716.5-267Zm-49-187 167-1L748-576h-80.5v122Z"/></svg>`,
                 Motorcycle: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M173-198q-68.35 0-116.175-47.825T9-362q0-64 42.25-110.75T156.5-524.5L104-577H10v-45h149l132 106 142-57h157l-97-122H388v-67h137l107 134 129-86v138h-88l51 63q16-5 31.5-9t32.476-4q68.374 0 116.199 47.856T952-361.894q0 68.394-47.856 116.144T787.894-198q-68.394 0-116.144-47.825T624-362q0-32 12-61t33-52l-19-24-123 206H386l-51-52q-5.5 63-52.25 105T173-198Zm.062-67q40.038 0 68.488-28.512Q270-322.024 270-362.062t-28.512-68.488Q212.976-459 172.938-459t-68.488 28.512Q76-401.976 76-361.938t28.512 68.488Q133.024-265 173.062-265Zm615 0q40.038 0 68.488-28.512Q885-322.024 885-362.062t-28.512-68.488Q827.976-459 787.938-459t-68.488 28.512Q691-401.976 691-361.938t28.512 68.488Q748.024-265 788.062-265Z"/></svg>`,
             },
-            VehiculesPassengers: {},
+            Trailers: {},
             selectedVehicule: {},
-            selectedTrailer: {},
             portNameCode: {},
+            VehiclePassengers: {},
             countryCodes: {
                 TUN: "Tunisie",
                 FRA: "France",
@@ -258,6 +293,53 @@ export default {
         VueCtkDateTimePicker,
     },
     methods: {
+        showTrailerOptions(){
+            if (!this.TrailerIsSelected) {
+                this.selectedTrailer = {}
+                this.TrailerIsSelected = false
+            }
+            else {
+                this.selectingTrailer = true
+            }
+        },
+        editHeightLabel(originalSentence) {
+      // Regular expression to match the height range pattern with <
+      const lessThanRegex = /<\s*(\d+,\d+)m/;
+
+      // Regular expression to match the height range pattern with > and <
+      const rangeRegex = /(\d+,\d+)m\s*<\s*H\s*<\s*(\d+,\d+)m/;
+
+      // Check if the sentence matches the < pattern
+      const lessThanMatch = originalSentence.match(lessThanRegex);
+
+      // Check if the sentence matches the > pattern
+      const rangeMatch = originalSentence.match(rangeRegex);
+
+      if (lessThanMatch && !rangeMatch) {
+        // Extract the upper bound from the match
+        const upperBound = lessThanMatch[1];
+
+        // Modify the sentence accordingly
+        const modifiedSentence = `Remorque Hauteur Inférieur à ${upperBound}m`;
+
+        return modifiedSentence;
+      } else if (rangeMatch) {
+        // Extract the lower and upper bounds from the match
+        const lowerBound = rangeMatch[1];
+        const upperBound = rangeMatch[2];
+
+        // Modify the sentence accordingly
+        const modifiedSentence = `Remorque Hauteur entre ${lowerBound}m et ${upperBound}m`;
+
+        return modifiedSentence;
+      } else {
+        // If the sentence doesn't match either pattern, return the original sentence
+        return originalSentence;
+      }
+    },
+        testingtrailer(trailer){
+            console.log(trailer)
+        },
         searchCar() {
             let tmpBrand = Object.keys(carModels).filter((el) => {
                 if (el.includes(this.searchedCar.toUpperCase())) return el
@@ -276,7 +358,7 @@ export default {
         },
         categoryExists(category) {
             let exists = false;
-            this.VehiculesPassengers.PassengerCategories.map((el) => {
+            this.VehiclePassengers.PassengerCategories.map((el) => {
                 if (category === el["Category"]) exists = true;
             });
             return exists;
@@ -324,6 +406,12 @@ export default {
                     Height: this.selectedcarModel["Height"].toString().replace(".", ""),
                     Length: this.selectedcarModel["Length"].toString().replace(".", ""),
                 });
+                tripOptions.vehicles[0]["Trailer"] = {
+                    OperatorCode: this.selectedTrailer["OperatorCode"],
+                    Height: this.selectedTrailer["MaxHeight"].toString(),
+                    Length: this.selectedTrailer["MaxLength"].toString(),
+                }
+                console.log(tripOptions)
 
             for (let i = 1; i <= this.adults; i++) {
                 tripOptions.passengers.push({
@@ -467,12 +555,13 @@ export default {
                 data: data,
             };
 
-            this.VehiculesPassengers = await this.$axios
+            this.VehiclePassengers = await this.$axios
                 .request(config)
                 .then((res) => {
                     return res.data;
                 });
-            console.log(this.VehiculesPassengers);
+                this.Trailers = this.VehiclePassengers.TrailerVehicleCategories
+            console.log(this.Trailers);
         },
         async getRoutes() {
             let data = JSON.stringify({
@@ -540,6 +629,9 @@ export default {
             // Adjust brand list width when a brand is selected
             this.brandListWidth = this.selectedcarBrand ? "25vw" : "40vw";
         },
+        selectedTrailer(value){
+            if (value.length) this.TrailerIsSelected = true
+        }
     },
     async mounted() {
         this.$parent.displayLoader = true;
@@ -549,7 +641,7 @@ export default {
         console.log(this.filteredRouteList);
         this.$parent.displayLoader = false;
         this.carMODELS = Object.keys(carModels);
-        console.log(this.carMODELS);
+        console.log(this.editHeightLabel("Remorque Hauteur < 1,90m"));
     },
 };
 </script>
@@ -741,7 +833,7 @@ input[type="number"]::-webkit-outer-spin-button {
     /* box-shadow: 0 4px 4px 0 rgb(60 64 67 / 30%),
         0 8px 12px 6px rgb(60 64 67 / 15%);
     outline: none; */
-    background-color: #008080 !important;
+    background-color: #7d7d7d !important;
     color: white !important;
 }
 
@@ -893,7 +985,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .radio-section {
     display: flex;
-    max-height: 50vh;
+    height: 50vh;
 }
 
 .radio-list {
@@ -1026,5 +1118,62 @@ input[type="number"]::-webkit-outer-spin-button {
     outline: none;
     padding: 0 8px;
     width: 2.8em;
+}
+</style>
+<style scoped>
+/* Style for the checkbox */
+.custom-checkbox {
+    display: inline-block;
+    position: relative;
+    margin-left: 1rem;
+    cursor: pointer;
+}
+
+.custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.custom-checkbox input:checked~.checkmark {
+    background-color: #2196F3;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.custom-checkbox input:checked~.checkmark:after {
+    display: block;
+}
+
+.custom-checkbox .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+.title-car {
+    display: flex;
+    align-items: stretch;
+    cursor: pointer;
+    margin-bottom: 3rem;
 }
 </style>
