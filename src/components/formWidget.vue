@@ -83,10 +83,10 @@
         </div>
         <div v-if="currentMenu === 'date'" class="menu">
             <VueCtkDateTimePicker style="width: 4px" v-model="departDate" format="YYYY-MM-DD"
+                :enabledDates="datestoHighlight" ref="dateTimePicker" @change-month="() => {console.log('helooooo')}"
                 :range="tripType === `oneway` ? false : true" :noShortcuts="true" :no-header="true" :inline="true"
                 :only-date="true" :position="'bottom'" :no-button="true" :min-date="getCurrentDate()" class="date-picker"
-                :noButtonNow="true" :label="`Select departure date`" :formatted="'YYYY-MM-DD'">
-            </VueCtkDateTimePicker>
+                :noButtonNow="true" :label="`Select departure date`" :formatted="'YYYY-MM-DD'" />
         </div>
         <div v-if="currentMenu === 'passengers'" class="menu" style="
           flex-direction: column;
@@ -217,9 +217,9 @@
                     <div class="radio-list">
                         <div class="radio-item car-brands" style="width: 40dvw" v-for="(trailer, index) in Trailers"
                             :key="trailer.Description">
-                            <input name="trailer" type="radio" @change="testingtrailer(trailer)" :id="trailer.Description" v-model="selectedTrailer"
-                                :value="trailer" />
-                            <label :for="trailer.Description">{{ editHeightLabel(trailer.Description) }}</label>
+                            <input name="trailer" type="radio" @change="testingtrailer(trailer)" :id="trailer.Description"
+                                v-model="selectedTrailer" :value="trailer" />
+                            <label :for="trailer.Description">{{ TrailerLabelEdit(trailer.Description) }}</label>
                         </div>
                     </div>
                 </div>
@@ -244,6 +244,8 @@ import carModels from "../../vehicle-models.json";
 export default {
     data() {
         return {
+            currentSelectedMonth: null,
+            datestoHighlight: [],
             TrailerIsSelected: false,
             selectedTrailer: {},
             selectingTrailer: false,
@@ -293,7 +295,7 @@ export default {
         VueCtkDateTimePicker,
     },
     methods: {
-        showTrailerOptions(){
+        showTrailerOptions() {
             if (!this.TrailerIsSelected) {
                 this.selectedTrailer = {}
                 this.TrailerIsSelected = false
@@ -302,42 +304,42 @@ export default {
                 this.selectingTrailer = true
             }
         },
-        editHeightLabel(originalSentence) {
-      // Regular expression to match the height range pattern with <
-      const lessThanRegex = /<\s*(\d+,\d+)m/;
+        TrailerLabelEdit(originalSentence) {
+            // Regular expression to match the height range pattern with <
+            const lessThanRegex = /<\s*(\d+,\d+)m/
 
-      // Regular expression to match the height range pattern with > and <
-      const rangeRegex = /(\d+,\d+)m\s*<\s*H\s*<\s*(\d+,\d+)m/;
+            // Regular expression to match the height range pattern with > and <
+            const rangeRegex = /(\d+,\d+)m\s*<\s*H\s*<\s*(\d+,\d+)m/
 
-      // Check if the sentence matches the < pattern
-      const lessThanMatch = originalSentence.match(lessThanRegex);
+            // Check if the sentence matches the < pattern
+            const lessThanMatch = originalSentence.match(lessThanRegex)
 
-      // Check if the sentence matches the > pattern
-      const rangeMatch = originalSentence.match(rangeRegex);
+            // Check if the sentence matches the > pattern
+            const rangeMatch = originalSentence.match(rangeRegex)
 
-      if (lessThanMatch && !rangeMatch) {
-        // Extract the upper bound from the match
-        const upperBound = lessThanMatch[1];
+            if (lessThanMatch && !rangeMatch) {
+                // Extract the upper bound from the match
+                const upperBound = lessThanMatch[1]
 
-        // Modify the sentence accordingly
-        const modifiedSentence = `Remorque Hauteur Inférieur à ${upperBound}m`;
+                // Modify the sentence accordingly
+                const modifiedSentence = `Remorque Hauteur Inférieur à ${upperBound}m`
 
-        return modifiedSentence;
-      } else if (rangeMatch) {
-        // Extract the lower and upper bounds from the match
-        const lowerBound = rangeMatch[1];
-        const upperBound = rangeMatch[2];
+                return modifiedSentence
+            } else if (rangeMatch) {
+                // Extract the lower and upper bounds from the match
+                const lowerBound = rangeMatch[1]
+                const upperBound = rangeMatch[2]
 
-        // Modify the sentence accordingly
-        const modifiedSentence = `Remorque Hauteur entre ${lowerBound}m et ${upperBound}m`;
+                // Modify the sentence accordingly
+                const modifiedSentence = `Remorque Hauteur entre ${lowerBound}m et ${upperBound}m`
 
-        return modifiedSentence;
-      } else {
-        // If the sentence doesn't match either pattern, return the original sentence
-        return originalSentence;
-      }
-    },
-        testingtrailer(trailer){
+                return modifiedSentence
+            } else {
+                // If the sentence doesn't match either pattern, return the original sentence
+                return originalSentence
+            }
+        },
+        testingtrailer(trailer) {
             console.log(trailer)
         },
         searchCar() {
@@ -354,18 +356,18 @@ export default {
             this.getTimeTable(this.departDate.start, this.departDate.end)
         },
         getCarModel() {
-            return carModels[this.selectedcarBrand];
+            return carModels[this.selectedcarBrand]
         },
         categoryExists(category) {
-            let exists = false;
+            let exists = false
             this.VehiclePassengers.PassengerCategories.map((el) => {
-                if (category === el["Category"]) exists = true;
+                if (category === el["Category"]) exists = true
             });
-            return exists;
+            return exists
         },
         selectPortItem(index, port) {
             if (port !== this.depPort) {
-                this.selectedPortIndex2 = "";
+                this.selectedPortIndex2 = ""
                 this.destPort = ""
             }
             this.depPort = port
@@ -374,44 +376,44 @@ export default {
         getDatesOneWay(inputDate) {
             // return (inputDate + 7 days, inputDate - 3 days)
             // Parse the input date in "YYYY-MM-DD" format
-            const inputDateObj = new Date(inputDate);
+            const inputDateObj = new Date(inputDate)
 
             // Calculate the date 3 days prior
-            const priorDate = new Date(inputDateObj);
-            priorDate.setDate(inputDateObj.getDate() - 3);
+            const priorDate = new Date(inputDateObj)
+            priorDate.setDate(inputDateObj.getDate() - 3)
 
             // Calculate the date 3 days after
-            const afterDate = new Date(inputDateObj);
-            afterDate.setDate(inputDateObj.getDate() + 7);
+            const afterDate = new Date(inputDateObj)
+            afterDate.setDate(inputDateObj.getDate() + 7)
 
             // Format the results in "YYYY-MM-DD" format
             const formatDate = (date) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, "0");
-                const day = String(date.getDate()).padStart(2, "0");
-                return `${year}-${month}-${day}`;
+                const year = date.getFullYear()
+                const month = String(date.getMonth() + 1).padStart(2, "0")
+                const day = String(date.getDate()).padStart(2, "0")
+                return `${year}-${month}-${day}`
             };
 
-            const priorDateString = formatDate(priorDate);
-            const afterDateString = formatDate(afterDate);
-            return [priorDateString, afterDateString];
+            const priorDateString = formatDate(priorDate)
+            const afterDateString = formatDate(afterDate)
+            return [priorDateString, afterDateString]
         },
         async getTimeTable(fromDate, toDate) {
 
-            let tripOptions = { passengers: [], vehicles: [] };
+            let tripOptions = { passengers: [], vehicles: [] }
 
             if (Object.keys(this.selectedcarModel).length)
                 tripOptions.vehicles.push({
                     OperatorCode: this.selectedcarModel["Code"],
                     Height: this.selectedcarModel["Height"].toString().replace(".", ""),
                     Length: this.selectedcarModel["Length"].toString().replace(".", ""),
-                });
-                tripOptions.vehicles[0]["Trailer"] = {
-                    OperatorCode: this.selectedTrailer["OperatorCode"],
-                    Height: this.selectedTrailer["MaxHeight"].toString(),
-                    Length: this.selectedTrailer["MaxLength"].toString(),
-                }
-                console.log(tripOptions)
+                })
+            if (this.selectedTrailer.length) tripOptions.vehicles[0]["Trailer"] = {
+                OperatorCode: this.selectedTrailer["OperatorCode"],
+                Height: this.selectedTrailer["MaxHeight"].toString(),
+                Length: this.selectedTrailer["MaxLength"].toString(),
+            }
+            console.log(tripOptions)
 
             for (let i = 1; i <= this.adults; i++) {
                 tripOptions.passengers.push({
@@ -429,20 +431,20 @@ export default {
 
 
             if (this.tripType !== "roundTrip") {
-                [fromDate, toDate] = this.getDatesOneWay(fromDate);
+                [fromDate, toDate] = this.getDatesOneWay(fromDate)
                 const OUT = await this.useTimeTableAPI(
                     fromDate,
                     toDate,
                     this.selectedRoute["$"].DepartPort,
                     this.selectedRoute["$"].DestinationPort
                 );
-                localStorage.setItem("trips", JSON.stringify([OUT]));
+                localStorage.setItem("trips", JSON.stringify([OUT]))
 
-                localStorage.setItem("tripOptions", JSON.stringify(tripOptions));
-                if (OUT) this.$router.push({ name: "triplist" });
+                localStorage.setItem("tripOptions", JSON.stringify(tripOptions))
+                if (OUT) this.$router.push({ name: "triplist" })
             } else {
-                const fromDates = this.getDatesOneWay(fromDate);
-                const toDates = this.getDatesOneWay(toDate);
+                const fromDates = this.getDatesOneWay(fromDate)
+                const toDates = this.getDatesOneWay(toDate)
                 const OUT = await this.useTimeTableAPI(
                     fromDates[0],
                     fromDates[1],
@@ -455,14 +457,14 @@ export default {
                     this.portNameCode[this.destPort],
                     this.portNameCode[this.depPort]
                 );
-                localStorage.setItem("trips", JSON.stringify([OUT, RTN]));
+                localStorage.setItem("trips", JSON.stringify([OUT, RTN]))
 
 
-                localStorage.setItem("tripOptions", JSON.stringify(tripOptions));
+                localStorage.setItem("tripOptions", JSON.stringify(tripOptions))
 
-                if (OUT && RTN) this.$router.push({ name: "triplist" });
+                if (OUT && RTN) this.$router.push({ name: "triplist" })
             }
-            this.$parent.displayLoader = false;
+            this.$parent.displayLoader = false
         },
         async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
             const data = JSON.stringify({
@@ -476,7 +478,7 @@ export default {
                 ToSailingDate: toDate,
                 DepartPort: fromPort,
                 DestinationPort: toPort,
-            });
+            })
 
             const config = {
                 method: "post",
@@ -491,25 +493,25 @@ export default {
             return await this.$axios.request(config).then((res) => {
                 console.log(res.data)
                 if (res.data !== "Pas de data à afficher avec les données entrées") {
-                    return res.data;
-                } else {
-                    if (this.tripType === "roundTrip")
-                        window.alert(
-                            "There are no available ferries in the selected dates"
-                        );
-                    else
-                        window.alert(
-                            "there are no ferries sailing on the date you selected"
-                        );
-                }
+                    return res.data}
+                // } else {
+                //     if (this.tripType === "roundTrip")
+                //         window.alert(
+                //             "There are no available ferries in the selected dates"
+                //         )
+                //     else
+                //         window.alert(
+                //             "there are no ferries sailing on the date you selected"
+                //         )
+                // }
             });
         },
         getCurrentDate() {
-            const now = new Date();
+            const now = new Date()
             const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, "0"); // Month is zero-based
-            const day = String(now.getDate()).padStart(2, "0");
-            return `${year}-${month}-${day}`;
+            const month = String(now.getMonth() + 1).padStart(2, "0") // Month is zero-based
+            const day = String(now.getDate()).padStart(2, "0")
+            return `${year}-${month}-${day}`
         },
         preventDefault(event) {
             event.preventDefault();
@@ -529,10 +531,10 @@ export default {
                         .toUpperCase()
                         .includes(this.searchInp.toUpperCase())
                 ) {
-                    return trip;
+                    return trip
                 }
                 return null;
-            }).filter(Boolean);
+            }).filter(Boolean)
         },
         async getVehiculesPassengers() {
             let data = JSON.stringify({
@@ -558,10 +560,10 @@ export default {
             this.VehiclePassengers = await this.$axios
                 .request(config)
                 .then((res) => {
-                    return res.data;
+                    return res.data
                 });
-                this.Trailers = this.VehiclePassengers.TrailerVehicleCategories
-            console.log(this.Trailers);
+            this.Trailers = this.VehiclePassengers.TrailerVehicleCategories
+            console.log(this.Trailers)
         },
         async getRoutes() {
             let data = JSON.stringify({
@@ -616,7 +618,20 @@ export default {
                     route["$"].DestinationPortCountry
                 ].push(route["$"].DestinationPortName);
             });
-            console.log(this.portNameCode)
+        },
+        getCurrentDateAndLastDayOfMonth() {
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth();
+            const lastDayOfMonth = new Date(currentYear, currentMonth + 2, 0).getDate();
+
+            const formattedCurrentDate = currentDate.toISOString().split("T")[0];
+            const formattedLastDayOfMonth = `${currentYear + Math.floor((currentMonth + 2) / 12)}-${String((currentMonth + 2) % 12 + 1).padStart(2, "0")}-${String(lastDayOfMonth).padStart(2, "0")}`;
+
+            return {
+                currentDate: formattedCurrentDate,
+                lastDayOfMonth: formattedLastDayOfMonth
+            };
         },
     },
     computed: {
@@ -629,19 +644,32 @@ export default {
             // Adjust brand list width when a brand is selected
             this.brandListWidth = this.selectedcarBrand ? "25vw" : "40vw";
         },
-        selectedTrailer(value){
+        selectedTrailer(value) {
             if (value.length) this.TrailerIsSelected = true
+        },
+        async depPort(value) {
+            const monthDates = this.getCurrentDateAndLastDayOfMonth()
+            const code = this.portNameCode[value]
+            const destPorts = this.Routes.filter(obj => obj['$'].DepartPort === code).map(obj => obj['$'].DestinationPort)
+            let dates = await Promise.all(destPorts.map(async (destPort) => {
+                const res = await this.useTimeTableAPI(monthDates.currentDate, monthDates.lastDayOfMonth, code, destPort)
+                console.log(res)
+                return res
+            }))
+            console.log(dates)
+            this.datestoHighlight = dates.filter(date => !!date).flatMap(date => date.map(obj => obj.DepartDateTime.split('T')[0]))
+
+            console.log(this.datestoHighlight)
         }
     },
     async mounted() {
-        this.$parent.displayLoader = true;
-        await this.getRoutes();
-        await this.getVehiculesPassengers();
-        this.getDepartDest();
-        console.log(this.filteredRouteList);
-        this.$parent.displayLoader = false;
-        this.carMODELS = Object.keys(carModels);
-        console.log(this.editHeightLabel("Remorque Hauteur < 1,90m"));
+        this.$parent.displayLoader = true
+        await this.getRoutes()
+        await this.getVehiculesPassengers()
+        this.getDepartDest()
+        console.log(this.filteredRouteList)
+        this.$parent.displayLoader = false
+        this.carMODELS = Object.keys(carModels)
     },
 };
 </script>
@@ -675,6 +703,12 @@ export default {
 </style>
   
 <style scoped>
+.datepicker-day.enable {
+    /* Add your desired CSS styles for the enabled buttons */
+    background-color: yellow !important;
+    /* Example: setting the background color to yellow */
+}
+
 .flexContainer {
     display: flex;
     align-items: center;

@@ -46,7 +46,7 @@
                     </div>
                     <div class="travel-arrival-info">
                         <p class="travel-time">{{ trip.DepartDateTime.split('T')[1] }}</p>
-                        <p class="travel-arrival">{{ `${trip.DepartPortName} (${trip.DepartPort})` }}</p>
+                        <p></p>
                         <p class="travel-arrival-date">{{ trip.DepartDateTime.split('T')[0] }}</p>
                     </div>
                     <div class="travel-range">
@@ -62,7 +62,7 @@
                     </div>
                     <div class="travel-departure-info">
                         <p class="travel-time">{{ trip.ArriveDateTime.split('T')[1] }}</p>
-                        <p class="travel-arrival">{{ `${trip.DestinationPortName} (${trip.DestinationPort})` }}</p>
+                        <p></p>
                         <p class="travel-arrival-date">{{ trip.ArriveDateTime.split('T')[0] }}</p>
                     </div>
                     <div class="travel-rate-final">
@@ -121,8 +121,7 @@
                             <div class="trip-details">
                                 <div class="travel-arrival-info">
                                     <p class="travel-time">{{ trip.OUT.DepartDateTime.split('T')[1] }}</p>
-                                    <p class="travel-arrival">{{ `${trip.OUT.DepartPortName} (${trip.OUT.DepartPort})` }}
-                                    </p>
+                                    <p></p>
                                     <p class="travel-arrival-date">{{ trip.OUT.DepartDateTime.split('T')[0] }}</p>
                                 </div>
                                 <div class="travel-range">
@@ -139,9 +138,7 @@
                                 </div>
                                 <div class="travel-departure-info">
                                     <p class="travel-time">{{ trip.OUT.ArriveDateTime.split('T')[1] }}</p>
-                                    <p class="travel-arrival">{{ `${trip.OUT.DestinationPortName}
-                                                                            (${trip.OUT.DestinationPort})`
-                                    }}</p>
+                                    <p></p>
                                     <p class="travel-arrival-date">{{ trip.OUT.ArriveDateTime.split('T')[0] }}</p>
                                 </div>
                             </div>
@@ -151,8 +148,7 @@
                             <div class="trip-details">
                                 <div class="travel-arrival-info">
                                     <p class="travel-time">{{ trip.RTN.DepartDateTime.split('T')[1] }}</p>
-                                    <p class="travel-arrival">{{ `${trip.RTN.DepartPortName} (${trip.RTN.DepartPort})` }}
-                                    </p>
+                                    <p></p>
                                     <p class="travel-arrival-date">{{ trip.RTN.DepartDateTime.split('T')[0] }}</p>
                                 </div>
                                 <div class="travel-range">
@@ -169,9 +165,7 @@
                                 </div>
                                 <div class="travel-departure-info">
                                     <p class="travel-time">{{ trip.RTN.ArriveDateTime.split('T')[1] }}</p>
-                                    <p class="travel-arrival">{{ `${trip.RTN.DestinationPortName}
-                                                                            (${trip.RTN.DestinationPort})`
-                                    }}</p>
+                                    <p></p>
                                     <p class="travel-arrival-date">{{ trip.RTN.ArriveDateTime.split('T')[0] }}</p>
                                 </div>
                             </div>
@@ -185,7 +179,7 @@
 
                 <div v-if="showSummary" style="text-align: -webkit-center;">
                     <div class="card-container">
-                        
+
                         <h3 class="heading">Summary</h3>
                         <div class="card" id="price-card">
                             <table class="price-table">
@@ -351,8 +345,8 @@ export default {
         jellyLoader,
     },
     methods: {
-        totalCost(){
-            
+        totalCost() {
+
         },
         getServiceNames() {
             let serviceNames = []
@@ -591,9 +585,10 @@ export default {
             const endDate = new Date(toDate);
 
             const timeDifference = endDate - startDate;
-            const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60)); // Calculate hours
-            const minutesDifference = Math.floor((timeDifference / (1000 * 60)) % 60); // Calculate remaining minutes
-            return `${hoursDifference ? `${hoursDifference}h` : ``} ${minutesDifference ? ` ${minutesDifference}m` : ``}`
+            const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+            const minutesDifference = Math.floor((timeDifference / (1000 * 60)) % 60);
+
+            return `${hoursDifference ? `${hoursDifference}h` : ``} ${minutesDifference ? `${minutesDifference}m` : ``}`;
         },
         transformTripsData(inputData) {
             const outputData = [];
@@ -639,7 +634,7 @@ export default {
             return allDates
         },
         getTripTitle() {
-            return `${this.trips[0][0].DepartPortName} ( ${this.trips[0][0].DepartPort} ) -- ${this.trips[0][0].DestinationPortName} ( ${this.trips[0][0].DestinationPort} )`
+            return `${this.trips[0][0].DepartPortName} -- ${this.trips[0][0].DestinationPortName}`
         },
         getFerryCompany(company) {
             return this.ferryCompanies[company]
@@ -791,6 +786,7 @@ body {
     flex: 1;
     width: 100%;
     display: flex;
+    padding: 1rem;
     // justify-content: space-between;
     align-items: center;
     justify-content: space-evenly
@@ -974,6 +970,7 @@ body {
     margin-right: 30px;
 
     .travel-time {
+        text-wrap: nowrap;
         font-size: 1.3rem;
         font-weight: bold;
         margin-bottom: 4px;
@@ -988,6 +985,7 @@ body {
     .travel-arrival-date,
     .travel-departure-date {
         font-size: 1.3rem;
+        text-wrap: nowrap;
     }
 }
 
@@ -1196,7 +1194,7 @@ h3 {
 }
 
 .text-center {
-    text-align: center!important;
+    text-align: center !important;
 }
 
 .font-bold {

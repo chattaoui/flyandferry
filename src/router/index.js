@@ -44,6 +44,17 @@ const routes = [
     meta: {
       hideNavbar: true // Set this meta field to true to hide the navbar
     }
+  },
+  {
+    path: '/userspace',
+    name: 'userspace',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '@/views/userspace.vue'),
+    meta: {
+      hideNavbar: true // Set this meta field to true to hide the navbar
+    }
   }
 ]
 
