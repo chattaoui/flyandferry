@@ -30,7 +30,7 @@
                                 }}</RouterLink>
                             </li>
                             <li class=" nav-item"><RouterLink to="jellyloader" class="nav-item-child nav-item-hover">
-                                    <svg id="11" style="margin-top: 15px!important; display: inline-flex"
+                                    <svg id="11" style="margin-top: 1.5rem!important; display: inline-flex"
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                         width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                         <defs>
@@ -59,9 +59,10 @@
                                     </svg></RouterLink>
                             </li>
 
-                            <li class=" nav-item"><a class="nav-item-child" href="#">
-                                    <object class=" df-icon-user"></object>
-                                </a>
+                            <li class=" nav-item">
+                                <RouterLink to="login" class="nav-item-child nav-item-hover">
+                                    <svg style="margin-top: 1.5rem!important; display: inline-flex" xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"/></svg>
+                                </RouterLink>
                             </li>
                             <li class=" nav-item">
                                 <Lang class="nav-item-child nav-item-hover" />

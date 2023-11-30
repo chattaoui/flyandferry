@@ -1,11 +1,13 @@
 <template>
     <div class="navbar" style="display: none!important;"></div>
+    <div class="video-bg">
+        <img src="html_template/img/1165589_8685.jpg">
+    </div>
     <div class="limiter">
         <div v-if="login" class="container-login100">
-            <div class="wrap-login100"
-                style="background: linear-gradient(-135deg, #dea75f47, #727eba7d);border-radius: 1rem;">
-                <div class="login100-pic">
-                    <img src="img/img-01.png" alt="IMG">
+            <div class="wrap-login100">
+                <div class="login100-pic2">
+                    <img src="img/login-illustration.svg" alt="IMG">
                 </div>
 
                 <form class="login100-form validate-form">
@@ -45,7 +47,7 @@
                     </div>
 
                     <div class="text-center p-t-17vh">
-                        <a class="txt2" @click="login = false">
+                        <a class="txt2" style="cursor: pointer;" @click="login = false">
                             Create your Account
                             <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
                         </a>
@@ -56,7 +58,7 @@
         <div v-else class="container-login100">
             <div class="first-signup-step">
                 <div class="stepper">
-                    <stepper :activeItem="setStepper" />
+                    <stepper :activeItem="setStepper" :steps="2" />
                 </div>
                 <div class="wrap-login100" style="height: 58vh;">
                     <!-- First signup step -->
@@ -64,7 +66,7 @@
                         <form v-if="parseInt(this.setStepper) == 1" class="login100-form validate-form">
 
                             <div class="wrap-input100 validate-input">
-                                <input class="input100" type="text" name="Name" placeholder="Full name" required>
+                                <input class="input100" type="text" name="Name" v-model="newUser.name" placeholder="Full name" required>
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
                                     <i class="fa fa-user" aria-hidden="true"></i>
@@ -72,7 +74,15 @@
                             </div>
 
                             <div class="wrap-input100 validate-input">
-                                <input class="input100" type="date" :max="getEighteenYearsAgoDate()" name="calendar"
+                                <input class="input100" type="text" name="email" v-model="newUser.email" placeholder="Email" required>
+                                <span class="focus-input100"></span>
+                                <span class="symbol-input100">
+                                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                                </span>
+                            </div>
+
+                            <div class="wrap-input100 validate-input">
+                                <input class="input100" type="date" :max="getEighteenYearsAgoDate()" v-model="newUser.birthdate" name="calendar"
                                     placeholder="Date of birth" required>
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
@@ -81,27 +91,26 @@
                             </div>
 
                             <div class="wrap-input100 validate-input">
-                                <input class="input100" type="text" name="email" placeholder="Email" required>
+                                <input class="input100" type="text" name="Name" placeholder="Phone number" v-model="newUser['phone number']" required>
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
-                                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                                    <i class="fa fa-book" aria-hidden="true"></i>
                                 </span>
                             </div>
 
                             <div class="wrap-input100 validate-input">
-                                <input class="input100" type="password" name="pass" placeholder="Password" required>
+                                <input class="input100" type="text" name="Name" placeholder="Address" v-model="newUser.address" required>
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
-                                    <i class="fa fa-lock" aria-hidden="true"></i>
+                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
                                 </span>
                             </div>
 
                             <div class="wrap-input100 validate-input">
-                                <input class="input100" type="password" name="confirmpass" placeholder="Confirm password"
-                                    required>
+                                <input class="input100" type="text" name="Name" placeholder="Postal code" v-model="newUser['postal code']" required>
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
-                                    <i class="fa fa-lock" aria-hidden="true"></i>
+                                    <i class="fa fa-bullseye" aria-hidden="true"></i>
                                 </span>
                             </div>
 
@@ -115,7 +124,7 @@
 
                     <!-- Second signup step -->
 
-                    <Transition>
+                    <!-- <Transition>
                         <div v-if="parseInt(this.setStepper) == 2" class="credit-card-container credit-card-container-hi">
                             <div class="card-area">
                                 <div class="front-credit-card">
@@ -170,9 +179,9 @@
                                 </div>
                             </div>
                         </div>
-                    </Transition>
+                    </Transition> -->
 
-                    <Transition v-if="parseInt(this.setStepper) == 3">
+                    <Transition v-if="parseInt(this.setStepper) == 2">
                         <div style="display: flex;align-items: center">
                             <div class="fade-in-left" style="width: 80%;padding: 6rem;">
                                 <svg class="last-step-pic" xmlns="http://www.w3.org/2000/svg"
@@ -275,26 +284,19 @@
                             <form class="fade-in-right">
 
                                 <div class="wrap-input100 validate-input">
-                                    <input class="input100" type="text" name="Name" placeholder="Address" required>
+                                    <input class="input100" type="password" name="pass" placeholder="Password" v-model="newUser.password" required>
                                     <span class="focus-input100"></span>
                                     <span class="symbol-input100">
-                                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                        <i class="fa fa-lock" aria-hidden="true"></i>
                                     </span>
                                 </div>
 
                                 <div class="wrap-input100 validate-input">
-                                    <input class="input100" type="text" name="Name" placeholder="Postal code" required>
+                                    <input class="input100" type="password" name="confirmpass"
+                                        placeholder="Confirm password" required>
                                     <span class="focus-input100"></span>
                                     <span class="symbol-input100">
-                                        <i class="fa fa-bullseye" aria-hidden="true"></i>
-                                    </span>
-                                </div>
-
-                                <div class="wrap-input100 validate-input">
-                                    <input class="input100" type="text" name="Name" placeholder="Phone number" required>
-                                    <span class="focus-input100"></span>
-                                    <span class="symbol-input100">
-                                        <i class="fa fa-book" aria-hidden="true"></i>
+                                        <i class="fa fa-lock" aria-hidden="true"></i>
                                     </span>
                                 </div>
 
@@ -304,7 +306,7 @@
 
                 </div>
                 <div class="container-login100-form-btn">
-                    <button v-if="parseInt(this.setStepper) < 3" @click="handleNextClick()" class="login100-form-btn"
+                    <button v-if="parseInt(this.setStepper) < 2" @click="handleNextClick()" class="login100-form-btn"
                         style="width:30%">
                         NEXT
                     </button>
@@ -314,7 +316,7 @@
                 </div>
 
                 <div class="text-center" style="margin: 3rem 0;">
-                    <a class="txt2" @click="login = true">
+                    <a class="txt2" style="cursor: pointer;" @click="login = true">
                         Already have an Account?
                         <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
                     </a>
@@ -331,7 +333,7 @@ import CreditCardValidator from 'credit-card-validator';
 export default {
     data() {
         return {
-            login: false,
+            login: true,
             setStepper: "1",
             validation: true,
             cardHolders: "",
@@ -341,6 +343,15 @@ export default {
             cvv: "",
             otherCardMask: "#### #### #### ####",
             isValidCard: false,
+            newUser: {
+                name: "",
+                email: "",
+                password: "",
+                birthdate: "",
+                "phone number": "",
+                address: "",
+                "postal code": "",
+            }
 
         }
     },
@@ -385,19 +396,20 @@ export default {
         },
         handleNextClick() {
             // && this.validateCard() && this.ValidExpireDate(this.month, this.year)
-            if (parseInt(this.setStepper) == 2) {
-                this.setStepper = (parseInt(this.setStepper) + 1).toString()
-                const InLeft = document.getElementsByClassName('credit-card-container-hi');
-                InLeft[0].classList.replace('credit-card-container-hi', 'credit-card-container-bye');
-            }
-            else if (parseInt(this.setStepper) == 1 && this.validation) {
+            if (parseInt(this.setStepper) == 1 && this.validation) {
                 this.setStepper = (parseInt(this.setStepper) + 1).toString()
                 this.SwapFadeEffect()
             } else window.alert("invalid inputs")
 
         },
-        finishSignUp() {
-            window.alert("finished signup")
+        async finishSignUp() {
+            try{
+                await this.$axios.post("http://localhost:3010/api/Authentication_API/register", this.newUser).then(res => {
+                    console.log(res)
+                })
+        } catch(e) {
+            window.alert(e)
+        }
         },
         getEighteenYearsAgoDate() {
             const today = new Date();
@@ -573,6 +585,20 @@ textarea {
     border: none;
 }
 
+.video-bg {
+    position: fixed !important;
+    right: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+
+    img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+}
+
 textarea:focus,
 input:focus {
     border-color: transparent !important;
@@ -666,14 +692,14 @@ iframe {
     font-family: Poppins-Regular;
     font-size: 1.2em;
     line-height: 1.5;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 .txt2 {
     font-family: Poppins-Regular;
-    font-size: 13px;
+    font-size: 1.3em;
     line-height: 1.5;
-    color: #ffffff;
+    color: #919191;
 }
 
 .txt2:hover {
@@ -697,16 +723,12 @@ iframe {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    padding: 15px;
-    background: #8766a4;
-    background: -webkit-linear-gradient(-135deg, #f08700, #4158d0);
-    background: -o-linear-gradient(-135deg, #f08700, #4158d0);
-    background: -moz-linear-gradient(-135deg, #f08700, #4158d0);
-    background: linear-gradient(-135deg, #f08700, #4158d0);
+    padding: 3rem;
 }
 
 .first-signup-step {
-    background: linear-gradient(-135deg, #dea75f47, #727eba7d);
+    backdrop-filter: invert(4%) !important;
+    -webkit-backdrop-filter: invert(4%) !important;
     border-radius: 1rem;
     display: flex;
     flex-direction: column;
@@ -724,14 +746,16 @@ iframe {
     display: -ms-flexbox;
     display: flex;
     flex-wrap: wrap;
-    padding: 2vh 7vw 2vh 7vw;
+    padding: 2vh 7vw 2vh 4vw;
     align-content: center;
     justify-content: space-between;
     align-items: center;
+    backdrop-filter: invert(4%) !important;
+    -webkit-backdrop-filter: invert(4%) !important;
 }
 
 .login100-pic {
-    width: 316px;
+    width: 22dvw;
 }
 
 .login100-pic img {
@@ -744,7 +768,21 @@ iframe {
     transition: ease-in-out .5s;
 }
 
-.last-step-pic:hover {
+.login100-pic2 {
+    width: 26dvw;
+}
+
+.login100-pic2 img {
+    max-width: 100%;
+    transition: ease-in-out 0.5s;
+}
+
+.login100-pic2:hover img {
+    transform: scale(1.2);
+    transition: ease-in-out .5s;
+}
+
+.last-step-pic2:hover {
     transform: scale(1.2);
     transition: ease-in-out .5s;
 
@@ -897,11 +935,11 @@ iframe {
 }
 
 .p-t-12 {
-    padding-top: 12px;
+    padding-top: 4vh;
 }
 
 .p-t-17vh {
-    padding-top: 15vh;
+    padding-top: 1vh;
 }
 
 @keyframes fadeInFromLeft {

@@ -1,6 +1,6 @@
 <template>
 <ol class="stepper">
-   <li v-for="step in Steps" :key="`step_${step}`" :id="`step_${step}`" :class="{ active: activeItem == step }"></li>
+   <li v-for="step in steps" :key="`step_${step}`" :id="`step_${step}`" :class="{ active: activeItem == step }"></li>
 </ol>
 </template>
 
@@ -8,10 +8,10 @@
 export default {
   data(){
     return {
-      Steps : 3,
+      
     }
   },
-  props: ['activeItem'],
+  props: ['activeItem', 'steps'],
 }
 </script>
 
