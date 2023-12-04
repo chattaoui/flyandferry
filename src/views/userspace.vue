@@ -737,6 +737,7 @@ export default defineComponent({
 
     mounted() {
         this.navMenuInit()
+        console.log(window.localStorage.getItem("token"))
     },
 
 });

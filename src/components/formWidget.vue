@@ -467,7 +467,8 @@ export default {
             this.$parent.displayLoader = false
         },
         async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
-            const data = JSON.stringify({
+            try {
+                const data = JSON.stringify({
                 TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
                 User: "",
                 LanguagePrefCode: "en",
@@ -479,7 +480,7 @@ export default {
                 DepartPort: fromPort,
                 DestinationPort: toPort,
             })
-
+            console.log(data)
             const config = {
                 method: "post",
                 maxBodyLength: Infinity,
@@ -505,6 +506,9 @@ export default {
                 //         )
                 // }
             });
+            } catch(e) {
+                console.log(e)
+            }
         },
         getCurrentDate() {
             const now = new Date()
@@ -563,7 +567,6 @@ export default {
                     return res.data
                 });
             this.Trailers = this.VehiclePassengers.TrailerVehicleCategories
-            console.log(this.Trailers)
         },
         async getRoutes() {
             let data = JSON.stringify({
@@ -589,7 +592,6 @@ export default {
             this.Routes = await this.$axios.request(config).then((res) => {
                 return res.data.GetRoutesResponse.Routes[0].Route;
             });
-            console.log(this.Routes);
         },
         showMenu(menu) {
             this.currentMenu = menu;
@@ -619,20 +621,30 @@ export default {
                 ].push(route["$"].DestinationPortName);
             });
         },
-        getCurrentDateAndLastDayOfMonth() {
-            const currentDate = new Date();
-            const currentYear = currentDate.getFullYear();
-            const currentMonth = currentDate.getMonth();
-            const lastDayOfMonth = new Date(currentYear, currentMonth + 2, 0).getDate();
+        getCurrentAndLastDayOfNextMonth() {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentDay = currentDate.getDate();
+  const formattedCurrentDate = formatDate(currentYear, currentMonth, currentDay);
 
-            const formattedCurrentDate = currentDate.toISOString().split("T")[0];
-            const formattedLastDayOfMonth = `${currentYear + Math.floor((currentMonth + 2) / 12)}-${String((currentMonth + 2) % 12 + 1).padStart(2, "0")}-${String(lastDayOfMonth).padStart(2, "0")}`;
-
-            return {
-                currentDate: formattedCurrentDate,
-                lastDayOfMonth: formattedLastDayOfMonth
-            };
-        },
+  const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+  const nextMonthYear = currentMonth === 12 ? currentYear + 1 : currentYear;
+  const lastDayOfNextMonth = new Date(nextMonthYear, nextMonth, 0);
+  const lastDay = lastDayOfNextMonth.getDate();
+  const formattedLastDayOfNextMonth = formatDate(nextMonthYear, nextMonth, lastDay);
+  
+  return {
+    currentDate: formattedCurrentDate,
+    lastDayOfNextMonth: formattedLastDayOfNextMonth
+  }
+  function formatDate(year, month, day) {
+  const formattedYear = year.toString().padStart(4, '0');
+  const formattedMonth = month.toString().padStart(2, '0');
+  const formattedDay = day.toString().padStart(2, '0');
+  return `${formattedYear}-${formattedMonth}-${formattedDay}`;
+}
+},
     },
     computed: {
         language() {
@@ -648,11 +660,11 @@ export default {
             if (value.length) this.TrailerIsSelected = true
         },
         async depPort(value) {
-            const monthDates = this.getCurrentDateAndLastDayOfMonth()
+            const monthDates = this.getCurrentAndLastDayOfNextMonth()
             const code = this.portNameCode[value]
             const destPorts = this.Routes.filter(obj => obj['$'].DepartPort === code).map(obj => obj['$'].DestinationPort)
             let dates = await Promise.all(destPorts.map(async (destPort) => {
-                const res = await this.useTimeTableAPI(monthDates.currentDate, monthDates.lastDayOfMonth, code, destPort)
+                const res = await this.useTimeTableAPI(monthDates.currentDate, monthDates.lastDayOfNextMonth, code, destPort)
                 console.log(res)
                 return res
             }))
