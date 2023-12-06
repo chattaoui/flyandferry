@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import axios from 'axios'
 
 const routes = [
   {
@@ -14,8 +15,8 @@ const routes = [
     beforeEnter: (to, from, next) => {
       if (localStorage.getItem('trips'))
         next()
-      else 
-        next({path: '/'})
+      else
+        next({ path: '/' })
     }
   },
   {
@@ -25,7 +26,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../components/jellyLoader.vue')
-  }, 
+  },
   {
     path: '/form',
     name: 'form',
@@ -33,7 +34,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '@/components/formWidget.vue')
-  }, 
+  },
   {
     path: '/login',
     name: 'login',
@@ -42,7 +43,7 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '@/views/loginPage.vue'),
     meta: {
-      hideNavbar: true // Set this meta field to true to hide the navbar
+      hideNavbar: true, // Set this meta field to true to hide the navbar
     }
   },
   {
@@ -53,7 +54,8 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '@/views/userspace.vue'),
     meta: {
-      hideNavbar: true // Set this meta field to true to hide the navbar
+      hideNavbar: true, // Set this meta field to true to hide the navbar
+      requiresAuth: true
     }
   }
 ]
@@ -62,5 +64,47 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach(async (to, from, next) => {
+  if (to.path === '/login' && await validateToken(localStorage.getItem('token'))) {
+    next({ path: '/userspace' })
+    return
+  }
+  // Check if the route requires authentication
+  if (to.meta.requiresAuth) {
+    // Check if the user is authenticated
+    if (await validateToken(localStorage.getItem('token'))) {
+      // User is authenticated, allow access
+      next();
+    } else {
+      // User is not authenticated, redirect to login page
+      next('/login');
+    }
+  } else {
+    // Route does not require authentication, allow access
+    next();
+  }
+});
+
+async function validateToken(token) {
+  try {
+    if (!localStorage.getItem('token')) return false
+    const response = await axios.post('https://cms.4help.tn/api/Authentication_API/auth', {}, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error('Error validating token:', error);
+    localStorage.removeItem('token');
+    return false;
+  }
+}
 
 export default router

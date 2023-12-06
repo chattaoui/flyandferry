@@ -20,7 +20,7 @@ export default {
 ol.stepper {
   --default-b: lightgrey!important;
   --default-c: black!important;
-  --active-b: #7941ab!important;
+  --active-b: #ddab72!important;
   --active-c: white!important;
   --circle: 7.5em!important; /* size of circle */
   --b: 7px!important; /* line thickness */
