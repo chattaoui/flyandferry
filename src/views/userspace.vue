@@ -1,8 +1,5 @@
 <template>
     <div id="userspace">
-        <div class="video-bg">
-            <img src="html_template/img/1165589_8685.jpg">
-        </div>
         <div class="app">
             <div class="header">
                 <div to="/" class="menu-circle">
@@ -111,7 +108,101 @@
                 <div id="payment" class="main-container" v-if="selectedMenu === 'payment'">
                     <div class="content-wrapper">
                         <div class="content-section">
-                            
+                            <div style="width:40%;align-self:center;">
+                                <stepper :activeItem="`1`" :steps="3" :buttonColor="'#084C61'" />
+                            </div>
+                            <div style="align-self: center;">
+                                <!-- <div class="faq" id="accordion">
+                                    https://codepen.io/baahubali92/embed/LMBLwp?
+                            <div class="card">
+                                <div class="card-header" id="faqHeading-1">
+                                    <div class="mb-0">
+                                        <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-1" data-aria-expanded="true" data-aria-controls="faqCollapse-1">
+                                            <span class="badge">1</span>What is Lorem Ipsum?
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div id="faqCollapse-1" class="collapse" aria-labelledby="faqHeading-1" data-parent="#accordion">
+                                    <div class="card-body"> -->
+                                <form v-for="passenger in passengers" class="passenger-form">
+                                    <div class="flex">
+                                        <label>
+                                            <span>Title</span>
+                                            <select>
+                                                <option value="Mr">Mr</option>
+                                                <option value="Mrs">Mrs</option>
+                                            </select>
+                                        </label>
+
+                                        <label>
+                                            <span>First Name</span>
+                                            <input required="" placeholder="" type="text" class="input">
+                                        </label>
+                                    </div>
+
+                                    <label>
+                                        <span>Last Name</span>
+                                        <input required="" placeholder="" type="email" class="input">
+                                    </label>
+
+                                    <div class="flex">
+                                        <label>
+                                            <span>Gender</span>
+                                            <select>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </label>
+
+                                        <label>
+                                            <span>Date of birth</span>
+                                            <input required="" placeholder="" type="date" class="input">
+                                        </label>
+                                    </div>
+
+                                    <div class="flex">
+                                        <label>
+                                            <span>Country</span>
+                                            <select>
+                                                <option value="Tunis">Tunisia</option>
+                                            </select>
+                                        </label>
+
+                                        <label>
+                                            <span>Place of birth</span>
+                                            <input required="" placeholder="" type="txt" class="input">
+                                        </label>
+                                    </div>
+
+                                    <div class="flex">
+                                        <label>
+                                            <span>Place of birth</span>
+                                            <input required="" placeholder="" type="txt" class="input">
+                                        </label>
+
+                                        <label>
+                                            <span>Type of id</span>
+                                            <select v-model="passengerDetails.typeOfId">
+                                                <option value="Passport">Passport</option>
+                                                <option value="CIN">CIN</option>
+                                            </select>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex">
+                                        <label>
+                                            <span>Id Number</span>
+                                            <input required="" placeholder="" type="txt" class="input">
+                                        </label>
+
+                                        <label v-if="passengerDetails.typeOfId === 'Passport'">
+                                            <span>Passport expiration date</span>
+                                            <input required="" placeholder="" type="date" class="input">
+                                        </label>
+                                    </div>
+                                </form>
+                                <button class="submit">Submit</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -503,17 +594,21 @@
 
 <script>
 import { defineComponent } from 'vue';
+import stepper from "@/components/stepper.vue";
 
 export default defineComponent({
 
-    name: '',
-
-    props: {},
+    components: {
+        stepper,
+    },
 
     data() {
 
         return {
-            selectedMenu: "payment"
+            selectedMenu: "payment",
+            passengerDetails: {
+            },
+            passengers: [],
         }
 
     },
@@ -614,6 +709,7 @@ export default defineComponent({
     },
 
     mounted() {
+        this.passengers = JSON.parse(window.localStorage.getItem("tripOptions")).passengers
         this.navMenuInit()
         console.log(window.localStorage.getItem("token"))
     },
@@ -622,12 +718,128 @@ export default defineComponent({
 
 </script>
 
+<style lang="scss">
+$glass: rgb(255 255 255 / 79%);
+$glass-icon: rgba(255, 255, 255, 0.3);
+$gradient: linear-gradient(35deg, red, purple);
+$option: #084c6121;
+
+select {
+    /* Reset */
+    appearance: none;
+    border: 0;
+    outline: 0;
+    font: inherit;
+    /* Personalize */
+    width: auto;
+    height: 2.5em;
+    padding: 0 4em 0 1em;
+    background: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg) no-repeat right 0.8em center / 1.4em,
+        linear-gradient(to left, $glass-icon 3em, $glass 3em);
+    color: #084C61;
+    border-radius: 1rem;
+    border: 1px solid rgba(105, 105, 105, 0.397);
+    cursor: pointer;
+
+    /* <option> colors */
+    option {
+        color: inherit;
+        background-color: $option;
+    }
+
+    /* Remove focus outline */
+    &:focus {
+        outline: none;
+    }
+
+    /* Remove IE arrow */
+    &::-ms-expand {
+        display: none;
+    }
+}
+</style>
+
+<style>
+.passenger-form {
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+    width: 40dvw;
+    padding: 1rem;
+    border-radius: 1rem;
+    position: relative;
+    align-items: stretch;
+    margin-bottom: 5rem;
+}
+
+.flex {
+    display: flex;
+    width: 100%;
+    gap: .7rem;
+}
+
+.passenger-form label {
+    position: relative;
+    display: inline-flex;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+    gap: 2rem;
+    align-items: center;
+    text-wrap: nowrap;
+}
+
+.passenger-form span {
+    color: #084C61;
+    font-size: .9em;
+}
+
+.passenger-form label .input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 1rem;
+    outline: 0;
+    border: 1px solid rgba(105, 105, 105, 0.397);
+    border-radius: 1rem;
+    background-color: white;
+    color: #084C61 !important;
+    margin-right: 2rem;
+    height: 2.5em;
+}
+
+.passenger-form label .input+span {
+    color: #084C61;
+    font-size: 0.7em;
+    cursor: text;
+    transition: 0.3s ease;
+}
+
+.passenger-form label .input:valid+span {
+    color: green;
+}
+
+.submit {
+    border: none;
+    outline: none;
+    background-color: rgb(255, 193, 69);
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    transform: .3s ease;
+    width: 40%;
+    align-self: center;
+}
+
+.submit:hover {
+    background-color: rgba(255, 193, 69, 0.78);
+}
+</style>
 
 <style lang="scss">
 #userspace {
-    --theme-bg-color: rgba(16, 18, 27, 0.084);
+    --theme-bg-color: rgb(255, 255, 255);
     --border-color: rgba(113 119 144 / 25%);
-    --theme-color: #f9fafb;
+    --theme-color: #084C61;
     --inactive-color: rgb(113 119 144 / 78%);
     --body-font: "Poppins", sans-serif;
     --hover-menu-bg: rgba(37, 43, 64, 0.3);
@@ -658,21 +870,6 @@ export default defineComponent({
     html {
         box-sizing: border-box !important;
         -webkit-font-smoothing: antialiased !important;
-    }
-
-
-    .video-bg {
-        position: fixed !important;
-        right: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-
-        img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-        }
     }
 
     img {
@@ -720,19 +917,6 @@ export default defineComponent({
         background-color: rgb(255 255 255 / 94%) !important;
     }
 
-
-    body.light-mode:before,
-    body.light-mode .video-bg:before {
-        content: "" !important;
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        height: 100vh !important;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgb(255 255 255 / 45%) 100%) !important;
-        backdrop-filter: saturate(3) !important;
-    }
-
     .app {
         background-color: var(--theme-bg-color) !important;
         width: 100dvw !important;
@@ -755,7 +939,7 @@ export default defineComponent({
         height: 9rem !important;
         width: 100% !important;
         border-bottom: 1px solid var(--border-color) !important;
-        padding: 0 5rem 0 1rem !important;
+        padding: 0 5rem 0 3.5rem !important;
         white-space: nowrap !important;
 
         @media screen and (max-width: 480px) {
@@ -809,7 +993,7 @@ export default defineComponent({
 
     .menu-circle {
         width: 11dvw !important;
-        padding: 4rem !important;
+
     }
 
     .search-bar {
@@ -1026,7 +1210,7 @@ export default defineComponent({
         padding: 20px 40px !important;
         height: 100% !important;
         overflow: auto !important;
-        background-color: var(--theme-bg-color) !important;
+        background-color: rgb(240, 240, 240) !important;
 
         @media screen and (max-width: 510px) {
             padding: 20px !important;
@@ -1138,9 +1322,9 @@ export default defineComponent({
     }
 
     .content-section {
-        margin-top: 30px !important;
         display: flex !important;
         flex-direction: column !important;
+        gap: 1rem;
 
         &-title {
             color: var(--content-title-color) !important;
@@ -1518,4 +1702,5 @@ export default defineComponent({
         background: var(--scrollbar-bg) !important;
         border-radius: 10px !important;
     }
-}</style>
+}
+</style>

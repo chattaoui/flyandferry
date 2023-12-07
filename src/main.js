@@ -4,8 +4,8 @@ import './registerServiceWorker'
 import router from './router'
 import axios from 'axios'
 
-
 const app = createApp(App)
+
 
 app.config.globalProperties.$axios = axios;
 

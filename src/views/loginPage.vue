@@ -69,7 +69,7 @@
     <div v-else class="container-login100">
       <div class="first-signup-step">
         <div class="stepper">
-          <stepper :activeItem="setStepper" :steps="3" />
+          <stepper :activeItem="setStepper" :buttonColor="`#ddab72`" :steps="3" />
         </div>
         <div class="wrap-login100" style="height: 58vh">
           <!-- First signup step -->

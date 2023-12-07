@@ -1,6 +1,6 @@
 <template>
 <ol class="stepper">
-   <li v-for="step in steps" :key="`step_${step}`" :id="`step_${step}`" :class="{ active: activeItem == step }"></li>
+   <li v-for="step in steps" :key="`step_${step}`" :id="`step_${step}`" :style="`--active-b: ${buttonColor}!important`" :class="{ active: activeItem == step }"></li>
 </ol>
 </template>
 
@@ -11,19 +11,18 @@ export default {
       
     }
   },
-  props: ['activeItem', 'steps'],
+  props: ['activeItem', 'steps', 'buttonColor'],
 }
 </script>
 
 <style>
 
 ol.stepper {
-  --default-b: lightgrey!important;
+  --default-b: white!important;
   --default-c: black!important;
-  --active-b: #ddab72!important;
   --active-c: white!important;
-  --circle: 7.5em!important; /* size of circle */
-  --b: 7px!important; /* line thickness */
+  --circle: 6.5em!important; /* size of circle */
+  --b: 6px!important; /* line thickness */
 
   display: flex!important;
   list-style: none!important;
@@ -55,16 +54,17 @@ ol.stepper li::before {
   display: grid!important;
   place-content: center!important;
   aspect-ratio: 1!important;
-  min-height: 8rem;
-  min-width: 8rem;
-  border: 5px solid #fff!important;
+  min-height: 6rem;
+  min-width: 6rem;
   box-sizing: border-box!important;
   background: var(--active-b)!important;
   color: var(--active-c)!important;
-  border-radius: 50%!important;
+  border-radius: 16%!important;
   font-family: monospace!important;
   z-index: 1!important;
   font-size: 2.3rem;
+  box-shadow: -1px 3px 8px -1px rgba(0, 0, 0, 0.2);
+  transform: scaleY(.9)!important
 }
 
 ol.stepper li.active ~ li::before{
