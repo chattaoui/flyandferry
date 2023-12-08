@@ -112,96 +112,106 @@
                                 <stepper :activeItem="`1`" :steps="3" :buttonColor="'#084C61'" />
                             </div>
                             <div style="align-self: center;">
-                                <!-- <div class="faq" id="accordion">
-                                    https://codepen.io/baahubali92/embed/LMBLwp?
-                            <div class="card">
-                                <div class="card-header" id="faqHeading-1">
-                                    <div class="mb-0">
-                                        <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-1" data-aria-expanded="true" data-aria-controls="faqCollapse-1">
-                                            <span class="badge">1</span>What is Lorem Ipsum?
-                                        </h5>
+                                <div class="faq" id="accordion">
+                                    <div v-for="(passenger, index) in passengers" :key="`passenger-Form-${index}`"
+                                        class="card">
+                                        <div class="card-header" :id="`faqHeading-${index}`" @click="toggleSection(index)">
+                                            <div class="mb-0">
+                                                <h5 class="faq-title" :data-target="`#faqCollapse-${index}`"
+                                                    :data-aria-controls="`faqCollapse-${index}`">
+                                                    Passenger <span class="badge">{{ index + 1 }}</span>
+                                                    {{ passenger.Category }}
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div :id="`faqCollapse-${index}`"
+                                            :class="openSectionIndex == index ? 'collapse in' : 'collapse'"
+                                            :aria-labelledby="`faqHeading-${index}`" data-parent="#accordion"
+                                            style="padding: 0 2rem;">
+                                            <form class="passenger-form card-body">
+                                                <div class="flex">
+                                                    <label>
+                                                        <span>Title</span>
+                                                        <select>
+                                                            <option value="Mr">Mr</option>
+                                                            <option value="Mrs">Mrs</option>
+                                                        </select>
+                                                    </label>
+
+                                                    <label>
+                                                        <span>First Name</span>
+                                                        <input required="" placeholder="" type="text" class="input">
+                                                    </label>
+                                                </div>
+
+                                                <label>
+                                                    <span>Last Name</span>
+                                                    <input required="" placeholder="" type="email" class="input">
+                                                </label>
+
+                                                <div class="flex">
+                                                    <label>
+                                                        <span>Gender</span>
+                                                        <select>
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
+                                                    </label>
+
+                                                    <label>
+                                                        <span>Date of birth</span>
+                                                        <input required="" placeholder=""
+                                                            :max="getMaxBD(passenger.Category)"
+                                                            :min="getMinBD(passenger.Category)" type="date" class="input">
+                                                    </label>
+                                                </div>
+
+                                                <div class="flex">
+                                                    <label>
+                                                        <span>Country</span>
+                                                        <select>
+                                                            <option value="Tunis">Tunisia</option>
+                                                        </select>
+                                                    </label>
+
+                                                    <label>
+                                                        <span>Place of birth</span>
+                                                        <input required="" placeholder="" type="txt" class="input">
+                                                    </label>
+                                                </div>
+
+                                                <div class="flex">
+                                                    <label>
+                                                        <span>Place of birth</span>
+                                                        <input required="" placeholder="" type="txt" class="input">
+                                                    </label>
+
+                                                    <label>
+                                                        <span>Type of id</span>
+                                                        <select v-model="passengersData[index]['type of id']">
+                                                            <option value="Passport">Passport</option>
+                                                            <option value="CIN">CIN</option>
+                                                        </select>
+                                                    </label>
+                                                </div>
+
+                                                <div class="flex">
+                                                    <label>
+                                                        <span>Id Number</span>
+                                                        <input required="" placeholder="" type="txt" class="input">
+                                                    </label>
+
+                                                    <label v-if="passengersData[index]['type of id'] === 'Passport'">
+                                                        <span>Passport expiration date</span>
+                                                        <input required="" placeholder="" type="date" class="input">
+                                                    </label>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="faqCollapse-1" class="collapse" aria-labelledby="faqHeading-1" data-parent="#accordion">
-                                    <div class="card-body"> -->
-                                <form v-for="passenger in passengers" class="passenger-form">
-                                    <div class="flex">
-                                        <label>
-                                            <span>Title</span>
-                                            <select>
-                                                <option value="Mr">Mr</option>
-                                                <option value="Mrs">Mrs</option>
-                                            </select>
-                                        </label>
 
-                                        <label>
-                                            <span>First Name</span>
-                                            <input required="" placeholder="" type="text" class="input">
-                                        </label>
-                                    </div>
-
-                                    <label>
-                                        <span>Last Name</span>
-                                        <input required="" placeholder="" type="email" class="input">
-                                    </label>
-
-                                    <div class="flex">
-                                        <label>
-                                            <span>Gender</span>
-                                            <select>
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                            </select>
-                                        </label>
-
-                                        <label>
-                                            <span>Date of birth</span>
-                                            <input required="" placeholder="" type="date" class="input">
-                                        </label>
-                                    </div>
-
-                                    <div class="flex">
-                                        <label>
-                                            <span>Country</span>
-                                            <select>
-                                                <option value="Tunis">Tunisia</option>
-                                            </select>
-                                        </label>
-
-                                        <label>
-                                            <span>Place of birth</span>
-                                            <input required="" placeholder="" type="txt" class="input">
-                                        </label>
-                                    </div>
-
-                                    <div class="flex">
-                                        <label>
-                                            <span>Place of birth</span>
-                                            <input required="" placeholder="" type="txt" class="input">
-                                        </label>
-
-                                        <label>
-                                            <span>Type of id</span>
-                                            <select v-model="passengerDetails.typeOfId">
-                                                <option value="Passport">Passport</option>
-                                                <option value="CIN">CIN</option>
-                                            </select>
-                                        </label>
-                                    </div>
-
-                                    <div class="flex">
-                                        <label>
-                                            <span>Id Number</span>
-                                            <input required="" placeholder="" type="txt" class="input">
-                                        </label>
-
-                                        <label v-if="passengerDetails.typeOfId === 'Passport'">
-                                            <span>Passport expiration date</span>
-                                            <input required="" placeholder="" type="date" class="input">
-                                        </label>
-                                    </div>
-                                </form>
-                                <button class="submit">Submit</button>
+                                <button class="submit">Next</button>
                             </div>
                         </div>
                     </div>
@@ -606,9 +616,10 @@ export default defineComponent({
 
         return {
             selectedMenu: "payment",
-            passengerDetails: {
-            },
+
+            passengersData: [],
             passengers: [],
+            openSectionIndex: 0
         }
 
     },
@@ -618,6 +629,55 @@ export default defineComponent({
     watch: {},
 
     methods: {
+
+        initPassengersArray(n) {
+            this.passengersData = Array.from({ length: n }, () => (createPassengerDetail()));
+            function createPassengerDetail() {
+                return {
+                    title: "",
+                    "first name": "",
+                    "last name": "",
+                    "place of birth": "",
+                    "date of birth": "",
+                    Gender: "",
+                    "type of id": "",
+                    id: "",
+                    "expiry date": ""
+                };
+            }
+        },
+        getMaxBD(category) {
+            switch (category) {
+                case "Adult":
+                    return this.getYearsAgoDate(14);
+                case "Child":
+                    return this.getYearsAgoDate(2);
+                case "Baby":
+                    return;
+            }
+        },
+        getMinBD(category) {
+            switch (category) {
+                case "Adult":
+                    return;
+                case "Child":
+                    return this.getYearsAgoDate(14);
+                case "Baby":
+                    return this.getYearsAgoDate(2);
+            }
+        },
+        getYearsAgoDate(years) {
+            const today = new Date();
+            const year = today.getFullYear() - years;
+            const month = String(today.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+            const day = String(today.getDate()).padStart(2, "0");
+
+            const formattedDate = `${year}-${month}-${day}`;
+            return formattedDate;
+        },
+        toggleSection(index) {
+            this.openSectionIndex === index ? this.openSectionIndex = null : this.openSectionIndex = index;
+        },
         navMenuInit() {
             const menuLinks = this.$el.querySelectorAll(".menu-link");
             menuLinks.forEach((link) => {
@@ -709,16 +769,122 @@ export default defineComponent({
     },
 
     mounted() {
-        this.passengers = JSON.parse(window.localStorage.getItem("tripOptions")).passengers
         this.navMenuInit()
-        console.log(window.localStorage.getItem("token"))
+        this.passengers = JSON.parse(window.localStorage.getItem("tripOptions")).passengers
+        console.log(window.localStorage.getItem('token'))
+        this.initPassengersArray(this.passengers.length)
     },
 
 });
 
 </script>
 
-<style lang="scss">
+<style scoped name="form list">
+.faq-title {
+    background: #FFFFFF;
+}
+
+.faq-title h2::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 60px;
+    height: 2px;
+    background: #E91E63;
+    bottom: -25px;
+    margin-left: -30px;
+}
+
+.faq {
+    box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+    min-width: 45dvw;
+    margin-bottom: 4rem;
+}
+
+.faq .card {
+    border: none;
+    background: none;
+}
+
+.faq .card .card-header {
+    padding: 0px;
+    border: none;
+    background: none;
+    border-radius: 1rem;
+    -webkit-transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+}
+
+.faq .card .card-header:hover {
+    background: rgb(255, 193, 69);
+    padding-left: 10px;
+}
+
+.faq .card .card-header .faq-title {
+    width: 100%;
+    text-align: left;
+    padding: 0px;
+    padding-left: 30px;
+    padding-right: 30px;
+    font-weight: 400;
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: #3B566E;
+    text-decoration: none !important;
+    -webkit-transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.faq .card .card-header .faq-title .badge {
+    width: 20px;
+    height: 20px;
+    line-height: 14px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+    text-align: center;
+    background: rgb(255, 193, 69);
+    color: #fff;
+    font-size: 12px;
+    margin-right: 20px;
+}
+
+.faq .card .card-body {
+    padding: 3rem;
+    font-weight: 400;
+    font-size: 16px;
+    color: #6F8BA4;
+    line-height: 28px;
+    letter-spacing: 1px;
+    border: 1px solid #F3F8FF;
+    margin-bottom: 1.4rem;
+}
+
+.faq .card .card-body p {
+    margin-bottom: 14px;
+}
+
+@media (max-width: 991px) {
+    .faq {
+        margin-bottom: 30px;
+    }
+
+    .faq .card .card-header .faq-title {
+        line-height: 26px;
+        margin-top: 10px;
+    }
+}
+</style>
+
+<style lang="scss" scoped>
 $glass: rgb(255 255 255 / 79%);
 $glass-icon: rgba(255, 255, 255, 0.3);
 $gradient: linear-gradient(35deg, red, purple);
@@ -759,17 +925,16 @@ select {
 }
 </style>
 
-<style>
+<style scoped>
 .passenger-form {
     display: flex;
     flex-direction: column;
     gap: .7rem;
-    width: 40dvw;
+    width: 43dvw;
     padding: 1rem;
     border-radius: 1rem;
     position: relative;
     align-items: stretch;
-    margin-bottom: 5rem;
 }
 
 .flex {
@@ -835,7 +1000,7 @@ select {
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #userspace {
     --theme-bg-color: rgb(255, 255, 255);
     --border-color: rgba(113 119 144 / 25%);
