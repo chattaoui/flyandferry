@@ -131,87 +131,181 @@
                                             <form class="passenger-form card-body">
                                                 <div class="flex">
                                                     <label>
-                                                        <span>Title</span>
-                                                        <select>
-                                                            <option value="Mr">Mr</option>
-                                                            <option value="Mrs">Mrs</option>
-                                                        </select>
+                                                        <div>
+                                                            <span>Title</span>
+                                                            <select v-model="passengersData[index]['title']"
+                                                                :class="{ 'invalid': submitted && !passengersData[index]['title'] }">
+                                                                <option value="Mr">Mr</option>
+                                                                <option value="Mrs">Mrs</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="error-message-wrapper">
+                                                            <span v-if="submitted && !passengersData[index]['title']"
+                                                                class="error-message">Please choose your title.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
                                                     </label>
 
                                                     <label>
-                                                        <span>First Name</span>
-                                                        <input required="" placeholder="" type="text" class="input">
+                                                        <div>
+                                                            <span>First Name</span>
+                                                            <input required="" placeholder=""
+                                                                :class="{ 'invalid': submitted && !passengersData[index]['first name'] }"
+                                                                v-model="passengersData[index]['first name']" type="text"
+                                                                class="input">
+                                                        </div>
+                                                        <div class="error-message-wrapper">
+                                                            <span v-if="submitted && !passengersData[index]['first name']"
+                                                                class="error-message">this field is required.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
                                                     </label>
                                                 </div>
 
                                                 <label>
-                                                    <span>Last Name</span>
-                                                    <input required="" placeholder="" type="email" class="input">
+                                                    <div>
+                                                        <span>Last Name</span>
+                                                        <input required="" placeholder=""
+                                                            :class="{ 'invalid': submitted && !passengersData[index]['last name'] }"
+                                                            v-model="passengersData[index]['last name']" type="txt"
+                                                            class="input">
+                                                    </div>
+                                                    <div class="error-message-wrapper">
+                                                        <span v-if="submitted && !passengersData[index]['last name']"
+                                                            class="error-message">this field is required.</span>
+                                                        <a style="width: 20%;"></a>
+                                                    </div>
                                                 </label>
 
                                                 <div class="flex">
                                                     <label>
-                                                        <span>Gender</span>
-                                                        <select>
-                                                            <option value="Male">Male</option>
-                                                            <option value="Female">Female</option>
-                                                        </select>
+                                                        <div>
+                                                            <span>Gender</span>
+                                                            <select v-model="passengersData[index]['gender']"
+                                                                :class="{ 'invalid': submitted && !passengersData[index]['gender'] }">
+                                                                <option value="Male">Male</option>
+                                                                <option value="Female">Female</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="error-message-wrapper">
+                                                            <span v-if="submitted && !passengersData[index]['gender']"
+                                                                class="error-message">this field is required.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
                                                     </label>
 
                                                     <label>
-                                                        <span>Date of birth</span>
-                                                        <input required="" placeholder=""
-                                                            :max="getMaxBD(passenger.Category)"
-                                                            :min="getMinBD(passenger.Category)" type="date" class="input">
+                                                        <div>
+                                                            <span>Date of birth</span>
+                                                            <input required="" placeholder=""
+                                                                :class="{ 'invalid': submitted && !passengersData[index]['date of birth'] }"
+                                                                v-model="passengersData[index]['date of birth']"
+                                                                :max="getMaxBD(passenger.Category)"
+                                                                :min="getMinBD(passenger.Category)" type="date"
+                                                                class="input">
+                                                        </div>
+
+                                                        <div class="error-message-wrapper">
+                                                            <span
+                                                                v-if="submitted && !passengersData[index]['date of birth']"
+                                                                class="error-message">this field is required.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
                                                     </label>
                                                 </div>
 
                                                 <div class="flex">
                                                     <label>
-                                                        <span>Country</span>
-                                                        <select>
-                                                            <option value="Tunis">Tunisia</option>
-                                                        </select>
+                                                        <div>
+                                                            <span>Country</span>
+                                                            <select v-model="passengersData[index]['country']"
+                                                                :class="{ 'invalid': submitted && !passengersData[index]['country'] }">
+                                                                <option value="Tunis">Tunisia</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="error-message-wrapper">
+                                                            <span v-if="submitted && !passengersData[index]['country']"
+                                                                class="error-message">this field is required.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
                                                     </label>
 
                                                     <label>
-                                                        <span>Place of birth</span>
-                                                        <input required="" placeholder="" type="txt" class="input">
+                                                        <div>
+                                                            <span>Place of birth</span>
+                                                            <input required="" placeholder=""
+                                                                :class="{ 'invalid': submitted && passengersData[index]['place of birth'].length < 3 }"
+                                                                v-model="passengersData[index]['place of birth']" type="txt"
+                                                                class="input">
+                                                        </div>
+                                                        <div class="error-message-wrapper">
+                                                            <span
+                                                                v-if="submitted && !passengersData[index]['place of birth']"
+                                                                class="error-message">this field is required.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
                                                     </label>
                                                 </div>
 
                                                 <div class="flex">
+
+
                                                     <label>
-                                                        <span>Place of birth</span>
-                                                        <input required="" placeholder="" type="txt" class="input">
+                                                        <div>
+                                                            <span>Type of id</span>
+                                                            <select v-model="passengersData[index]['type of id']"
+                                                                :class="{ 'invalid': submitted && !passengersData[index]['type of id'] }">
+                                                                <option value="Passport">Passport</option>
+                                                                <option value="CIN">CIN</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="error-message-wrapper">
+                                                            <span v-if="submitted && !passengersData[index]['type of id']"
+                                                                class="error-message">Please choose your type of id.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
                                                     </label>
 
                                                     <label>
-                                                        <span>Type of id</span>
-                                                        <select v-model="passengersData[index]['type of id']">
-                                                            <option value="Passport">Passport</option>
-                                                            <option value="CIN">CIN</option>
-                                                        </select>
+                                                        <div>
+                                                            <span>Id Number</span>
+                                                            <input
+                                                                :class="{ 'invalid': submitted && passengersData[index]['id'].length < 8 }"
+                                                                required="" placeholder=""
+                                                                v-model="passengersData[index]['id']" type="txt"
+                                                                class="input">
+                                                        </div>
+                                                        <div class="error-message-wrapper">
+                                                            <span v-if="submitted && !passengersData[index]['id']"
+                                                                class="error-message">Please enter your id number.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
                                                     </label>
                                                 </div>
 
-                                                <div class="flex">
-                                                    <label>
-                                                        <span>Id Number</span>
-                                                        <input required="" placeholder="" type="txt" class="input">
-                                                    </label>
-
-                                                    <label v-if="passengersData[index]['type of id'] === 'Passport'">
+                                                <label v-if="passengersData[index]['type of id'] === 'Passport'">
+                                                    <div>
                                                         <span>Passport expiration date</span>
-                                                        <input required="" placeholder="" type="date" class="input">
-                                                    </label>
-                                                </div>
+                                                        <input required="" placeholder=""
+                                                            :class="{ 'invalid': submitted && !passengersData[index]['expiry date'] }"
+                                                            v-model="passengersData[index]['expiry date']" type="date"
+                                                            class="input">
+                                                    </div>
+
+                                                    <div class="error-message-wrapper">
+                                                        <span v-if="submitted && !passengersData[index]['expiry date']"
+                                                            class="error-message">expiration date is required.</span>
+                                                        <a style="width: 20%;"></a>
+                                                    </div>
+                                                </label>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
 
-                                <button class="submit">Next</button>
+                                <button class="submit" @click="handleNextClick()">Next</button>
                             </div>
                         </div>
                     </div>
@@ -619,7 +713,8 @@ export default defineComponent({
 
             passengersData: [],
             passengers: [],
-            openSectionIndex: 0
+            openSectionIndex: 0,
+            submitted: false,
         }
 
     },
@@ -629,6 +724,35 @@ export default defineComponent({
     watch: {},
 
     methods: {
+        handleNextClick() {
+            let error = false
+            let errorIndex = null
+            this.submitted = true
+            this.passengersData.forEach((data, index) => {
+                if (!error && (data['type of id'] === 'Passport' && !data['expiry date'])) {
+                    error = true
+                    errorIndex = index
+                }
+                if (!error && (Object.values(data).some(value => value === '') || data.id < 8)) {
+                    error = true
+                    errorIndex = index
+
+                }
+            })
+            console.log(errorIndex)
+            if (error) {
+                this.openSectionIndex = errorIndex
+                return
+            }
+
+        }
+        getCurrentDate() {
+            const now = new Date()
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, "0") // Month is zero-based
+            const day = String(now.getDate()).padStart(2, "0")
+            return `${year}-${month}-${day}`
+        },
 
         initPassengersArray(n) {
             this.passengersData = Array.from({ length: n }, () => (createPassengerDetail()));
@@ -639,10 +763,9 @@ export default defineComponent({
                     "last name": "",
                     "place of birth": "",
                     "date of birth": "",
-                    Gender: "",
+                    gender: "",
                     "type of id": "",
-                    id: "",
-                    "expiry date": ""
+                    id: ""
                 };
             }
         },
@@ -653,9 +776,10 @@ export default defineComponent({
                 case "Child":
                     return this.getYearsAgoDate(2);
                 case "Baby":
-                    return;
+                    return this.getCurrentDate();
             }
         },
+
         getMinBD(category) {
             switch (category) {
                 case "Adult":
@@ -665,7 +789,7 @@ export default defineComponent({
                 case "Baby":
                     return this.getYearsAgoDate(2);
             }
-        },
+        }
         getYearsAgoDate(years) {
             const today = new Date();
             const year = today.getFullYear() - years;
@@ -780,6 +904,37 @@ export default defineComponent({
 </script>
 
 <style scoped name="form list">
+.error-message-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.input-wrapper {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.invalid {
+    border-color: red !important;
+    background-image: url(/public/img/icons/exclamation-circle-solid.svg) !important;
+    background-repeat: no-repeat !important;
+    background-position: right !important;
+    background-size: 11% 35% !important;
+}
+
+.error-message {
+    color: red !important;
+    font-size: 0.7em !important;
+    display: flex;
+    justify-self: center
+}
+
+.error-message::after {
+    content: "";
+    flex-grow: 1;
+}
+
 .faq-title {
     background: #FFFFFF;
 }
@@ -943,7 +1098,7 @@ select {
     gap: .7rem;
 }
 
-.passenger-form label {
+.passenger-form div {
     position: relative;
     display: inline-flex;
     max-width: 100%;
@@ -952,6 +1107,10 @@ select {
     gap: 2rem;
     align-items: center;
     text-wrap: nowrap;
+}
+
+.passenger-form label {
+    display: grid;
 }
 
 .passenger-form span {
@@ -969,6 +1128,7 @@ select {
     color: #084C61 !important;
     margin-right: 2rem;
     height: 2.5em;
+    max-width: 50rem;
 }
 
 .passenger-form label .input+span {
