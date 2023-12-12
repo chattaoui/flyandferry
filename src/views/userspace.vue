@@ -109,10 +109,10 @@
                     <div class="content-wrapper">
                         <div class="content-section">
                             <div style="width:40%;align-self:center;">
-                                <stepper :activeItem="`1`" :steps="3" :buttonColor="'#084C61'" />
+                                <stepper :activeItem="currentStep" :steps="3" :buttonColor="'#084C61'" />
                             </div>
                             <div style="align-self: center;">
-                                <div class="faq" id="accordion">
+                                <div class="faq" id="accordion" v-if="currentStep === '1'">
                                     <div v-for="(passenger, index) in passengers" :key="`passenger-Form-${index}`"
                                         class="card">
                                         <div class="card-header" :id="`faqHeading-${index}`" @click="toggleSection(index)">
@@ -301,6 +301,22 @@
                                                     </div>
                                                 </label>
                                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ticket-container" v-else-if="currentStep === '2'">
+                                    <Eticket />
+                                    <div class="choices">
+                                        <div v-for="(accomod, index) in selectedTrip.Accomodations" :key="`accomod-${index}`">
+                                            <div>
+                                                {{ accomod.serviceName }}
+                                            </div>
+                                            <div>
+                                                {{ accomod.Quantity }}
+                                            </div>
+                                            <div>
+                                                {{ accomod.unitCost }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -699,22 +715,24 @@
 <script>
 import { defineComponent } from 'vue';
 import stepper from "@/components/stepper.vue";
+import Eticket from "@/components/eticket.vue";
 
 export default defineComponent({
 
     components: {
         stepper,
+        Eticket
     },
 
     data() {
-
         return {
             selectedMenu: "payment",
-
             passengersData: [],
             passengers: [],
             openSectionIndex: 0,
             submitted: false,
+            currentStep: "1",
+            selectedTrip: {}
         }
 
     },
@@ -744,8 +762,7 @@ export default defineComponent({
                 this.openSectionIndex = errorIndex
                 return
             }
-
-        }
+        },
         getCurrentDate() {
             const now = new Date()
             const year = now.getFullYear();
@@ -772,104 +789,104 @@ export default defineComponent({
         getMaxBD(category) {
             switch (category) {
                 case "Adult":
-                    return this.getYearsAgoDate(14);
+                    return this.getYearsAgoDate(14)
                 case "Child":
-                    return this.getYearsAgoDate(2);
+                    return this.getYearsAgoDate(2)
                 case "Baby":
-                    return this.getCurrentDate();
+                    return this.getCurrentDate()
             }
         },
 
         getMinBD(category) {
             switch (category) {
                 case "Adult":
-                    return;
+                    return
                 case "Child":
-                    return this.getYearsAgoDate(14);
+                    return this.getYearsAgoDate(14)
                 case "Baby":
-                    return this.getYearsAgoDate(2);
+                    return this.getYearsAgoDate(2)
             }
-        }
+        },
         getYearsAgoDate(years) {
-            const today = new Date();
-            const year = today.getFullYear() - years;
-            const month = String(today.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
-            const day = String(today.getDate()).padStart(2, "0");
+            const today = new Date()
+            const year = today.getFullYear() - years
+            const month = String(today.getMonth() + 1).padStart(2, "0") // Month is 0-indexed
+            const day = String(today.getDate()).padStart(2, "0")
 
-            const formattedDate = `${year}-${month}-${day}`;
-            return formattedDate;
+            const formattedDate = `${year}-${month}-${day}`
+            return formattedDate
         },
         toggleSection(index) {
             this.openSectionIndex === index ? this.openSectionIndex = null : this.openSectionIndex = index;
         },
         navMenuInit() {
-            const menuLinks = this.$el.querySelectorAll(".menu-link");
+            const menuLinks = this.$el.querySelectorAll(".menu-link")
             menuLinks.forEach((link) => {
                 link.addEventListener("click", () => {
                     menuLinks.forEach((link) => {
-                        link.classList.remove("is-active");
-                    });
-                    link.classList.add("is-active");
+                        link.classList.remove("is-active")
+                    })
+                    link.classList.add("is-active")
                 });
             });
 
-            const mainHeaderLinks = this.$el.querySelectorAll(".main-header-link");
+            const mainHeaderLinks = this.$el.querySelectorAll(".main-header-link")
             mainHeaderLinks.forEach((link) => {
                 link.addEventListener("click", () => {
                     mainHeaderLinks.forEach((link) => {
-                        link.classList.remove("is-active");
-                    });
-                    link.classList.add("is-active");
-                });
-            });
+                        link.classList.remove("is-active")
+                    })
+                    link.classList.add("is-active")
+                })
+            })
 
-            const dropdowns = this.$el.querySelectorAll(".dropdown");
+            const dropdowns = this.$el.querySelectorAll(".dropdown")
             dropdowns.forEach((dropdown) => {
                 dropdown.addEventListener("click", (e) => {
-                    e.stopPropagation();
+                    e.stopPropagation()
                     dropdowns.forEach((c) => {
-                        c.classList.remove("is-active");
-                    });
-                    dropdown.classList.add("is-active");
+                        c.classList.remove("is-active")
+                    })
+                    dropdown.classList.add("is-active")
                 });
             });
 
-            const searchBarInput = this.$el.querySelector(".search-bar input");
+            const searchBarInput = this.$el.querySelector(".search-bar input")
             searchBarInput.addEventListener("focus", () => {
-                this.$el.querySelector(".header").classList.add("wide");
+                this.$el.querySelector(".header").classList.add("wide")
             });
             searchBarInput.addEventListener("blur", () => {
-                this.$el.querySelector(".header").classList.remove("wide");
-            });
+                this.$el.querySelector(".header").classList.remove("wide")
+            })
 
             document.addEventListener("click", (e) => {
-                const container = this.$el.querySelector(".status-button");
-                const dd = this.$el.querySelector(".dropdown");
+                const container = this.$el.querySelector(".status-button")
+                const dd = this.$el.querySelector(".dropdown")
                 if (container) {
                     if (!container.contains(e.target) && !container.isSameNode(e.target)) {
-                        dd.classList.remove("is-active");
+                        dd.classList.remove("is-active")
                     }
                 }
-            });
+            })
 
             dropdowns.forEach((dropdown) => {
                 dropdown.addEventListener("click", (e) => {
-                    this.$el.querySelector(".content-wrapper").classList.add("overlay");
-                    e.stopPropagation();
-                });
+                    this.$el.querySelector(".content-wrapper").classList.add("overlay")
+                    e.stopPropagation()
+                })
                 document.addEventListener("click", (e) => {
                     if (!e.target.classList.contains("dropdown")) {
-                        this.$el.querySelector(".content-wrapper").classList.remove("overlay");
+                        this.$el.querySelector(".content-wrapper").classList.remove("overlay")
                     }
-                });
-            });
+                })
+            })
 
-            const statusButtons = this.$el.querySelectorAll(".status-button:not(.open)");
+            const statusButtons = this.$el.querySelectorAll(".status-button:not(.open)")
             statusButtons.forEach((button) => {
                 button.addEventListener("click", () => {
-                    this.$el.querySelector(".overlay-app").classList.add("is-active");
-                });
-            });
+                    this.$el.querySelector(".overlay-app").classList.add("is-active")
+                })
+            })
 
             const popUpCloseButtons = this.$el.querySelectorAll(".pop-up .close");
             popUpCloseButtons.forEach((button) => {
@@ -896,14 +913,37 @@ export default defineComponent({
         this.navMenuInit()
         this.passengers = JSON.parse(window.localStorage.getItem("tripOptions")).passengers
         console.log(window.localStorage.getItem('token'))
-        this.initPassengersArray(this.passengers.length)
+        this.initPassengersArray(this.passengers.length)  
+        this.selectedTrip = JSON.parse(localStorage.getItem('selectedTrip'))
+        console.log(this.selectedTrip)
     },
 
 });
 
 </script>
 
+
 <style scoped name="form list">
+.ticket-container {
+    margin-bottom: 4rem;
+    display: flex;
+    align-items: center;
+}
+
+.choices {
+    background-color: #fff;
+    width: 26vw;
+    height: 56vh;
+    margin-left: -5rem;
+    border-radius: 4rem;
+    padding-left: 6rem;
+    padding-top: 6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    /* background: linear-gradient(to top, #d9e9ff, #6991c8); */
+}
+
 .error-message-wrapper {
     display: flex;
     flex-direction: row;
@@ -999,9 +1039,9 @@ export default defineComponent({
 }
 
 .faq .card .card-header .faq-title .badge {
-    width: 20px;
-    height: 20px;
-    line-height: 14px;
+    width: 2rem;
+    height: 2rem;
+    line-height: 1.4em;
     -webkit-border-radius: 100px;
     -moz-border-radius: 100px;
     border-radius: 100px;
@@ -1151,7 +1191,7 @@ select {
     color: #fff;
     font-size: 16px;
     transform: .3s ease;
-    width: 40%;
+    width: 30rem;
     align-self: center;
 }
 

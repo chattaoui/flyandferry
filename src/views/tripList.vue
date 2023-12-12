@@ -291,6 +291,7 @@ import jellyLoader from "@/components/jellyLoader.vue"
 export default {
     data() {
         return {
+            selectedTrip: {},
             showSummary: false,
             selectedQuantities: {},
             services: {},
@@ -375,8 +376,8 @@ export default {
             this.showTripList = true
             this.showSummary = true
             console.log(this.selectedQuantities)
-            console.log("test successfull")
-            console.log(this.getServiceNames())
+            this.selectedTrip["Accomodations"] = this.getServiceNames()
+            localStorage.setItem('selectedTrip', JSON.stringify(this.selectedTrip))
         },
         getServiceIcon(code) {
             return this.codSVG[code]
@@ -390,6 +391,7 @@ export default {
             }
         },
         async getSailtings(trip) {
+            this.selectedTrip["trip"] = trip
             this.displayLoader = true
             this.addFadeOut()
             function getCurrentFormattedDate() {
@@ -453,7 +455,6 @@ export default {
             data.passengers = this.tripOptions.passengers
 
             if (this.tripOptions.passengers.length) data.vehicles = this.tripOptions.vehicles
-            console.log(data.vehicles)
 
             let configg = {
                 method: 'post',

@@ -57,6 +57,14 @@ const routes = [
       hideNavbar: true, // Set this meta field to true to hide the navbar
       requiresAuth: true
     }
+  },
+  {
+    path: '/eticket',
+    name: 'eticket',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '@/components/eticket.vue'),
   }
 ]
 
