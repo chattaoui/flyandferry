@@ -306,12 +306,12 @@ Boarding Pass
       left: 30%;
       opacity: 0;
       transform: translate(-50%, -50%);
-      animation: move 5s infinite alternate;
+      animation: move 3s infinite alternate;
     }
 
     @keyframes move {
       40% {
-        left: 50%;
+        left: 54%;
         opacity: 1;
       }
 
@@ -328,7 +328,7 @@ Boarding Pass
   --------------------*/
   .infos {
     display: flex;
-    border-top: 1px solid #99D298;
+    border-top: 1px solid #084C61;
 
     .places,
     .times {
@@ -352,7 +352,7 @@ Boarding Pass
 
     .places {
       background: #ECECEC;
-      border-right: 1px solid #99D298;
+      border-right: 1px solid #084C61;
 
       small {
         color: #97A1AD;
@@ -381,7 +381,7 @@ Boarding Pass
   .strap {
     clear: both;
     position: relative;
-    border-top: 1px solid #99D298;
+    border-top: 1px solid #084C61;
 
     &::after {
       content: '';
