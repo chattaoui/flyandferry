@@ -71,7 +71,6 @@
                 </ul>
             </div>
             <div class="menu-column">
-                <h3></h3>
                 <MapView style="border-radius: 2rem;" :place="depPort.length !== ``
                     ? `${depPort.toString()}`
                     : null
@@ -792,11 +791,12 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: fit-content;
-    background-color: #7988cede;
+    width: 83rem;
+    background-color: #f1f1f1;
     border-radius: 3rem;
     padding: 2rem;
     position: absolute;
+    max-height: 55rem;
 }
 
 .options-container {
@@ -1038,6 +1038,7 @@ input[type="number"]::-webkit-outer-spin-button {
     overflow-y: scroll;
     scrollbar-width: none;
     -webkit-scrollbar-width: none;
+    height: 28.53rem;
 }
 
 .slide-enter-active,

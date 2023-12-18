@@ -395,6 +395,64 @@
                                     </div>
                                 </div>
 
+                                <div class="ticket-container" v-else-if="currentStep === '3'">
+                                    <div class="credit-card-container">
+                                        <div class="card-area">
+                                            <div class="front-credit-card">
+                                                <div class="template">{{ holder_number }}</div>
+                                                <div class="Expiration-Date">Expires</div>
+                                                <div class="date">{{ holder_month }} / {{ holder_year }}</div>
+                                                <div class="Card-Holders">Card Holders</div>
+                                                <div class="name">{{ holder_cardHolders }}</div>
+                                            </div>
+                                            <div class="back-credit-card">
+                                                <div class="num">{{ holder_cvv }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="form">
+                                            <h1>Credit Card Form</h1>
+                                            <label for="Holders">Card Holders</label>
+                                            <input type="text" v-model="cardCredit.cardHolders" placeholder="Full Name" />
+                                            <label for="Number">Card Number</label>
+                                            <input type="text" placeholder="#### #### #### ####" v-model="cardCredit.cardNumber"
+                                                @input="handleCardNumberInput" maxlength="19" />
+                                            <div class="bottom">
+                                                <div>
+                                                    <label for="name">Expiration Date</label>
+                                                    <select name="dob-year" class="datefield year" v-model="cardCredit.year">
+                                                        <option value="">Year</option>
+                                                        <option v-for="year in getFutureYears()" :key="year" :value="year">
+                                                            {{ year }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <select name="dob-month" class="datefield month" v-model="cardCredit.month">
+                                                        <option value="">Month</option>
+                                                        <option value="01">Jan</option>
+                                                        <option value="02">Feb</option>
+                                                        <option value="03">Mar</option>
+                                                        <option value="04">Apr</option>
+                                                        <option value="05">May</option>
+                                                        <option value="06">Jun</option>
+                                                        <option value="07">Jul</option>
+                                                        <option value="08">Aug</option>
+                                                        <option value="09">Sep</option>
+                                                        <option value="10">Oct</option>
+                                                        <option value="11">Nov</option>
+                                                        <option value="12">Dec</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label for="cvv">CVV</label>
+                                                    <input type="text" v-on:keypress="NumbersOnly" v-model="cardCredit.cvv"
+                                                        placeholder="###" maxlength="3" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <button class="submit" @click="handleNextClick()">Next</button>
                             </div>
                         </div>
@@ -800,49 +858,143 @@ export default defineComponent({
 
     data() {
         return {
+            cardCredit: {
+                cardHolders: "",
+                cardNumber: "",
+                month: "",
+                year: "",
+                cvv: "",
+            },
             selectedMenu: "payment",
             passengersData: [],
             passengers: [],
             openSectionIndex: 0,
             submitted: false,
-            currentStep: "2",
+            currentStep: "1",
             selectedTrip: {}
         }
 
     },
 
-    computed: {},
+    computed: {
+        holder_number: function () {
+      if (this.cardCredit.cardNumber.trim() == "") {
+        return "#### #### #### ####";
+      }
+      return (
+        this.cardCredit.cardNumber +
+        [
+          "#",
+          "#",
+          "#",
+          "#",
+          " ",
+          "#",
+          "#",
+          "#",
+          "#",
+          " ",
+          "#",
+          "#",
+          "#",
+          "#",
+          " ",
+          "#",
+          "#",
+          "#",
+          "#",
+        ]
+
+          .splice(this.cardCredit.cardNumber.length, 19)
+          .join("")
+      );
+    },
+    holder_month: function () {
+      if (this.cardCredit.month.trim() == "") {
+        return "mm";
+      }
+      return this.cardCredit.month;
+    },
+    holder_year: function () {
+      if (this.cardCredit.year.trim() == "") {
+        return "yyyy";
+      }
+      return this.cardCredit.year;
+    },
+    holder_cardHolders: function () {
+      if (this.cardCredit.cardHolders.trim() == "") {
+        return "Full Name";
+      }
+      return this.cardCredit.cardHolders;
+    },
+    holder_cvv: function () {
+      if (this.cardCredit.cvv.trim() == "") {
+        return "###";
+      }
+      return this.cardCredit.cvv + ["#", "#", "#"].splice(this.cardCredit.cvv.length, 3).join("");
+    },
+    },
 
     watch: {},
 
     methods: {
-        openServiceIndex(index) {
-      const detailsElements = this.$el.getElementsByTagName('details');
-      for (let i = 0; i < detailsElements.length; i++) {
-        if (i !== index) {
-          detailsElements[i].removeAttribute('open');
-        }
+        getFutureYears() {
+      const currentYear = new Date().getFullYear();
+      const futureYears = [];
+
+      for (let i = 0; i < 8; i++) {
+        futureYears.push((currentYear + i).toString());
       }
+
+      return futureYears;
     },
+        handleCardNumberInput() {
+      this.cardCredit.cardNumber = this.cardCredit.cardNumber.replace(/\D/g, "");
+      this.cardCredit.cardNumber = this.cardCredit.cardNumber
+        .split("") // Convert the string to an array of characters
+        .map((char, index) => {
+          // Insert a space after every 2 characters (excluding the first character)
+          if (index > 0 && index % 4 === 0) {
+            return " " + char;
+          }
+          return char;
+        })
+        .join(""); // Convert the array back to a string
+    },
+        openServiceIndex(index) {
+            const detailsElements = this.$el.getElementsByTagName('details');
+            for (let i = 0; i < detailsElements.length; i++) {
+                if (i !== index) {
+                    detailsElements[i].removeAttribute('open');
+                }
+            }
+        },
         handleNextClick() {
             let error = false
-            let errorIndex = null
-            this.submitted = true
-            this.passengersData.forEach((data, index) => {
-                if (!error && (data['type of id'] === 'Passport' && !data['expiry date'])) {
-                    error = true
-                    errorIndex = index
-                }
-                if (!error && (Object.values(data).some(value => value === '') || data.id < 8)) {
-                    error = true
-                    errorIndex = index
+            if (this.currentStep === "1") {
+                let errorIndex = null
+                this.submitted = true
+                this.passengersData.forEach((data, index) => {
+                    if (!error && (data['type of id'] === 'Passport' && !data['expiry date'])) {
+                        error = true
+                        errorIndex = index
+                    }
+                    if (!error && (Object.values(data).some(value => value === '') || data.id < 8)) {
+                        error = true
+                        errorIndex = index
 
+                    }
+                })
+                console.log(errorIndex)
+                if (error) {
+                    this.openSectionIndex = errorIndex
+                    return
                 }
-            })
-            console.log(errorIndex)
-            if (error) {
-                this.openSectionIndex = errorIndex
+                this.currentStep = "2"
                 return
+            }
+            else if (this.currentStep === "2") {
+                this.currentStep = "3"
             }
         },
         getCurrentDate() {
@@ -1101,7 +1253,7 @@ details {
 dl {
     display: flex;
     flex-wrap: nowrap;
-    font-size: .8em!important;
+    font-size: .8em !important;
 
     dt {
         font-weight: 600;
@@ -2256,4 +2408,250 @@ select {
         background: var(--scrollbar-bg) !important;
         border-radius: 10px !important;
     }
-}</style>
+}
+</style>
+
+<style name="credit-card">
+.credit-card-container {
+    padding: 1rem;
+    min-height: 58vh;
+    width: 55vw;
+    display: grid;
+    grid-template-columns: 40% 60%;
+    gap: 4rem;
+}
+
+.credit-card-container .card-area,
+.credit-card-container .form {
+    background-color: rgb(255, 193, 69);
+    border-radius: 2rem;
+    display: flex;
+    min-height: 98%;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), 10px -8px 15px rgba(0, 0, 0, 0.1),
+        4px 0 12px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+}
+
+.credit-card-container .card-area {
+    user-select: none;
+    padding: 2rem;
+    gap: 3rem;
+}
+
+.front-credit-card,
+.back-credit-card {
+    z-index: 0;
+    position: relative;
+    flex: 1;
+    background-color: lavender;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1), 10px 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.front-credit-card::before {
+    position: absolute;
+    content: "";
+    bottom: -10.5rem;
+    right: -9rem;
+    width: 18rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: rgb(229 241 255);
+    box-shadow: -40px 20px 0 rgb(115, 115, 115, 0.3);
+}
+
+.front-credit-card::after {
+    position: absolute;
+    content: "";
+    top: 24%;
+    left: 50px;
+    width: 42px;
+    height: 32px;
+    box-shadow: -10px 10px 0 rgb(115, 115, 115, 0.3);
+    background-color: rgb(229 241 255);
+    border-radius: 5px;
+}
+
+.front-credit-card .template {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    font-size: 0.9em;
+    white-space: nowrap;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    color: rgb(89, 89, 89);
+    letter-spacing: 0.5em;
+}
+
+.front-credit-card .Expiration-Date {
+    position: absolute;
+    top: 68%;
+    right: 22%;
+    font-size: 0.8em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(161, 161, 161);
+}
+
+.front-credit-card .date {
+    position: absolute;
+    top: 80%;
+    left: 65%;
+    font-size: 0.95em;
+    white-space: nowrap;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    color: rgb(118, 118, 118);
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.front-credit-card .Card-Holders {
+    position: absolute;
+    top: 68%;
+    left: 10%;
+    font-size: 0.8em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(161, 161, 161);
+}
+
+.front-credit-card .name {
+    position: absolute;
+    top: 80%;
+    left: 10%;
+    font-size: 0.8em;
+    white-space: nowrap;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    color: rgb(126, 126, 126);
+    letter-spacing: 1px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.back-credit-card::before {
+    z-index: -1;
+    position: absolute;
+    content: "";
+    top: 15%;
+    left: -10%;
+    width: 120%;
+    height: 18%;
+    box-shadow: -50px 20px 0 2px rgb(115, 115, 115, 0.3);
+    border-radius: 15px;
+    background-color: rgb(229 241 255);
+}
+
+.back-credit-card::after {
+    z-index: -1;
+    position: absolute;
+    content: "";
+    top: 59%;
+    right: 10%;
+    width: 60px;
+    height: 20%;
+    border-radius: 5px;
+    background-color: rgba(213, 213, 213, 0.5);
+    box-shadow: -15px 15px 0 rgb(115, 115, 115, 0.3);
+}
+
+.back-credit-card .num {
+    position: absolute;
+    top: 70%;
+    right: 2px;
+    width: 60px;
+    height: 20%;
+    font-size: 1em;
+    letter-spacing: 2px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    color: rgb(118, 118, 118);
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.credit-card-container .form {
+    padding: 1rem;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.credit-card-container .form h1 {
+    user-select: none;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 3em;
+}
+
+.credit-card-container .form input {
+    height: 4.5rem;
+    width: 80%;
+    border-radius: 10px;
+    border: 0;
+    outline: 0;
+    padding: 1rem;
+    font-size: 1.1em;
+    color: rgb(255, 255, 255);
+    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1), 10px 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.credit-card-container .form input::placeholder {
+    color: lavender;
+}
+
+.credit-card-container .form>label {
+    user-select: none;
+    width: 75%;
+    transform: translateY(10px);
+    font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+.credit-card-container .form .bottom {
+    width: 80%;
+    display: flex;
+    gap: 2rem;
+    align-items: end;
+    justify-content: space-around;
+}
+
+.credit-card-container .form .bottom div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    align-items: center;
+}
+
+.credit-card-container .form .bottom div select {
+    font-family: Arial, Helvetica, sans-serif;
+    height: 38px;
+    width: 100%;
+    border-radius: 10px;
+    border: 0;
+    outline: 0;
+    padding: 10px;
+    font-size: 1em;
+    color: rgb(186, 186, 204);
+    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1), 10px 8px 15px rgba(0, 0, 0, 0.1);
+    background-color: rgba(8, 76, 97, 0.1294117647);
+}
+
+.credit-card-container .form .bottom div input {
+    width: 100%;
+    text-align: center;
+    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1), 10px 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.credit-card-container .form .bottom div label {
+    user-select: none;
+    font-size: 0.9em;
+    color: white;
+    white-space: nowrap;
+}
+</style>

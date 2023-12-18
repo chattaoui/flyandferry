@@ -78,8 +78,8 @@ export default {
       }
 
       // Set map dimensions and invalidate size
-      mapInstance.value.getContainer().style.height = `50vh`; // Set the height in vh
-      mapInstance.value.getContainer().style.width = `30vw`;   // Set the width in vw
+      mapInstance.value.getContainer().style.height = `35rem`; // Set the height in vh
+      mapInstance.value.getContainer().style.width = `42rem`;   // Set the width in vw
       mapInstance.value.invalidateSize();
     });
 

@@ -484,7 +484,6 @@ export default {
       month: "",
       year: "",
       cvv: "",
-      otherCardMask: "#### #### #### ####",
       isValidCard: false,
       newUser: {
         name: "",

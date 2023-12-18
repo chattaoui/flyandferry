@@ -197,7 +197,11 @@ export default defineComponent({
 
   name: '',
 
-  props: {},
+  props: [
+    'from',
+    'to',
+
+  ],
 
   data() {
 
@@ -342,12 +346,12 @@ Boarding Pass
 
     @keyframes move {
       40% {
-        left: 54%;
+        left: 60%;
         opacity: 1;
       }
 
       100% {
-        left: 70%;
+        left: 65%;
         opacity: 0;
       }
     }

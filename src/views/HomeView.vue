@@ -52,7 +52,7 @@
       </div>
     </div> -->
     <div>
-      <div class="content-lg container" style="margin-top: 25vh;">
+      <div class="content-lg container" style="margin-top: 15vh;">
         <!-- Masonry Grid -->
         <div class="row">
           <div class="df-dom-promotions-head lozad" data-loaded="true">
@@ -407,10 +407,12 @@ export default {
 <style>
 .formWidget {
   z-index: 997;
-  top: 86vh;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 60vh;
+  left: 50vw;
+  transform: translateX(50%);
   margin-bottom: 5vh;
+  transform: scale(.7) translateX(-70%)!important;
+  position: relative;
 }
 
 .df-dom-promotions-head {
