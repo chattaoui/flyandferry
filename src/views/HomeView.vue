@@ -56,7 +56,7 @@
         <!-- Masonry Grid -->
         <div class="row">
           <div class="df-dom-promotions-head lozad" data-loaded="true">
-            <h3 style="margin: 0!important;">{{ language.offers }}</h3>
+            <h3 style="margin: 0!important;margin-left: 2.5rem!important;">{{ language.offers }}</h3>
             <div class="df-dom_light-button">
               <customButton :buttonText="language.offersButton" :redirectTo="'#'" />
             </div>
@@ -72,7 +72,7 @@
         <!-- Masonry Grid -->
         <div class="row">
           <div class="df-dom-compagnies-head lozad" data-loaded="true">
-            <h3 style="margin: 0!important;">{{ language.ferryComp }}</h3>
+            <h3 style="margin: 0!important;margin-left: 2.5rem!important;">{{ language.ferryComp }}</h3>
             <div class="df-dom_light-button">
               <customButton :buttonText="language.ferryCompButton" :redirectTo="'#'" />
             </div>
@@ -94,7 +94,7 @@
       <!-- Masonry Grid -->
       <div class="row">
         <div class="df-dom-destinations-head lozad" data-loaded="true">
-          <h3 style="margin: 0!important;">{{ language.mainDest }}</h3>
+          <h3 style="margin: 0!important;margin-left: 2.5rem!important;">{{ language.mainDest }}</h3>
           <div class="df-dom_light-button">
             <customButton :buttonText="language.mainDestButton" :redirectTo="'#'" />
           </div>
@@ -405,13 +405,16 @@ export default {
 </style>
 
 <style>
+.lozad {
+  align-items: center;
+
+}
+
 .formWidget {
   z-index: 997;
-  top: 60vh;
-  left: 50vw;
   transform: translateX(50%);
   margin-bottom: 5vh;
-  transform: scale(.7) translateX(-70%)!important;
+  transform: scale(.7) translateX(-73%)!important;
   position: relative;
 }
 
@@ -421,11 +424,12 @@ export default {
   align-self: start;
   text-align: left;
   background-repeat: no-repeat;
-  background-size: 32px;
+  background-size: 3rem;
   display: flex;
-  background-position: left 16px;
+  background-position: left .7rem;
   -webkit-font-smoothing: antialiased;
-  background-image: url(../../public/img/icons/shopping.svg)
+  background-image: url(../../public/img/icons/shopping.svg);
+  justify-content: space-around;
 }
 
 @media (min-width: 769px) {
@@ -438,6 +442,7 @@ export default {
     padding: 8px 0 8px 55px;
     background-size: 40px;
     background-position: 0;
+    justify-content: space-around;
   }
 }
 
@@ -447,11 +452,12 @@ export default {
   align-self: start;
   text-align: left;
   background-repeat: no-repeat;
-  background-size: 32px;
+  background-size: 3rem;
   display: flex;
-  background-position: left 16px;
+  background-position: left .7rem;
   -webkit-font-smoothing: antialiased;
-  background-image: url(../../public/img/icons/ship.svg)
+  background-image: url(../../public/img/icons/ship.svg);
+  justify-content: space-around;
 }
 
 @media (min-width: 769px) {
@@ -473,11 +479,12 @@ export default {
   align-self: start;
   text-align: left;
   background-repeat: no-repeat;
-  background-size: 32px;
+  background-size: 3rem;
   display: flex;
-  background-position: left 16px;
+  background-position: left .7rem;
   -webkit-font-smoothing: antialiased;
-  background-image: url(../../public/img/icons/language.svg)
+  background-image: url(../../public/img/icons/language.svg);
+  justify-content: space-around;
 }
 
 @media (min-width: 769px) {

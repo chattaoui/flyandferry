@@ -1,5 +1,5 @@
 <template>
-    <div class="travel-booking">
+    <div class="travel-booking" :style="!currentMenu? 'top:66vh;min-height:0px': 'top:60vh;height:55rem'">
         <svg style="position: absolute; top: 1.3rem; right: 2rem; cursor: pointer;" @click="currentMenu = null"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px"
             y="0px" width="16px" height="10px" viewBox="0 0 122.875 28.489" enable-background="new 0 0 122.875 28.489"
@@ -92,6 +92,8 @@
           align-items: stretch;
           margin-top: 4vh;
           gap: 3rem;
+          height: 100%;
+          justify-content: space-evenly;
         ">
             <div class="category-container" v-if="categoryExists('Adult')">
                 <svg class="categ-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -184,14 +186,14 @@
                 <div>
                     <div class="radio-section">
                         <div class="radio-list">
-                            <div class="radio-item car-brands" :style="{ width: brandListWidth }"
+                            <div class="radio-item" :style="{ width: brandListWidth }"
                                 v-for="(vehicleBrand, index) in searchCar()" :key="vehicleBrand + `_item`">
                                 <input name="car-brand" type="radio" :id="vehicleBrand + `_item`" v-model="selectedcarBrand"
                                     :value="vehicleBrand" />
                                 <label :for="vehicleBrand + `_item`">{{ vehicleBrand }}</label>
                             </div>
                         </div>
-                        <div v-if="selectedcarBrand !== ``" class="radio-list" style="transform: scale(0.8);">
+                        <div v-if="selectedcarBrand !== ``" class="radio-list" style="transform: scale(0.8);margin-right:-2rem;">
                             <div class="radio-item car-models" v-for="(vehicleModel, index) in getCarModel()"
                                 :key="vehicleModel['Model'] + `_item`">
                                 <input name="car-model" type="radio" :id="vehicleModel['Model'] + `_item`"
@@ -214,7 +216,7 @@
                 </div>
                 <div class="radio-section">
                     <div class="radio-list">
-                        <div class="radio-item car-brands" style="width: 40dvw" v-for="(trailer, index) in Trailers"
+                        <div class="radio-item" style="width: 40dvw" v-for="(trailer, index) in Trailers"
                             :key="trailer.Description">
                             <input name="trailer" type="radio" @change="testingtrailer(trailer)" :id="trailer.Description"
                                 v-model="selectedTrailer" :value="trailer" />
@@ -251,7 +253,7 @@ export default {
             adults: 1,
             children: 0,
             searchedCar: "",
-            brandListWidth: "40vw",
+            brandListWidth: "73rem",
             carMODELS: {},
             selectedcarBrand: "",
             selectedcarModel: "",
@@ -653,7 +655,7 @@ export default {
     watch: {
         selectedcarBrand() {
             // Adjust brand list width when a brand is selected
-            this.brandListWidth = this.selectedcarBrand ? "25vw" : "40vw";
+            this.brandListWidth = this.selectedcarBrand ? "40rem" : "73rem";
         },
         selectedTrailer(value) {
             if (value.length) this.TrailerIsSelected = true
@@ -791,12 +793,15 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 83rem;
     background-color: #f1f1f1;
-    border-radius: 3rem;
+    border-radius: 1rem;
     padding: 2rem;
     position: absolute;
+    max-width: 80rem;
+    min-width: 82rem;
     max-height: 55rem;
+    min-height: 50rem;
+  left: 50vw;
 }
 
 .options-container {
@@ -884,11 +889,11 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .menuButton {
-    margin: 0px 20px;
+    margin: 0px 2rem;
     align-items: center;
     appearance: none;
     background-color: #fff;
-    border-radius: 10px;
+    border-radius: .7rem;
     border-style: none;
     box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
         rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
@@ -897,15 +902,13 @@ input[type="number"]::-webkit-outer-spin-button {
     cursor: pointer;
     display: inline-flex;
     fill: currentcolor;
-    font-size: 14px;
+    font-size: 1.2em;
     font-weight: 500;
-    height: 48px;
+    height: 4.3rem;
     justify-content: center;
-    letter-spacing: 0.25px;
     line-height: normal;
-    max-width: 100%;
     overflow: visible;
-    padding: 2px 24px;
+    padding: 1.5rem 2rem;
     position: relative;
     text-align: center;
     text-transform: none;
@@ -914,7 +917,7 @@ input[type="number"]::-webkit-outer-spin-button {
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    width: auto;
+    width: fit-content;
     will-change: transform, opacity;
     z-index: 0;
 }
@@ -1031,7 +1034,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .radio-section {
     display: flex;
-    height: 50vh;
 }
 
 .radio-list {
@@ -1054,13 +1056,13 @@ input[type="number"]::-webkit-outer-spin-button {
 .car-models {
     width: 0;
     overflow: hidden;
-    transition: width 0.7s ease-in-out;
+    /* transition: 0.7s ease-in-out; */
     width: 20vw;
 }
 
-.car-brands {
-    transition: width 0.5s ease-in-out;
-}
+/* .car-brands {
+    transition: margin 0.5s ease-in-out;
+} */
 
 .searchbar {
     font-size: 5rem;
