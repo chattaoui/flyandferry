@@ -6,12 +6,18 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    meta: {
+      showNavbar: true, 
+    }
   },
   {
     path: '/triplist',
     name: 'triplist',
     component: () => import('../views/tripList.vue'),
+    meta: {
+      showNavbar: true, 
+    },
     beforeEnter: (to, from, next) => {
       if (localStorage.getItem('trips'))
         next()
@@ -20,31 +26,12 @@ const routes = [
     }
   },
   {
-    path: '/jellyloader',
-    name: 'loader',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../components/jellyLoader.vue')
-  },
-  {
-    path: '/form',
-    name: 'form',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '@/components/formWidget.vue')
-  },
-  {
     path: '/login',
     name: 'login',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '@/views/loginPage.vue'),
-    meta: {
-      hideNavbar: true, // Set this meta field to true to hide the navbar
-    }
+    component: () => import(/* webpackChunkName: "about" */ '@/views/loginPage.vue')
   },
   {
     path: '/userspace',
@@ -54,17 +41,8 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '@/views/userspace.vue'),
     meta: {
-      hideNavbar: true, // Set this meta field to true to hide the navbar
       requiresAuth: true
     }
-  },
-  {
-    path: '/eticket',
-    name: 'eticket',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '@/components/eticket.vue'),
   }
 ]
 

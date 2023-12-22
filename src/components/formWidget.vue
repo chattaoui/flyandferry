@@ -1,5 +1,5 @@
 <template>
-    <div class="travel-booking" :style="!currentMenu? 'top:66vh;min-height:0px': 'top:60vh;height:55rem'">
+    <div class="travel-booking" :style="!currentMenu? 'top:66.4vh;min-height:0px': 'top:60vh;height:55rem'">
         <svg style="position: absolute; top: 1.3rem; right: 2rem; cursor: pointer;" @click="currentMenu = null"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px"
             y="0px" width="16px" height="10px" viewBox="0 0 122.875 28.489" enable-background="new 0 0 122.875 28.489"

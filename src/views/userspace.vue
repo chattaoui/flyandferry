@@ -20,9 +20,111 @@
                         <path
                             d="M448.773 235.551A135.893 135.893 0 00451 211c0-74.443-60.557-135-135-135-47.52 0-91.567 25.313-115.766 65.537-32.666-10.59-66.182-6.049-93.794 12.979-27.612 19.013-44.092 49.116-45.425 82.031C24.716 253.788 0 290.497 0 331c0 7.031 1.703 13.887 3.006 20.537l.015.015C12.719 400.492 56.034 436 106 436h300c57.891 0 106-47.109 106-105 0-40.942-25.053-77.798-63.227-95.449z" />
                     </svg>
-                    <img class="profile-img"
-                        src="https://images.unsplash.com/photo-1600353068440-6361ef3a86e8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                        alt="">
+
+                    <div class="drop-down">
+                        <img id="dropDown" class="profile-img" :src="user.image ? user.image : 'img/1635932302.png'" alt="">
+
+                        <div class="drop-down__menu-box">
+                            <ul class="drop-down__menu">
+                                <li data-name="profile" data-toggle="modal" data-target="#profileModal"
+                                    class="drop-down__item">Your Profile <svg version="1.1" class="drop-down__item-icon"
+                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        x="0px" y="0px" viewBox="0 0 350 350" style="enable-background:new 0 0 350 350;"
+                                        xml:space="preserve">
+                                        <g>
+                                            <path
+                                                d="M175,171.173c38.914,0,70.463-38.318,70.463-85.586C245.463,38.318,235.105,0,175,0s-70.465,38.318-70.465,85.587   C104.535,132.855,136.084,171.173,175,171.173z">
+                                            </path>
+                                            <path
+                                                d="M41.909,301.853C41.897,298.971,41.885,301.041,41.909,301.853L41.909,301.853z">
+                                            </path>
+                                            <path
+                                                d="M308.085,304.104C308.123,303.315,308.098,298.63,308.085,304.104L308.085,304.104z">
+                                            </path>
+                                            <path
+                                                d="M307.935,298.397c-1.305-82.342-12.059-105.805-94.352-120.657c0,0-11.584,14.761-38.584,14.761   s-38.586-14.761-38.586-14.761c-81.395,14.69-92.803,37.805-94.303,117.982c-0.123,6.547-0.18,6.891-0.202,6.131   c0.005,1.424,0.011,4.058,0.011,8.651c0,0,19.592,39.496,133.08,39.496c113.486,0,133.08-39.496,133.08-39.496   c0-2.951,0.002-5.003,0.005-6.399C308.062,304.575,308.018,303.664,307.935,298.397z">
+                                            </path>
+                                        </g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                    </svg></li>
+                                <li data-name="dashboard" class="drop-down__item">Your Dashboard <svg version="1.1"
+                                        class="drop-down__item-icon" xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="511.626px"
+                                        height="511.627px" viewBox="0 0 511.626 511.627"
+                                        style="enable-background:new 0 0 511.626 511.627;" xml:space="preserve">
+                                        <g>
+                                            <path
+                                                d="M491.361,211.274c-13.511-31.599-31.689-58.813-54.529-81.658c-22.839-22.841-50.059-41.017-81.659-54.53   c-31.601-13.513-64.713-20.271-99.359-20.271c-34.644,0-67.762,6.759-99.357,20.271c-31.595,13.518-58.813,31.689-81.653,54.53   c-22.845,22.845-41.018,50.059-54.534,81.658C6.757,242.873,0,275.988,0,310.631c0,49.865,13.418,95.838,40.256,137.903   c3.614,5.52,8.754,8.278,15.417,8.278h400.281c6.66,0,11.8-2.759,15.414-8.278c26.84-42.254,40.258-88.224,40.258-137.903   C511.626,275.988,504.872,242.873,491.361,211.274z M229.973,102.069c7.142-7.139,15.752-10.709,25.84-10.709   c10.089,0,18.699,3.571,25.838,10.709c7.139,7.135,10.711,15.749,10.711,25.837s-3.572,18.699-10.711,25.837   s-15.749,10.709-25.838,10.709c-10.088,0-18.702-3.571-25.84-10.709c-7.135-7.139-10.707-15.749-10.707-25.837   S222.834,109.205,229.973,102.069z M98.929,336.469c-7.138,7.135-15.752,10.715-25.84,10.715c-10.085,0-18.699-3.58-25.837-10.715   c-7.139-7.132-10.705-15.749-10.705-25.838c0-10.088,3.566-18.698,10.705-25.837s15.752-10.708,25.837-10.708   c10.088,0,18.706,3.569,25.84,10.708c7.135,7.139,10.707,15.749,10.707,25.837C109.636,320.72,106.064,329.33,98.929,336.469z    M153.748,208.562c-7.142,7.137-15.752,10.709-25.841,10.709c-10.089,0-18.702-3.576-25.841-10.709   c-7.135-7.135-10.706-15.749-10.706-25.837s3.567-18.699,10.706-25.837c7.142-7.139,15.752-10.709,25.841-10.709   c10.088,0,18.702,3.571,25.841,10.709c7.135,7.139,10.706,15.749,10.706,25.837C164.454,192.81,160.882,201.423,153.748,208.562z    M315.482,210.99l-28.839,109.062c9.524,6.468,16.376,15.126,20.564,25.98c4.182,10.849,4.757,21.984,1.711,33.404   c-3.806,14.657-12.278,25.793-25.413,33.403c-13.135,7.614-27.026,9.521-41.686,5.712c-14.653-3.806-25.791-12.275-33.402-25.41   c-7.611-13.138-9.514-27.027-5.708-41.688c3.044-11.416,9.04-20.79,17.987-28.113c8.944-7.333,19.126-11.468,30.546-12.422   l28.837-109.064c1.331-4.948,4.186-8.711,8.562-11.281c4.381-2.565,8.945-3.184,13.706-1.853c4.764,1.334,8.425,4.139,10.991,8.42   C315.914,201.427,316.625,206.042,315.482,210.99z M357.882,208.562c-7.139-7.135-10.711-15.749-10.711-25.837   s3.572-18.699,10.711-25.837s15.749-10.709,25.838-10.709c10.088,0,18.698,3.571,25.837,10.709s10.712,15.749,10.712,25.837   c0,10.085-3.573,18.699-10.712,25.837c-7.139,7.137-15.749,10.709-25.837,10.709C373.631,219.271,365.021,215.699,357.882,208.562z    M464.374,336.469c-7.139,7.135-15.749,10.715-25.837,10.715c-10.089,0-18.699-3.58-25.838-10.715   c-7.139-7.132-10.708-15.749-10.708-25.838c0-10.088,3.569-18.698,10.708-25.837s15.749-10.708,25.838-10.708   c10.088,0,18.698,3.569,25.837,10.708s10.704,15.749,10.704,25.837C475.078,320.72,471.512,329.33,464.374,336.469z">
+                                            </path>
+                                        </g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g>
+                                        </g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                        <g></g>
+                                    </svg></li>
+                                <li data-name="activity" @click="logoutUser()" class="drop-down__item">Logout <svg
+                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        version="1.1" id="Layer_1" x="0px" y="0px" class="drop-down__item-icon"
+                                        width="110.395px" height="122.88px" viewBox="0 0 110.395 122.88"
+                                        enable-background="new 0 0 110.395 122.88" xml:space="preserve">
+                                        <g>
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M93.359,17.16L75.68,9.377L75.99,0h34.404v61.439v61.44H75.99l-0.311-6.835 l17.68-10.946V17.16L93.359,17.16z M82.029,79.239v-34.54H47.004V13.631L0,61.937l47.004,48.373v-31.07H82.029L82.029,79.239z" />
+                                        </g>
+                                    </svg></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Modal -->
+                    <div id="profileModal" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">User Profile</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Name:</strong> userProfile.name </p>
+                                    <p><strong>Email:</strong> userProfile.email </p>
+                                    <!-- Add more profile fields here -->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="wrapper">
@@ -414,12 +516,14 @@
                                             <label for="Holders">Card Holders</label>
                                             <input type="text" v-model="cardCredit.cardHolders" placeholder="Full Name" />
                                             <label for="Number">Card Number</label>
-                                            <input type="text" placeholder="#### #### #### ####" v-model="cardCredit.cardNumber"
-                                                @input="handleCardNumberInput" maxlength="19" />
+                                            <input type="text" placeholder="#### #### #### ####"
+                                                v-model="cardCredit.cardNumber" @input="handleCardNumberInput"
+                                                maxlength="19" />
                                             <div class="bottom">
                                                 <div>
                                                     <label for="name">Expiration Date</label>
-                                                    <select name="dob-year" class="datefield year" v-model="cardCredit.year">
+                                                    <select name="dob-year" class="datefield year"
+                                                        v-model="cardCredit.year">
                                                         <option value="">Year</option>
                                                         <option v-for="year in getFutureYears()" :key="year" :value="year">
                                                             {{ year }}
@@ -427,7 +531,8 @@
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <select name="dob-month" class="datefield month" v-model="cardCredit.month">
+                                                    <select name="dob-month" class="datefield month"
+                                                        v-model="cardCredit.month">
                                                         <option value="">Month</option>
                                                         <option value="01">Jan</option>
                                                         <option value="02">Feb</option>
@@ -848,6 +953,7 @@
 import { defineComponent } from 'vue';
 import stepper from "@/components/stepper.vue";
 import Eticket from "@/components/eticket.vue";
+import VueJwtDecode from 'vue-jwt-decode';
 
 export default defineComponent({
 
@@ -858,6 +964,7 @@ export default defineComponent({
 
     data() {
         return {
+            user: {},
             cardCredit: {
                 cardHolders: "",
                 cardNumber: "",
@@ -878,89 +985,95 @@ export default defineComponent({
 
     computed: {
         holder_number: function () {
-      if (this.cardCredit.cardNumber.trim() == "") {
-        return "#### #### #### ####";
-      }
-      return (
-        this.cardCredit.cardNumber +
-        [
-          "#",
-          "#",
-          "#",
-          "#",
-          " ",
-          "#",
-          "#",
-          "#",
-          "#",
-          " ",
-          "#",
-          "#",
-          "#",
-          "#",
-          " ",
-          "#",
-          "#",
-          "#",
-          "#",
-        ]
+            if (this.cardCredit.cardNumber.trim() == "") {
+                return "#### #### #### ####";
+            }
+            return (
+                this.cardCredit.cardNumber +
+                [
+                    "#",
+                    "#",
+                    "#",
+                    "#",
+                    " ",
+                    "#",
+                    "#",
+                    "#",
+                    "#",
+                    " ",
+                    "#",
+                    "#",
+                    "#",
+                    "#",
+                    " ",
+                    "#",
+                    "#",
+                    "#",
+                    "#",
+                ]
 
-          .splice(this.cardCredit.cardNumber.length, 19)
-          .join("")
-      );
-    },
-    holder_month: function () {
-      if (this.cardCredit.month.trim() == "") {
-        return "mm";
-      }
-      return this.cardCredit.month;
-    },
-    holder_year: function () {
-      if (this.cardCredit.year.trim() == "") {
-        return "yyyy";
-      }
-      return this.cardCredit.year;
-    },
-    holder_cardHolders: function () {
-      if (this.cardCredit.cardHolders.trim() == "") {
-        return "Full Name";
-      }
-      return this.cardCredit.cardHolders;
-    },
-    holder_cvv: function () {
-      if (this.cardCredit.cvv.trim() == "") {
-        return "###";
-      }
-      return this.cardCredit.cvv + ["#", "#", "#"].splice(this.cardCredit.cvv.length, 3).join("");
-    },
+                    .splice(this.cardCredit.cardNumber.length, 19)
+                    .join("")
+            );
+        },
+        holder_month: function () {
+            if (this.cardCredit.month.trim() == "") {
+                return "mm";
+            }
+            return this.cardCredit.month;
+        },
+        holder_year: function () {
+            if (this.cardCredit.year.trim() == "") {
+                return "yyyy";
+            }
+            return this.cardCredit.year;
+        },
+        holder_cardHolders: function () {
+            if (this.cardCredit.cardHolders.trim() == "") {
+                return "Full Name";
+            }
+            return this.cardCredit.cardHolders;
+        },
+        holder_cvv: function () {
+            if (this.cardCredit.cvv.trim() == "") {
+                return "###";
+            }
+            return this.cardCredit.cvv + ["#", "#", "#"].splice(this.cardCredit.cvv.length, 3).join("");
+        },
     },
 
     watch: {},
 
     methods: {
+        logoutUser() {
+            localStorage.removeItem("token");
+            //localStorage.clear();
+            this.$router.push({ path: "/login" });
+
+        },
         getFutureYears() {
-      const currentYear = new Date().getFullYear();
-      const futureYears = [];
+            const currentYear = new Date().getFullYear();
+            const futureYears = [];
 
-      for (let i = 0; i < 8; i++) {
-        futureYears.push((currentYear + i).toString());
-      }
+            for (let i = 0; i < 8; i++) {
+                futureYears.push((currentYear + i).toString());
+            }
 
-      return futureYears;
-    },
+            return futureYears;
+        },
         handleCardNumberInput() {
-      this.cardCredit.cardNumber = this.cardCredit.cardNumber.replace(/\D/g, "");
-      this.cardCredit.cardNumber = this.cardCredit.cardNumber
-        .split("") // Convert the string to an array of characters
-        .map((char, index) => {
-          // Insert a space after every 2 characters (excluding the first character)
-          if (index > 0 && index % 4 === 0) {
-            return " " + char;
-          }
-          return char;
-        })
-        .join(""); // Convert the array back to a string
-    },
+            this.cardCredit.cardNumber = this.cardCredit.cardNumber.replace(/\D/g, "");
+            this.cardCredit.cardNumber = this.cardCredit.cardNumber
+                .split("") // Convert the string to an array of characters
+                .map((char, index) => {
+                    // Insert a space after every 2 characters (excluding the first character)
+                    if (index > 0 && index % 4 === 0) {
+                        return " " + char;
+                    }
+                    return char;
+                })
+                .join(""); // Convert the array back to a string
+        },
         openServiceIndex(index) {
             const detailsElements = this.$el.getElementsByTagName('details');
             for (let i = 0; i < detailsElements.length; i++) {
@@ -1141,12 +1254,30 @@ export default defineComponent({
                 });
             });
         },
+        initDropDownMenu() {
+            const dropDownButton = document.getElementById('dropDown');
+            const dropDownContent = document.querySelector('.drop-down');
+
+            dropDownButton.addEventListener('click', function (event) {
+                dropDownContent.classList.toggle('drop-down--active');
+                event.stopPropagation(); // Prevent click from being immediately captured by document
+            });
+
+            document.addEventListener('click', function (event) {
+                const isClickInsideDropDown = dropDownContent.contains(event.target) || dropDownButton.contains(event.target);
+
+                if (!isClickInsideDropDown && dropDownContent.classList.contains('drop-down--active')) {
+                    dropDownContent.classList.remove('drop-down--active');
+                }
+            });
+        }
     },
 
     mounted() {
+        this.initDropDownMenu()
         this.navMenuInit()
         this.passengers = JSON.parse(window.localStorage.getItem("tripOptions")).passengers
-        console.log(window.localStorage.getItem('token'))
+        this.user = VueJwtDecode.decode(window.localStorage.getItem('token'))
         this.initPassengersArray(this.passengers.length)
         this.selectedTrip = JSON.parse(localStorage.getItem('selectedTrip'))
         console.log(this.selectedTrip)
@@ -1155,6 +1286,152 @@ export default defineComponent({
 });
 
 </script>
+
+<style name="dropdownMenu" scoped>
+.modal-backdrop {
+    z-index: 1!important;
+}
+
+.drop-down {
+    display: inline-block;
+    position: relative;
+}
+
+.drop-down__button {
+    background: linear-gradient(to right, #3d6def, #8FADFE);
+    display: inline-block;
+    line-height: 40px;
+    padding: 0 18px;
+    text-align: left;
+    border-radius: 4px;
+    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.drop-down__name {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.drop-down__icon {
+    width: 18px;
+    vertical-align: middle;
+    margin-left: 14px;
+    height: 18px;
+    border-radius: 50%;
+    transition: all 0.4s;
+    -webkit-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    -ms-transition: all 0.4s;
+    -o-transition: all 0.4s;
+
+}
+
+
+
+.drop-down__menu-box {
+    position: absolute;
+    width: 15rem !important;
+    left: -7rem;
+    background-color: rgb(240, 240, 240);
+    border-radius: 4px;
+    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    visibility: hidden;
+    opacity: 0;
+    margin-top: 5px;
+}
+
+.drop-down__menu {
+    margin: 0;
+    padding: 0 13px;
+    list-style: none;
+
+}
+
+.drop-down__menu-box:before {
+    content: '';
+    background-color: transparent;
+    border-right: 8px solid transparent;
+    position: absolute;
+    border-left: 8px solid transparent;
+    border-bottom: 8px solid rgb(240, 240, 240);
+    border-top: 8px solid transparent;
+    top: -15px;
+    right: 18px;
+
+}
+
+.drop-down__menu-box:after {
+    content: '';
+    background-color: transparent;
+}
+
+.drop-down__item {
+    font-size: 13px;
+    padding: 13px 0;
+    text-align: left;
+    font-weight: 500;
+    color: #909dc2;
+    cursor: pointer;
+    position: relative;
+    border-bottom: 1px solid #e0e2e9;
+    display: flex;
+}
+
+.drop-down__item-icon {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    right: 0px;
+    fill: #8995b6;
+
+}
+
+.drop-down__item:hover .drop-down__item-icon {
+    fill: #3d6def;
+}
+
+.drop-down__item:hover {
+    color: #3d6def;
+}
+
+
+
+.drop-down__item:last-of-type {
+    border-bottom: 0;
+}
+
+
+.drop-down--active .drop-down__menu-box {
+    visibility: visible;
+    opacity: 1;
+    margin-top: .8rem;
+}
+
+.drop-down__item:before {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 28px;
+    background-color: #3d6def;
+    left: -13px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+}
+
+.drop-down__item:hover:before {
+    display: block;
+}
+</style>
 
 <style lang="scss" name="summary-details">
 summary {
@@ -1607,10 +1884,6 @@ select {
         stroke: var(--theme-color) !important;
     }
 
-    .profile-img {
-        border: 2px solid var(--theme-bg-color)
-    }
-
     .content-section ul {
         background-color: var(--theme-bg-color) !important;
     }
@@ -1747,7 +2020,7 @@ select {
         flex-shrink: 0 !important;
 
         svg {
-            width: 22px !important;
+            width: 2rem !important;
             color: #f9fafb !important;
             flex-shrink: 0 !important;
         }
@@ -1781,12 +2054,12 @@ select {
     }
 
     .profile-img {
-        width: 32px !important;
-        height: 32px !important;
+        width: 6rem !important;
+        height: 6rem !important;
         border-radius: 50% !important;
         object-fit: cover !important;
-        border: 2px solid var(--theme-color) !important;
-        margin-left: 22px !important;
+        border: .3rem solid rgb(240, 240, 240) !important;
+        margin-left: 2.5rem !important;
     }
 
     .wide {
