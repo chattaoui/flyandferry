@@ -26,8 +26,8 @@
 
                         <div class="drop-down__menu-box">
                             <ul class="drop-down__menu">
-                                <li data-name="profile" data-toggle="modal" data-target="#profileModal"
-                                    class="drop-down__item">Your Profile <svg version="1.1" class="drop-down__item-icon"
+                                <li data-name="profile" onclick="window.dialog.showModal();" class="drop-down__item">Your
+                                    Profile <svg version="1.1" class="drop-down__item-icon"
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                         x="0px" y="0px" viewBox="0 0 350 350" style="enable-background:new 0 0 350 350;"
                                         xml:space="preserve">
@@ -103,26 +103,98 @@
                     </div>
 
                     <!-- Modal -->
-                    <div id="profileModal" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
+                    <div class="dialog-container">
+                        <dialog id="dialog">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="profileModalLabel">User Profile</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="profile-modal-container">
+                                    <!-- Profile Image -->
+                                    <div class="text-center">
+                                        <img :src="profilePicture" alt="Profile Image"
+                                            class="img-circle profile-img-profile" />
+                                        <div class="form-group profile-img-edit">
+                                            <label class="btn btn-default btn-file">
+                                                Change Photo <input type="file" style="display: none;"
+                                                    id="profileImageUpload" accept="image/*" @change="handleImgSelected">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Profile Information Form -->
+                                    <form class="form-horizontal" role="form" @submit.prevent="updateProfile">
+                                        <!-- Username -->
+                                        <div class="form-group">
+                                            <label for="name" class="col-sm-3 control-label">Name</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" id="name" v-model="user.name"
+                                                    placeholder="Name">
+                                            </div>
+                                        </div>
+                                        <!-- Email and Birthdate -->
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="email" class="control-label">Email</label>
+                                                <input disabled type="email" class="form-control" id="email" placeholder="Email"
+                                                    v-model="user.email">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="birthdate" class="control-label">Birthdate</label>
+                                                <input type="date" class="form-control" id="birthdate"
+                                                    v-model="user.birthdate">
+                                            </div>
+                                        </div>
 
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">User Profile</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <p><strong>Name:</strong> userProfile.name </p>
-                                    <p><strong>Email:</strong> userProfile.email </p>
-                                    <!-- Add more profile fields here -->
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <!-- Phone Number and Address -->
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="phone" class="control-label">Phone Number</label>
+                                                <input type="tel" class="form-control" id="phone"
+                                                    v-model="user['phone number']" placeholder="Phone Number">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="address" class="control-label">Address</label>
+                                                <input type="text" class="form-control" id="address" v-model="user.address"
+                                                    placeholder="Address">
+                                            </div>
+                                        </div>
+
+                                        <!-- Postal Code and Old Password -->
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="postalCode" class="control-label">Postal Code</label>
+                                                <input type="text" class="form-control" id="postalCode"
+                                                    v-model="user['postal code']" placeholder="Postal Code">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="oldPassword" class="control-label">Old Password</label>
+                                                <input type="password" class="form-control" id="oldPassword"
+                                                    v-model="oldPassword" placeholder="Old Password">
+                                            </div>
+                                        </div>
+
+                                        <!-- New Password -->
+                                        <div class="form-row">
+                                            <div class="form-group col-md-12">
+                                                <label for="newPassword" class="control-label">New Password</label>
+                                                <input type="password" class="form-control" id="newPassword"
+                                                    v-model="newPassword" placeholder="New Password">
+                                            </div>
+                                        </div>
+
+                                        <!-- Submit Button -->
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-3 col-sm-9">
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-
-                        </div>
+                            <button onclick="window.dialog.close();" @click="handleCloseModal()" aria-label="close" class="x">❌</button>
+                        </dialog>
                     </div>
 
                 </div>
@@ -207,7 +279,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="payment" class="main-container" v-if="selectedMenu === 'payment'">
+                <div id="payme nt" class="main-container" v-if="selectedMenu === 'payment'">
                     <div class="content-wrapper">
                         <div class="content-section">
                             <div style="width:40%;align-self:center;">
@@ -954,6 +1026,7 @@ import { defineComponent } from 'vue';
 import stepper from "@/components/stepper.vue";
 import Eticket from "@/components/eticket.vue";
 import VueJwtDecode from 'vue-jwt-decode';
+import bcrypt from 'bcryptjs';
 
 export default defineComponent({
 
@@ -964,6 +1037,10 @@ export default defineComponent({
 
     data() {
         return {
+            profilePicFile: null,
+            newPassword: "",
+            oldPassword: "",
+            profilePicture: 'img/1635932302.png',
             user: {},
             cardCredit: {
                 cardHolders: "",
@@ -1045,6 +1122,47 @@ export default defineComponent({
     watch: {},
 
     methods: {
+        async updateProfile() {
+            if (this.oldPassword && this.newPassword) {
+                if (bcrypt.compareSync(this.oldPassword, this.user.password)) {
+                    this.user.password = await bcrypt.hash(this.newPassword, 8)
+                } else {
+                    window.alert('Wrong password')
+                    return
+                }
+            }
+            console.log(this.user)
+            let formData = new FormData()
+            if (this.profilePicFile) formData.append('image', this.profilePicFile)
+            this.user.image = `https://cms.4help.tn/profilePictures/${this.profilePicFile.name}`
+            formData.append('userInfo', JSON.stringify(this.user))
+            try {
+                await this.$axios.post('https://cms.4help.tn/api/Authentication_API/updateprofile', formData).then(res => {
+                    console.log(res)
+                    this.user.image = this.profilePicture
+                })
+            } catch(e) {
+                window.alert('Please try again later')
+            }
+        },
+        handleImgSelected(event) {
+            const file = event.target.files[0];
+            this.profilePicFile = file;
+            console.log(file)
+            if (file && file.type.match('image.*')) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    this.profilePicture = e.target.result; // Update the image source
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please select an image file.');
+            }
+        },
+        handleCloseModal(){
+            this.profilePicFile = null
+            this.user.image? this.profilePicture=this.user.image : this.profilePicture='img/1635932302.png'
+        },
         logoutUser() {
             localStorage.removeItem("token");
             //localStorage.clear();
@@ -1278,6 +1396,7 @@ export default defineComponent({
         this.navMenuInit()
         this.passengers = JSON.parse(window.localStorage.getItem("tripOptions")).passengers
         this.user = VueJwtDecode.decode(window.localStorage.getItem('token'))
+        console.log(this.user)
         this.initPassengersArray(this.passengers.length)
         this.selectedTrip = JSON.parse(localStorage.getItem('selectedTrip'))
         console.log(this.selectedTrip)
@@ -1287,11 +1406,134 @@ export default defineComponent({
 
 </script>
 
-<style name="dropdownMenu" scoped>
-.modal-backdrop {
-    z-index: 1!important;
+<style name="profile-dialog">
+.form-row {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
 }
 
+.profile-img-edit .btn-file {
+    margin: 10px auto;
+    display: block;
+}
+
+.btn-file input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.profile-img-profile {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+.profile-modal-container {
+    padding: 15px;
+}
+
+dialog {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+    height: max-content;
+    background: white;
+    padding-top: 2rem;
+    border-radius: 20px;
+    border: 0;
+    box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.1);
+    -webkit-animation: fadeIn 1s ease both;
+    animation: fadeIn 1s ease both;
+    padding: 1rem;
+}
+
+dialog::-webkit-backdrop {
+    -webkit-animation: fadeIn 1s ease both;
+    animation: fadeIn 1s ease both;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 2;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+dialog::backdrop {
+    -webkit-animation: fadeIn 1s ease both;
+    animation: fadeIn 1s ease both;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 2;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+dialog .x {
+    filter: grayscale(1);
+    border: none;
+    background: none;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    transition: ease filter, transform 0.3s;
+    cursor: pointer;
+    transform-origin: center;
+}
+
+dialog .x:hover {
+    filter: grayscale(0);
+    transform: scale(1.1);
+}
+
+dialog h2 {
+    font-weight: 600;
+    font-size: 2rem;
+    padding-bottom: 1rem;
+}
+
+dialog p {
+    font-size: 1rem;
+    line-height: 1.3rem;
+    padding: 0.5rem 0;
+}
+
+dialog p a:visited {
+    color: rgb(var(--vs-primary));
+}
+
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+</style>
+
+<style name="dropdownMenu" scoped>
 .drop-down {
     display: inline-block;
     position: relative;
@@ -2696,7 +2938,7 @@ select {
 
 .credit-card-container .card-area,
 .credit-card-container .form {
-    background-color: rgb(255, 193, 69);
+    background-color: #084C61;
     border-radius: 2rem;
     display: flex;
     min-height: 98%;
