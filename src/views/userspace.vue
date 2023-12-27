@@ -114,7 +114,7 @@
                                 <div class="profile-modal-container">
                                     <!-- Profile Image -->
                                     <div class="text-center">
-                                        <img :src="profilePicture" alt="Profile Image"
+                                        <img :src="(profilePicture==='img/1635932302.png' && user.image)?user.image:profilePicture" alt="Profile Image"
                                             class="img-circle profile-img-profile" />
                                         <div class="form-group profile-img-edit">
                                             <label class="btn btn-default btn-file">
@@ -1131,19 +1131,25 @@ export default defineComponent({
                     return
                 }
             }
-            console.log(this.user)
             let formData = new FormData()
-            if (this.profilePicFile) formData.append('image', this.profilePicFile)
-            this.user.image = `https://cms.4help.tn/profilePictures/${this.profilePicFile.name}`
+            if (this.profilePicFile){ 
+                formData.append('image', this.profilePicFile)
+                this.user.image = `https://cms.4help.tn/profilePictures/${this.profilePicFile.name}`
+            }
             formData.append('userInfo', JSON.stringify(this.user))
+            if (JSON.stringify(this.user) === JSON.stringify(VueJwtDecode.decode(localStorage.getItem('token')))) return
+            
             try {
                 await this.$axios.post('https://cms.4help.tn/api/Authentication_API/updateprofile', formData).then(res => {
-                    console.log(res)
+                    localStorage.setItem('token', res.data.token)
+                    this.user = VueJwtDecode.decode(res.data.token)
+                    console.log("new user data\n\n", VueJwtDecode.decode(res.data.token))
                     this.user.image = this.profilePicture
                 })
             } catch(e) {
                 window.alert('Please try again later')
             }
+            
         },
         handleImgSelected(event) {
             const file = event.target.files[0];
