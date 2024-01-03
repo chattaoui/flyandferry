@@ -129,7 +129,7 @@
                                         <div class="form-group">
                                             <label for="name" class="col-sm-3 control-label">Name</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="name" v-model="user.name"
+                                                <input type="text" class="form-control" id="name" v-model="this.user.name"
                                                     placeholder="Name">
                                             </div>
                                         </div>
@@ -1132,7 +1132,7 @@ export default defineComponent({
                 }
             }
             let formData = new FormData()
-            if (this.profilePicFile){ 
+            if (this.profilePicFile){
                 formData.append('image', this.profilePicFile)
                 this.user.image = `https://cms.4help.tn/profilePictures/${this.profilePicFile.name}`
             }
@@ -1144,7 +1144,6 @@ export default defineComponent({
                     localStorage.setItem('token', res.data.token)
                     this.user = VueJwtDecode.decode(res.data.token)
                     console.log("new user data\n\n", VueJwtDecode.decode(res.data.token))
-                    this.user.image = this.profilePicture
                 })
             } catch(e) {
                 window.alert('Please try again later')

@@ -26,6 +26,11 @@ const routes = [
     }
   },
   {
+    path: '/notfound',
+    name: 'triplist',
+    component: () => import('../views/notFound.vue'),
+  },
+  {
     path: '/login',
     name: 'login',
     // route level code-splitting

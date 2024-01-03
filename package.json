@@ -11,6 +11,7 @@
     "bcryptjs": "^2.4.3",
     "core-js": "^3.8.3",
     "credit-card-validator": "^1.0.8",
+    "gsap": "^3.12.4",
     "jquery": "^3.7.1",
     "jquery-easing": "0.0.1",
     "leaflet": "^1.9.4",
