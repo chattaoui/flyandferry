@@ -1,22 +1,80 @@
 <template>
-    <div id="notfound">
-        <div class="belt"></div>
-<div class="scanner"></div>
-<div class="scan-window"></div>
-<div class="hide"></div>
-<div class="monitor text"></div>
+	<div>
+    <div class="belt"></div>
+    <div class="scanner"></div>
+    <div class="scan-window"></div>
+    <div class="hide"></div>
+    <div class="monitor text"></div>
 
-<div class="box">
-	<p>User X</p>
-	<p class="version"></p>
-	<div class="user"></div>
-</div>
+    <div class="box">
+      <p>User X</p>
+      <p class="version"></p>
+      <div class="user"></div>
     </div>
+  </div>
 </template>
 
+<script>
+import gsap from "gsap"
+import $ from "jquery"
+export default {
+	data() {
+    return {
+      text: ['404', 'Not Found'],
+      counter: 0,
+      tl: null,
+    };
+  },
+  mounted() {
+    // Set the browser version
+    this.setBrowserVersion();
+
+    // Start the conveyor belt animation
+    this.startConveyorBelt();
+
+    // Start the monitor 'scanning' effect
+    this.startScanning();
+  },
+  methods: {
+    setBrowserVersion() {
+      // Use the browser detection function, and set the version in the .version element
+      $('.version').text(this.detectBrowser());
+    },
+    detectBrowser() {
+      // Your original browser detection code
+      // ...
+      return 'Browser Info'; // Replace this with actual browser info
+    },
+    startConveyorBelt() {
+      // Assuming you are using GSAP for the animation
+      gsap.timeline().to('.box', 4, {
+        right: '0',
+        ease: Power0.easeNone
+      });
+
+      gsap.timeline().call(() => { 
+        $('.box').addClass('scanned');
+        $('.scan-window').addClass('scanning');
+      }, null, null, 2.5);
+    },
+    startScanning() {
+      const elem = $('.monitor');
+      setInterval(() => {
+        elem.text(this.text[this.counter]);
+        elem.toggleClass('text');
+        this.counter++;
+        if (this.counter >= this.text.length) {
+          this.counter = 0;
+        }
+      }, 1000);
+    }
+  }
+}
+</script>
+
 <style lang="scss">
-#notfound {
-    $red: #f6525d;
+
+$red: #f6525d;
 $grey: #dedded;
 $purple: #7e6e92;
 $darkpurple: #655079;
@@ -24,8 +82,6 @@ $darkpurple1: #543f6a;
 $blue: #70a8ff;
 $yellow: #fdcd23;
 $bag: #E3D0B9;
-
-@import url('https://fonts.googleapis.com/css?family=Share+Tech+Mono');
 
 * {
 	margin: 0;
@@ -302,5 +358,5 @@ body  {
 		background: darken($darkpurple1, 5);
 	}
 }
-}
+
 </style>

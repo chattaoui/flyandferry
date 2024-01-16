@@ -81,8 +81,13 @@
             </div>
         </div>
         <div v-if="currentMenu === 'date'" class="menu">
-            <VueCtkDateTimePicker style="width: 4px" v-model="departDate" format="YYYY-MM-DD"
-                :enabledDates="datestoHighlight" ref="dateTimePicker" @change-month="() => {console.log('helooooo')}"
+            <!-- <VueCtkDateTimePicker style="width: 4px" v-model="departDate" format="YYYY-MM-DD"
+                 ref="dateTimePicker" 
+                :range="tripType === `oneway` ? false : true" :noShortcuts="true" :no-header="true" :inline="true"
+                :only-date="true" :position="'bottom'" :no-button="true"  class="date-picker"
+                :noButtonNow="true" :label="`Select departure date`" :formatted="'YYYY-MM-DD'" />-->
+                <VueCtkDateTimePicker style="width: 4px" v-model="departDate" format="YYYY-MM-DD"
+                :enabledDates="datestoHighlight" ref="dateTimePicker" 
                 :range="tripType === `oneway` ? false : true" :noShortcuts="true" :no-header="true" :inline="true"
                 :only-date="true" :position="'bottom'" :no-button="true" :min-date="getCurrentDate()" class="date-picker"
                 :noButtonNow="true" :label="`Select departure date`" :formatted="'YYYY-MM-DD'" />
@@ -433,37 +438,37 @@ export default {
 
             if (this.tripType !== "roundTrip") {
                 [fromDate, toDate] = this.getDatesOneWay(fromDate)
-                const OUT = await this.useTimeTableAPI(
+                const Out = await this.useTimeTableAPI(
                     fromDate,
                     toDate,
                     this.selectedRoute["$"].DepartPort,
                     this.selectedRoute["$"].DestinationPort
                 );
-                localStorage.setItem("trips", JSON.stringify([OUT]))
+                localStorage.setItem("trips", JSON.stringify([Out]))
 
                 localStorage.setItem("tripOptions", JSON.stringify(tripOptions))
-                if (OUT) this.$router.push({ name: "triplist" })
+                if (Out) this.$router.push({ name: "triplist" })
             } else {
                 const fromDates = this.getDatesOneWay(fromDate)
                 const toDates = this.getDatesOneWay(toDate)
-                const OUT = await this.useTimeTableAPI(
+                const Out = await this.useTimeTableAPI(
                     fromDates[0],
                     fromDates[1],
                     this.portNameCode[this.depPort],
                     this.portNameCode[this.destPort]
                 );
-                const RTN = await this.useTimeTableAPI(
+                const Rtn = await this.useTimeTableAPI(
                     toDates[0],
                     toDates[1],
                     this.portNameCode[this.destPort],
                     this.portNameCode[this.depPort]
                 );
-                localStorage.setItem("trips", JSON.stringify([OUT, RTN]))
+                localStorage.setItem("trips", JSON.stringify([Out, Rtn]))
 
 
                 localStorage.setItem("tripOptions", JSON.stringify(tripOptions))
 
-                if (OUT && RTN) this.$router.push({ name: "triplist" })
+                if (Out && Rtn) this.$router.push({ name: "triplist" })
             }
             this.$parent.displayLoader = false
         },

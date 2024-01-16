@@ -40,15 +40,12 @@ function change() {
 
 // high end conveyor belt functionality
 var box = '.box';
-var tl = new TimelineMax();
+var tl = gsap.timeline();
 
-tl.to(box, 4, {
-	right: '0',
-	ease: Power0.easeNone
-});
+tl.to(box, { duration: 4, right: '0', ease: "none" });
 
-tl.call(function() { 
-	$(box).addClass('scanned');
-	$('.scan-window').addClass('scanning');
-	scanning();
+tl.call(function() {
+  $(box).addClass('scanned');
+  $('.scan-window').addClass('scanning');
+  scanning();
 }, null, null, 2.5);

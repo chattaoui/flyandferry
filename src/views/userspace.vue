@@ -114,8 +114,8 @@
                                 <div class="profile-modal-container">
                                     <!-- Profile Image -->
                                     <div class="text-center">
-                                        <img :src="(profilePicture==='img/1635932302.png' && user.image)?user.image:profilePicture" alt="Profile Image"
-                                            class="img-circle profile-img-profile" />
+                                        <img :src="(profilePicture === 'img/1635932302.png' && user.image) ? user.image : profilePicture"
+                                            alt="Profile Image" class="img-circle profile-img-profile" />
                                         <div class="form-group profile-img-edit">
                                             <label class="btn btn-default btn-file">
                                                 Change Photo <input type="file" style="display: none;"
@@ -137,8 +137,8 @@
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="email" class="control-label">Email</label>
-                                                <input disabled type="email" class="form-control" id="email" placeholder="Email"
-                                                    v-model="user.email">
+                                                <input disabled type="email" class="form-control" id="email"
+                                                    placeholder="Email" v-model="user.email">
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="birthdate" class="control-label">Birthdate</label>
@@ -193,7 +193,8 @@
                                     </form>
                                 </div>
                             </div>
-                            <button onclick="window.dialog.close();" @click="handleCloseModal()" aria-label="close" class="x">❌</button>
+                            <button onclick="window.dialog.close();" @click="handleCloseModal()" aria-label="close"
+                                class="x">❌</button>
                         </dialog>
                     </div>
 
@@ -1055,7 +1056,8 @@ export default defineComponent({
             openSectionIndex: 0,
             submitted: false,
             currentStep: "1",
-            selectedTrip: {}
+            selectedTrip: {},
+            tripOptions: {},
         }
 
     },
@@ -1122,6 +1124,88 @@ export default defineComponent({
     watch: {},
 
     methods: {
+        async makeReservation() {
+            function getCurrentFormattedDate() {
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const day = String(currentDate.getDate()).padStart(2, '0');
+                const hours = String(currentDate.getHours()).padStart(2, '0');
+                const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+                const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+                return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+            }
+            const rawServices = JSON.parse(localStorage.getItem('rawServices'))
+            let data = {}
+
+            data = {
+                "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
+                "TimeStamp": `2023-10-12T09:10:04`,
+                "User": "",
+                "LanguagePrefCode": "en",
+                "Currency": "EUR",
+                "CountryCode": "TUN",
+                "OriginatingSystem": "",
+            }
+
+            data.passengers = this.passengersData.map((item, index) => ({
+                "Category": calculateAge(item['date of birth']),
+                "Title": item.title,
+                "Forename": item['first name'],
+                "Surname": item['last name'],
+                "IdentityCategory": item['type of id'],
+                "IdentityNumber": item.id,
+                "IdentityIssueCountry": item.country,
+                "IdentityExpiryDate": item['expiry date'],
+                "PassengerNationality": item.country,
+                "DateOfBirth": item['date of birth'],
+                "Gender": item.gender,
+            }))
+
+            function calculateAge(dateOfBirth) {
+                const birthDate = new Date(dateOfBirth);
+                const today = new Date();
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const category = age > 14 ? 'Adult' : 'Child';
+                return category
+            }
+
+            if (this.tripOptions.passengers.length) data.vehicles = this.tripOptions.vehicles
+            data.onBoardAccommodationServices = rawServices[0]
+            data.onBoardServices = rawServices[1]
+            data.sailings = Object.entries(this.selectedTrip.trip).map(([key, value]) => ({ [key]: value }))
+            data.contactDetails = {
+                Forename: this.user.name,
+                Email: this.user.email,
+                AddressLine1: this.user.address,
+                ZipPostCode: this.user['postal code'],
+                MobileNumber: this.user['phone number']
+            }
+            data.User = this.user
+            let configg = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: 'https://cms.4help.tn/api/book_API/book',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                maxRedirects: 0,
+                data: JSON.stringify(data)
+            };
+            /*
+                contactDetails => Title + CountryCode
+                vehicleDetails => operatorCode + Registration
+            */
+            try {
+                await this.$axios.request(configg).then(res => {
+                    console.log(res)
+                })
+            } catch (e) {
+                console.log(e)
+            }
+
+        },
         async updateProfile() {
             if (this.oldPassword && this.newPassword) {
                 if (bcrypt.compareSync(this.oldPassword, this.user.password)) {
@@ -1132,23 +1216,23 @@ export default defineComponent({
                 }
             }
             let formData = new FormData()
-            if (this.profilePicFile){
+            if (this.profilePicFile) {
                 formData.append('image', this.profilePicFile)
                 this.user.image = `https://cms.4help.tn/profilePictures/${this.profilePicFile.name}`
             }
             formData.append('userInfo', JSON.stringify(this.user))
             if (JSON.stringify(this.user) === JSON.stringify(VueJwtDecode.decode(localStorage.getItem('token')))) return
-            
+
             try {
                 await this.$axios.post('https://cms.4help.tn/api/Authentication_API/updateprofile', formData).then(res => {
                     localStorage.setItem('token', res.data.token)
                     this.user = VueJwtDecode.decode(res.data.token)
                     console.log("new user data\n\n", VueJwtDecode.decode(res.data.token))
                 })
-            } catch(e) {
+            } catch (e) {
                 window.alert('Please try again later')
             }
-            
+
         },
         handleImgSelected(event) {
             const file = event.target.files[0];
@@ -1164,9 +1248,9 @@ export default defineComponent({
                 alert('Please select an image file.');
             }
         },
-        handleCloseModal(){
+        handleCloseModal() {
             this.profilePicFile = null
-            this.user.image? this.profilePicture=this.user.image : this.profilePicture='img/1635932302.png'
+            this.user.image ? this.profilePicture = this.user.image : this.profilePicture = 'img/1635932302.png'
         },
         logoutUser() {
             localStorage.removeItem("token");
@@ -1206,6 +1290,8 @@ export default defineComponent({
             }
         },
         handleNextClick() {
+
+            this.makeReservation()
             let error = false
             if (this.currentStep === "1") {
                 let errorIndex = null
@@ -1232,6 +1318,8 @@ export default defineComponent({
             else if (this.currentStep === "2") {
                 this.currentStep = "3"
             }
+            else if (this.currentStep === "3") {
+            }
         },
         getCurrentDate() {
             const now = new Date()
@@ -1252,7 +1340,8 @@ export default defineComponent({
                     "date of birth": "",
                     gender: "",
                     "type of id": "",
-                    id: ""
+                    id: "",
+
                 };
             }
         },
@@ -1404,6 +1493,7 @@ export default defineComponent({
         console.log(this.user)
         this.initPassengersArray(this.passengers.length)
         this.selectedTrip = JSON.parse(localStorage.getItem('selectedTrip'))
+        this.tripOptions = JSON.parse(localStorage.getItem('tripOptions'))
         console.log(this.selectedTrip)
     },
 

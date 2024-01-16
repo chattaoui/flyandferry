@@ -429,8 +429,8 @@ export default {
     console.log(fromDate, toDate)
       if (this.tripType !== "roundTrip") {
         [fromDate, toDate] = this.getDatesOneWay(fromDate)
-        const OUT = await this.useTimeTableAPI(fromDate, toDate, this.selectedRoute["$"].DepartPort, this.selectedRoute["$"].DestinationPort)
-        localStorage.setItem('trips', JSON.stringify([OUT]))
+        const Out = await this.useTimeTableAPI(fromDate, toDate, this.selectedRoute["$"].DepartPort, this.selectedRoute["$"].DestinationPort)
+        localStorage.setItem('trips', JSON.stringify([Out]))
         var tripOptions = {passengers:[],vehicles: []}
 
         for (let i = 1; i <= this.$refs.adult.value; i++) {
@@ -452,14 +452,14 @@ export default {
             "Length": this.selectedVehicule.MinHeight
           })
         localStorage.setItem('tripOptions', JSON.stringify(tripOptions))
-        if (OUT) this.$router.push({ name: 'triplist' })
+        if (Out) this.$router.push({ name: 'triplist' })
       }
       else {
         const fromDates = this.getDatesOneWay(fromDate)
         const toDates = this.getDatesOneWay(toDate)
-        const OUT = await this.useTimeTableAPI(fromDates[0], fromDates[1], this.selectedRoute["$"].DepartPort, this.selectedRoute["$"].DestinationPort)
-        const RTN = await this.useTimeTableAPI(toDates[0], toDates[1], this.selectedRoute["$"].DestinationPort, this.selectedRoute["$"].DepartPort)
-        localStorage.setItem('trips', JSON.stringify([OUT, RTN]))
+        const Out = await this.useTimeTableAPI(fromDates[0], fromDates[1], this.selectedRoute["$"].DepartPort, this.selectedRoute["$"].DestinationPort)
+        const Rtn = await this.useTimeTableAPI(toDates[0], toDates[1], this.selectedRoute["$"].DestinationPort, this.selectedRoute["$"].DepartPort)
+        localStorage.setItem('trips', JSON.stringify([Out, Rtn]))
         
         var tripOptions = {passengers:[],vehicles: []}
 
@@ -484,7 +484,7 @@ export default {
           })
         localStorage.setItem('tripOptions', JSON.stringify(tripOptions))
 
-        if (OUT && RTN) this.$router.push({ name: 'triplist' })
+        if (Out && Rtn) this.$router.push({ name: 'triplist' })
       }
       this.$parent.displayLoader = false
       

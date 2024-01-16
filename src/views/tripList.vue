@@ -120,13 +120,13 @@
                         <div class="trip-details-container">
                             <div class="trip-details">
                                 <div class="travel-arrival-info">
-                                    <p class="travel-time">{{ trip.OUT.DepartDateTime.split('T')[1] }}</p>
+                                    <p class="travel-time">{{ trip.Out.DepartDateTime.split('T')[1] }}</p>
                                     <p></p>
-                                    <p class="travel-arrival-date">{{ trip.OUT.DepartDateTime.split('T')[0] }}</p>
+                                    <p class="travel-arrival-date">{{ trip.Out.DepartDateTime.split('T')[0] }}</p>
                                 </div>
                                 <div class="travel-range">
-                                    <p class="range-time">{{ calculateHourDifference(trip.OUT.DepartDateTime,
-                                        trip.OUT.ArriveDateTime) }}</p>
+                                    <p class="range-time">{{ calculateHourDifference(trip.Out.DepartDateTime,
+                                        trip.Out.ArriveDateTime) }}</p>
                                     <div class="range">
                                         <div class="range-pos range-start"></div>
                                         <div class="range-pos range-end"></div>
@@ -137,9 +137,9 @@
                                     </p>
                                 </div>
                                 <div class="travel-departure-info">
-                                    <p class="travel-time">{{ trip.OUT.ArriveDateTime.split('T')[1] }}</p>
+                                    <p class="travel-time">{{ trip.Out.ArriveDateTime.split('T')[1] }}</p>
                                     <p></p>
-                                    <p class="travel-arrival-date">{{ trip.OUT.ArriveDateTime.split('T')[0] }}</p>
+                                    <p class="travel-arrival-date">{{ trip.Out.ArriveDateTime.split('T')[0] }}</p>
                                 </div>
                             </div>
 
@@ -147,13 +147,13 @@
 
                             <div class="trip-details">
                                 <div class="travel-arrival-info">
-                                    <p class="travel-time">{{ trip.RTN.DepartDateTime.split('T')[1] }}</p>
+                                    <p class="travel-time">{{ trip.Rtn.DepartDateTime.split('T')[1] }}</p>
                                     <p></p>
-                                    <p class="travel-arrival-date">{{ trip.RTN.DepartDateTime.split('T')[0] }}</p>
+                                    <p class="travel-arrival-date">{{ trip.Rtn.DepartDateTime.split('T')[0] }}</p>
                                 </div>
                                 <div class="travel-range">
-                                    <p class="range-time">{{ calculateHourDifference(trip.RTN.DepartDateTime,
-                                        trip.RTN.ArriveDateTime) }}</p>
+                                    <p class="range-time">{{ calculateHourDifference(trip.Rtn.DepartDateTime,
+                                        trip.Rtn.ArriveDateTime) }}</p>
                                     <div class="range">
                                         <div class="range-pos range-start"></div>
                                         <div class="range-pos range-end"></div>
@@ -164,9 +164,9 @@
                                     </p>
                                 </div>
                                 <div class="travel-departure-info">
-                                    <p class="travel-time">{{ trip.RTN.ArriveDateTime.split('T')[1] }}</p>
+                                    <p class="travel-time">{{ trip.Rtn.ArriveDateTime.split('T')[1] }}</p>
                                     <p></p>
-                                    <p class="travel-arrival-date">{{ trip.RTN.ArriveDateTime.split('T')[0] }}</p>
+                                    <p class="travel-arrival-date">{{ trip.Rtn.ArriveDateTime.split('T')[0] }}</p>
                                 </div>
                             </div>
                         </div>
@@ -351,18 +351,29 @@ export default {
         },
         getServiceNames() {
             let serviceNames = []
-            Object.keys(this.selectedQuantities).map(code => {
-                this.services.OnBoardAccommodationServices.OnBoardAccommodationService.map((service) => {
+            let rawServices = [[], []]
+            Object.keys(this.selectedQuantities).map((code) => {
+                this.services.OnBoardAccommodationServices.OnBoardAccommodationService.map((service, index) => {
                     if (code === service["@Code"]) {
                         serviceNames.push({ "serviceName": service["@Description"], "Quantity": this.selectedQuantities[code], "unitCost": service["@UnitCost"] })
+                        rawServices[0].push({
+                            Quantity: this.selectedQuantities[code],
+                            Code: code,
+                        })
                     }
                 })
-                this.services.OnBoardServices.OnBoardService.map((service) => {
+                this.services.OnBoardServices.OnBoardService.map((service, index) => {
                     if (code === service["@Code"]) {
                         serviceNames.push({ "serviceName": service["@Description"], "Quantity": this.selectedQuantities[code], "unitCost": service["@UnitCost"] })
+                        rawServices[1].push({
+                            Quantity: this.selectedQuantities[code],
+                            Code: code,
+                        })
                     }
                 })
             })
+            console.log(rawServices)
+            localStorage.setItem('rawServices' ,JSON.stringify(rawServices))
             return serviceNames
         },
         getAdultCount() {
@@ -375,7 +386,6 @@ export default {
         test() {
             this.showTripList = true
             this.showSummary = true
-            console.log(this.selectedQuantities)
             this.selectedTrip["Accomodations"] = this.getServiceNames()
             localStorage.setItem('selectedTrip', JSON.stringify(this.selectedTrip))
         },
@@ -426,13 +436,13 @@ export default {
                 }
             } else {
 
-                const departDateTimeOut = trip.OUT.DepartDateTime
-                const departPlaceOut = trip.OUT.DepartPort
-                const destinationPlaceOut = trip.OUT.DestinationPort
+                const departDateTimeOut = trip.Out.DepartDateTime
+                const departPlaceOut = trip.Out.DepartPort
+                const destinationPlaceOut = trip.Out.DestinationPort
 
-                const departDateTimeRtn = trip.RTN.DepartDateTime
-                const departPlaceRtn = trip.RTN.DepartPort
-                const destinationPlaceRtn = trip.RTN.DestinationPort
+                const departDateTimeRtn = trip.Rtn.DepartDateTime
+                const departPlaceRtn = trip.Rtn.DepartPort
+                const destinationPlaceRtn = trip.Rtn.DestinationPort
 
                 data = {
                     "TransactionId": "488445e3-13aa-41e3-ace1-9a022a74e974",
@@ -514,7 +524,7 @@ export default {
         //         ],
         //         "sailings": [
         //             {
-        //                 "id": "OUT",
+        //                 "id": "Out",
         //                 "DepartDateTime": "2023-10-20T08:00",
         //                 "DepartPort": "TNTUN",
         //                 "DestinationPort": "ITGOA",
@@ -553,7 +563,7 @@ export default {
                 ],
                 "sailings": [
                     {
-                        "id": "OUT",
+                        "id": "Out",
                         "DepartDateTime": "2023-10-20T08:00",
                         "DepartPort": "TNTUN",
                         "DestinationPort": "ITGOA",
@@ -619,7 +629,7 @@ export default {
                         toDate => {
                             let date1 = new Date(fromDate.ArriveDateTime)
                             let date2 = new Date(toDate.DepartDateTime)
-                            if (date2 > date1) return { "OUT": fromDate, "RTN": toDate }
+                            if (date2 > date1) return { "Out": fromDate, "Rtn": toDate }
                         }
                     )
                 }

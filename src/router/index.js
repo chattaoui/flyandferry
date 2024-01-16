@@ -25,11 +25,11 @@ const routes = [
         next({ path: '/' })
     }
   },
-  {
-    path: '/notfound',
-    name: 'triplist',
-    component: () => import('../views/notFound.vue'),
-  },
+  // {
+  //   path: '/notfound',
+  //   name: 'triplist',
+  //   component: () => import('../views/notFound.vue'),
+  // },
   {
     path: '/login',
     name: 'login',
