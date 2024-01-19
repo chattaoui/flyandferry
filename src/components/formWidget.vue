@@ -413,6 +413,8 @@ export default {
                     OperatorCode: this.selectedcarModel["Code"],
                     Height: this.selectedcarModel["Height"].toString().replace(".", ""),
                     Length: this.selectedcarModel["Length"].toString().replace(".", ""),
+                    Brand: this.selectedcarBrand,
+                    Model: this.selectedcarModel["Model"],
                 })
             if (this.selectedTrailer.length) tripOptions.vehicles[0]["Trailer"] = {
                 OperatorCode: this.selectedTrailer["OperatorCode"],

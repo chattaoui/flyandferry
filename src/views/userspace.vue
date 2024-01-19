@@ -308,14 +308,14 @@
                                                     <label>
                                                         <div>
                                                             <span>Title</span>
-                                                            <select v-model="passengersData[index]['title']"
-                                                                :class="{ 'invalid': submitted && !passengersData[index]['title'] }">
+                                                            <select v-model="passengersData[index]['Title']"
+                                                                :class="{ 'invalid': submitted && !passengersData[index]['Title'] }">
                                                                 <option value="Mr">Mr</option>
                                                                 <option value="Mrs">Mrs</option>
                                                             </select>
                                                         </div>
                                                         <div class="error-message-wrapper">
-                                                            <span v-if="submitted && !passengersData[index]['title']"
+                                                            <span v-if="submitted && !passengersData[index]['Title']"
                                                                 class="error-message">Please choose your title.</span>
                                                             <a style="width: 20%;"></a>
                                                         </div>
@@ -394,9 +394,12 @@
                                                     <label>
                                                         <div>
                                                             <span>Country</span>
-                                                            <select v-model="passengersData[index]['country']"
+                                                            <select class="select-class" style="max-width: 20rem!important;"
+                                                                v-model="passengersData[index]['country']"
                                                                 :class="{ 'invalid': submitted && !passengersData[index]['country'] }">
-                                                                <option value="Tunis">Tunisia</option>
+                                                                <option v-for="country in Countries" :value="country.cca3"
+                                                                    :key="country.name.common">{{ country.name.common }}
+                                                                </option>
                                                             </select>
                                                         </div>
 
@@ -475,6 +478,58 @@
                                                         <a style="width: 20%;"></a>
                                                     </div>
                                                 </label>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="card" v-if="tripOptions.vehicles">
+                                        <div class="card-header" :id="`faqHeading-${passengers.length + 1}`"
+                                            @click="toggleSection(passengers.length + 1)">
+                                            <div class="mb-0">
+                                                <h5 class="faq-title" :data-target="`#faqCollapse-${passengers.length + 1}`"
+                                                    :data-aria-controls="`faqCollapse-${passengers.length + 1}`">
+                                                    Vehicle
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div :id="`faqCollapse-${passengers.length + 1}`"
+                                            :class="openSectionIndex == passengers.length + 1 ? 'collapse in' : 'collapse'"
+                                            :aria-labelledby="`faqHeading-${passengers.length + 1}`"
+                                            data-parent="#accordion" style="padding: 0 2rem;">
+                                            <form class="passenger-form card-body">
+                                                <div class="flex" style="justify-content: center!important">
+                                                    <label>
+                                                        <div>
+                                                            <span>Are you the owner of the car ?</span>
+                                                            <select v-model="tripOptions.vehicles[0].Ownership"
+                                                                :class="{ 'invalid': submitted && !tripOptions.vehicles[0].Ownership }">
+                                                                <option value="Owner">Yes</option>
+                                                                <option value="Rent">No</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="error-message-wrapper">
+                                                            <span v-if="submitted && !tripOptions.vehicles[0].Ownership"
+                                                                class="error-message">Please choose your title.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="flex" style="justify-content: center!important">
+                                                    <label>
+                                                        <div>
+                                                            <span>Car registration</span>
+                                                            <input required="" placeholder=""
+                                                                :class="{ 'invalid': submitted && (!tripOptions.vehicles[0].Registration || (tripOptions.vehicles[0].Registration && tripOptions.vehicles[0].Registration.length > 13)) }"
+                                                                v-model="tripOptions.vehicles[0].Registration" type="text"
+                                                                class="input">
+                                                        </div>
+                                                        <div class="error-message-wrapper">
+                                                            <span v-if="submitted && (!tripOptions.vehicles[0].Registration || (tripOptions.vehicles[0].Registration && tripOptions.vehicles[0].Registration.length > 13))"
+                                                                class="error-message">this field is required and must be 12 characters max.</span>
+                                                            <a style="width: 20%;"></a>
+                                                        </div>
+                                                    </label>
+
+                                                </div>
                                             </form>
                                         </div>
                                     </div>
@@ -1028,6 +1083,7 @@ import stepper from "@/components/stepper.vue";
 import Eticket from "@/components/eticket.vue";
 import VueJwtDecode from 'vue-jwt-decode';
 import bcrypt from 'bcryptjs';
+import CountriesList from "../../Countries-All.json";
 
 export default defineComponent({
 
@@ -1038,6 +1094,8 @@ export default defineComponent({
 
     data() {
         return {
+            BookingRef: "",
+            Countries: CountriesList,
             profilePicFile: null,
             newPassword: "",
             oldPassword: "",
@@ -1150,8 +1208,8 @@ export default defineComponent({
             }
 
             data.passengers = this.passengersData.map((item, index) => ({
-                "Category": calculateAge(item['date of birth']),
-                "Title": item.title,
+                "Category": this.passengers[index].Category,
+                "Title": item.Title,
                 "Forename": item['first name'],
                 "Surname": item['last name'],
                 "IdentityCategory": item['type of id'],
@@ -1168,6 +1226,7 @@ export default defineComponent({
                 const today = new Date();
                 const age = today.getFullYear() - birthDate.getFullYear();
                 const category = age > 14 ? 'Adult' : 'Child';
+                console.log(category)
                 return category
             }
 
@@ -1177,12 +1236,15 @@ export default defineComponent({
             data.sailings = Object.entries(this.selectedTrip.trip).map(([key, value]) => ({ [key]: value }))
             data.contactDetails = {
                 Forename: this.user.name,
+                Surname: this.user['first name'],
                 Email: this.user.email,
                 AddressLine1: this.user.address,
                 ZipPostCode: this.user['postal code'],
-                MobileNumber: this.user['phone number']
+                MobileNumber: this.user['phone number'],
+                CountryCode: this.user.country.Code,
+                Title: this.user.title
             }
-            data.User = this.user
+            data.UserFront = this.user
             let configg = {
                 method: 'post',
                 maxBodyLength: Infinity,
@@ -1199,7 +1261,9 @@ export default defineComponent({
             */
             try {
                 await this.$axios.request(configg).then(res => {
-                    console.log(res)
+                    localStorage.setItem('token', res.data.token)
+                    this.BookingRef= res.data.BookingReference
+                    console.log(res.data)
                 })
             } catch (e) {
                 console.log(e)
@@ -1289,36 +1353,55 @@ export default defineComponent({
                 }
             }
         },
+        /**
+         * Handles the click event for the next button.
+         */
         handleNextClick() {
+            let error = false; // Initialize the error flag
 
-            this.makeReservation()
-            let error = false
             if (this.currentStep === "1") {
-                let errorIndex = null
-                this.submitted = true
-                this.passengersData.forEach((data, index) => {
-                    if (!error && (data['type of id'] === 'Passport' && !data['expiry date'])) {
-                        error = true
-                        errorIndex = index
-                    }
-                    if (!error && (Object.values(data).some(value => value === '') || data.id < 8)) {
-                        error = true
-                        errorIndex = index
+                let errorIndex = null; // Initialize the error index
 
+                this.submitted = true; // Set the submitted flag to true
+
+                // Loop through each passenger data
+                this.passengersData.forEach((data, index) => {
+                    // Check for passport expiry date error
+                    if (!error && (data['type of id'] === 'Passport' && !data['expiry date'])) {
+                        error = true; // Set the error flag to true
+                        errorIndex = index; // Set the error index
                     }
-                })
-                console.log(errorIndex)
-                if (error) {
-                    this.openSectionIndex = errorIndex
-                    return
+
+                    // Check for empty or invalid data error
+                    if (!error && (Object.values(data).some(value => value === '') || data.id < 8)) {
+                        error = true; // Set the error flag to true
+                        errorIndex = index; // Set the error index
+                    }
+                    console.log(data)
+                });
+
+                if(!error) {
+                        console.log(!this.tripOptions.vehicles[0].Registration || !this.tripOptions.vehicles[0].Ownership)
+                        if(!this.tripOptions.vehicles[0].Registration || !this.tripOptions.vehicles[0].Ownership || this.tripOptions.vehicles[0].Registration.length > 13)
+                            error = true
+                            errorIndex = this.passengersData.length+1
                 }
-                this.currentStep = "2"
-                return
+
+                console.log(errorIndex, error);
+
+                if (error) {
+                    this.openSectionIndex = errorIndex; // Set the open section index to the error index
+                    return; // Return if there is an error
+                }
+
+                this.currentStep = "2"; // Set the current step to 2
+                return; // Return after setting the current step
             }
             else if (this.currentStep === "2") {
-                this.currentStep = "3"
+                this.currentStep = "3"; // Set the current step to 3
             }
             else if (this.currentStep === "3") {
+                this.makeReservation(); // Make the reservation
             }
         },
         getCurrentDate() {
@@ -1333,7 +1416,7 @@ export default defineComponent({
             this.passengersData = Array.from({ length: n }, () => (createPassengerDetail()));
             function createPassengerDetail() {
                 return {
-                    title: "",
+                    Title: "",
                     "first name": "",
                     "last name": "",
                     "place of birth": "",
@@ -1341,6 +1424,7 @@ export default defineComponent({
                     gender: "",
                     "type of id": "",
                     id: "",
+                    country: ""
 
                 };
             }
@@ -1486,6 +1570,18 @@ export default defineComponent({
     },
 
     mounted() {
+        this.Countries = this.Countries.sort((a, b) => {
+            const nameA = a.name.common.toUpperCase(); // for case-insensitive comparison
+            const nameB = b.name.common.toUpperCase(); // for case-insensitive comparison
+
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        });
         this.initDropDownMenu()
         this.navMenuInit()
         this.passengers = JSON.parse(window.localStorage.getItem("tripOptions")).passengers
@@ -1493,9 +1589,12 @@ export default defineComponent({
         console.log(this.user)
         this.initPassengersArray(this.passengers.length)
         this.selectedTrip = JSON.parse(localStorage.getItem('selectedTrip'))
-        this.tripOptions = JSON.parse(localStorage.getItem('tripOptions'))
-        console.log(this.selectedTrip)
+
     },
+    created() {
+        this.tripOptions = JSON.parse(localStorage.getItem('tripOptions'))
+        console.log(this.tripOptions)
+    }
 
 });
 
