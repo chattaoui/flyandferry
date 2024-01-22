@@ -863,7 +863,7 @@
                       </form>
                     </div>
                   </div>
-                  <div class="card" v-if="tripOptions.vehicles">
+                  <div class="card" v-if="tripOptions && tripOptions.vehicles">
                     <div
                       class="card-header"
                       :id="`faqHeading-${passengers.length + 1}`"
@@ -1197,248 +1197,112 @@
         >
           <div class="content-wrapper">
             <div class="content-section">
-              <div class="content-section-title">Installed</div>
-              <ul>
-                <li class="adobe-product">
-                  <div class="products">
-                    <svg viewBox="0 0 52 52" style="border: 1px solid #3291b8">
-                      <g xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M40.824 52H11.176C5.003 52 0 46.997 0 40.824V11.176C0 5.003 5.003 0 11.176 0h29.649C46.997 0 52 5.003 52 11.176v29.649C52 46.997 46.997 52 40.824 52z"
-                          fill="#061e26"
-                          data-original="#393687"
-                        />
-                        <path
-                          d="M12.16 39H9.28V11h9.64c2.613 0 4.553.813 5.82 2.44 1.266 1.626 1.9 3.76 1.9 6.399 0 .934-.027 1.74-.08 2.42-.054.681-.22 1.534-.5 2.561-.28 1.026-.66 1.866-1.14 2.52-.48.654-1.213 1.227-2.2 1.72-.987.494-2.16.74-3.52.74h-7.04V39zm0-12h6.68c.96 0 1.773-.187 2.44-.56.666-.374 1.153-.773 1.46-1.2.306-.427.546-1.04.72-1.84.173-.801.267-1.4.28-1.801.013-.399.02-.973.02-1.72 0-4.053-1.694-6.08-5.08-6.08h-6.52V27zM29.48 33.92l2.8-.12c.106.987.6 1.754 1.48 2.3.88.547 1.893.82 3.04.82s2.14-.26 2.98-.78c.84-.52 1.26-1.266 1.26-2.239s-.36-1.747-1.08-2.32c-.72-.573-1.6-1.026-2.64-1.36-1.04-.333-2.086-.686-3.14-1.06a7.36 7.36 0 01-2.78-1.76c-.987-.934-1.48-2.073-1.48-3.42s.54-2.601 1.62-3.761 2.833-1.739 5.26-1.739c.854 0 1.653.1 2.4.3.746.2 1.28.394 1.6.58l.48.279-.92 2.521c-.854-.666-1.974-1-3.36-1-1.387 0-2.42.26-3.1.78-.68.52-1.02 1.18-1.02 1.979 0 .88.426 1.574 1.28 2.08.853.507 1.813.934 2.88 1.28 1.066.347 2.126.733 3.18 1.16 1.053.427 1.946 1.094 2.68 2s1.1 2.106 1.1 3.6c0 1.494-.6 2.794-1.8 3.9-1.2 1.106-2.954 1.66-5.26 1.66-2.307 0-4.114-.547-5.42-1.64-1.307-1.093-1.987-2.44-2.04-4.04z"
-                          fill="#c1dbe6"
-                          data-original="#89d3ff"
-                        />
-                      </g>
-                    </svg>
-                    Photoshop
-                  </div>
-                  <span class="status">
-                    <span class="status-circle green"></span>
-                    Updated</span
-                  >
-                  <div class="button-wrapper">
-                    <button class="content-button status-button open">
-                      Open
-                    </button>
-                    <div class="menu">
-                      <button class="dropdown">
-                        <ul>
-                          <li><a href="#">Go to Discover</a></li>
-                          <li><a href="#">Learn more</a></li>
-                          <li><a href="#">Uninstall</a></li>
-                        </ul>
-                      </button>
+              <div class="Voyages">
+                <div class="booking-container">
+                <aside class="more-right-side">
+                  <h4><i class="fas fa-ticket-alt"></i> Pick your ticket:</h4>
+
+                  <div class="more-card ticket-card">
+                    <div class="airline">
+                      <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
+                      <div class="airline__name">AirTour</div>
                     </div>
-                  </div>
-                </li>
-                <li class="adobe-product">
-                  <div class="products">
-                    <svg viewBox="0 0 52 52" style="border: 1px solid #b65a0b">
-                      <g xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M40.824 52H11.176C5.003 52 0 46.997 0 40.824V11.176C0 5.003 5.003 0 11.176 0h29.649C46.997 0 52 5.003 52 11.176v29.649C52 46.997 46.997 52 40.824 52z"
-                          fill="#261400"
-                          data-original="#6d4c13"
-                        />
-                        <path
-                          d="M30.68 39h-3.24l-2.76-9.04h-8.32L13.72 39H10.6l8.24-28h3.32l8.52 28zm-6.72-12l-3.48-11.36L17.12 27h6.84zM37.479 12.24c0 .453-.16.84-.48 1.16-.32.319-.7.479-1.14.479-.44 0-.827-.166-1.16-.5-.334-.333-.5-.713-.5-1.14s.166-.807.5-1.141c.333-.333.72-.5 1.16-.5.44 0 .82.16 1.14.48.321.322.48.709.48 1.162zM37.24 39h-2.88V18.96h2.88V39z"
-                          fill="#e6d2c0"
-                          data-original="#ffbd2e"
-                        />
-                      </g>
-                    </svg>
-                    Illustrator
+
+                    <div class="ticket-card__info-line">
+                      <div class="ticket-card__info-line__title">
+                        <i class="fas fa-plane-departure"></i>
+                        Take Off
+                      </div>
+                      <div class="ticket-card__info-line__value">Mashhad - 17:30</div>
+                    </div>
+                    <div class="dots">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                    <div class="ticket-card__info-line">
+                      <div class="ticket-card__info-line__title">
+                        <i class="fas fa-plane-arrival"></i>
+                        Landing
+                      </div>
+                      <div class="ticket-card__info-line__value">Frankfurt - 21:30</div>
+                    </div>
+
+                    <button>
+                      <i class="fas fa-shopping-cart"></i>
+                      Buy
+                    </button>
                   </div>
 
-                  <span class="status">
-                    <span class="status-circle"></span>
-                    Update Available</span
-                  >
-                  <div class="button-wrapper">
-                    <button class="content-button status-button">
-                      Update this app
-                    </button>
-                    <div class="pop-up">
-                      <div class="pop-up__title">
-                        Update This App
-                        <svg
-                          width="24"
-                          height="24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather close feather-x-circle"
-                        >
-                          <circle cx="12" cy="12" r="10" />
-                          <path d="M15 9l-6 6M9 9l6 6" />
-                        </svg>
-                      </div>
-                      <div class="pop-up__subtitle">
-                        Adjust your selections for advanced options as desired
-                        before continuing. <a href="#">Learn more</a>
-                      </div>
-                      <div class="checkbox-wrapper">
-                        <input type="checkbox" id="check1" class="checkbox" />
-                        <label for="check1"
-                          >Import previous settings and preferences</label
-                        >
-                      </div>
-                      <div class="checkbox-wrapper">
-                        <input type="checkbox" id="check2" class="checkbox" />
-                        <label for="check2">Remove old versions</label>
-                      </div>
-                      <div class="content-button-wrapper">
-                        <button class="content-button status-button open close">
-                          Cancel
-                        </button>
-                        <button class="content-button status-button">
-                          Continue
-                        </button>
-                      </div>
+                  <br />
+                </aside>
+                <aside class="more-left-side">
+                  <div style="height: 7rem"></div>
+
+                  <div class="more-card">
+                    <div class="filter-title">Airlines Filter</div>
+
+                    <div class="checkbox hasMargin mini">
+                      <input id="AirTour" type="checkbox" />
+                      <label for="AirTour">
+                        <div class="checkbox__check">
+                          <i class="fas fa-check"></i>
+                        </div>
+                        <div class="checkbox__title">
+                          <img
+                            src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png"
+                          />
+                          AirTour
+                        </div>
+                      </label>
                     </div>
-                    <div class="menu">
-                      <button class="dropdown">
-                        <ul>
-                          <li><a href="#">Go to Discover</a></li>
-                          <li><a href="#">Learn more</a></li>
-                          <li><a href="#">Uninstall</a></li>
-                        </ul>
-                      </button>
+                    <div class="checkbox hasMargin mini">
+                      <input id="Ata" type="checkbox" />
+                      <label for="Ata">
+                        <div class="checkbox__check">
+                          <i class="fas fa-check"></i>
+                        </div>
+                        <div class="checkbox__title">
+                          <img
+                            src="https://cdn.alibaba.ir/static/img/airlines/Domestic/I3.png"
+                          />
+                          Ata
+                        </div>
+                      </label>
                     </div>
                   </div>
-                </li>
-                <li class="adobe-product">
-                  <div class="products">
-                    <svg viewBox="0 0 52 52" style="border: 1px solid #c75deb">
-                      <g xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M40.824 52H11.176C5.003 52 0 46.997 0 40.824V11.176C0 5.003 5.003 0 11.176 0h29.649C46.997 0 52 5.003 52 11.176v29.649C52 46.997 46.997 52 40.824 52z"
-                          fill="#3a3375"
-                          data-original="#3a3375"
-                        />
-                        <path
-                          d="M27.44 39H24.2l-2.76-9.04h-8.32L10.48 39H7.36l8.24-28h3.32l8.52 28zm-6.72-12l-3.48-11.36L13.88 27h6.84zM31.48 33.48c0 2.267 1.333 3.399 4 3.399 1.653 0 3.466-.546 5.44-1.64L42 37.6c-2.054 1.254-4.2 1.881-6.44 1.881-4.64 0-6.96-1.946-6.96-5.841v-8.2c0-2.16.673-3.841 2.02-5.04 1.346-1.2 3.126-1.801 5.34-1.801s3.94.594 5.18 1.78c1.24 1.187 1.86 2.834 1.86 4.94V30.8l-11.52.6v2.08zm8.6-5.24v-3.08c0-1.413-.44-2.42-1.32-3.021-.88-.6-1.907-.899-3.08-.899-1.174 0-2.167.359-2.98 1.08-.814.72-1.22 1.773-1.22 3.16v3.199l8.6-.439z"
-                          fill="#e4d1eb"
-                          data-original="#e7adfb"
-                        />
-                      </g>
-                    </svg>
-                    After Effects
-                  </div>
-                  <span class="status">
-                    <span class="status-circle green"></span>
-                    Updated</span
-                  >
-                  <div class="button-wrapper">
-                    <button class="content-button status-button open">
-                      Open
-                    </button>
-                    <div class="menu">
-                      <button class="dropdown">
-                        <ul>
-                          <li><a href="#">Go to Discover</a></li>
-                          <li><a href="#">Learn more</a></li>
-                          <li><a href="#">Uninstall</a></li>
-                        </ul>
-                      </button>
+
+                  <div class="more-card">
+                    <div class="filter-title">Ticket Class</div>
+                    <div class="checkbox hasMargin mini">
+                      <input id="All" name="ticketclass" type="radio" value="All" checked />
+                      <label for="All">
+                        <div class="checkbox__check"></div>
+                        <div class="checkbox__title">All</div>
+                      </label>
+                    </div>
+                    <div class="checkbox hasMargin mini">
+                      <input id="Economy" name="ticketclass" type="radio" value="Economy" />
+                      <label for="Economy">
+                        <div class="checkbox__check"></div>
+                        <div class="checkbox__title">Economy</div>
+                      </label>
+                    </div>
+                    <div class="checkbox hasMargin mini">
+                      <input id="Business" name="ticketclass" type="radio" value="Business" />
+                      <label for="Business">
+                        <div class="checkbox__check"></div>
+                        <div class="checkbox__title">Business</div>
+                      </label>
                     </div>
                   </div>
-                </li>
-              </ul>
-            </div>
-            <div class="content-section">
-              <div class="content-section-title">Apps in your plan</div>
-              <div class="apps-card">
-                <div class="app-card">
-                  <span>
-                    <svg
-                      viewBox="0 0 512 512"
-                      style="border: 1px solid #a059a9"
-                    >
-                      <path
-                        xmlns="http://www.w3.org/2000/svg"
-                        d="M480 0H32C14.368 0 0 14.368 0 32v448c0 17.664 14.368 32 32 32h448c17.664 0 32-14.336 32-32V32c0-17.632-14.336-32-32-32z"
-                        fill="#210027"
-                        data-original="#7b1fa2"
-                      />
-                      <g xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M192 64h-80c-8.832 0-16 7.168-16 16v352c0 8.832 7.168 16 16 16s16-7.168 16-16V256h64c52.928 0 96-43.072 96-96s-43.072-96-96-96zm0 160h-64V96h64c35.296 0 64 28.704 64 64s-28.704 64-64 64zM400 256h-32c-18.08 0-34.592 6.24-48 16.384V272c0-8.864-7.168-16-16-16s-16 7.136-16 16v160c0 8.832 7.168 16 16 16s16-7.168 16-16v-96c0-26.464 21.536-48 48-48h32c8.832 0 16-7.168 16-16s-7.168-16-16-16z"
-                          fill="#f6e7fa"
-                          data-original="#e1bee7"
-                        />
-                      </g>
-                    </svg>
-                    Premiere Pro
-                  </span>
-                  <div class="app-card__subtext">
-                    Edit, master and create fully proffesional videos
-                  </div>
-                  <div class="app-card-buttons">
-                    <button class="content-button status-button">Update</button>
-                    <div class="menu"></div>
-                  </div>
-                </div>
-                <div class="app-card">
-                  <span>
-                    <svg viewBox="0 0 52 52" style="border: 1px solid #c1316d">
-                      <g xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M40.824 52H11.176C5.003 52 0 46.997 0 40.824V11.176C0 5.003 5.003 0 11.176 0h29.649C46.997 0 52 5.003 52 11.176v29.649C52 46.997 46.997 52 40.824 52z"
-                          fill="#2f0015"
-                          data-original="#6f2b41"
-                        />
-                        <path
-                          d="M18.08 39H15.2V13.72l-2.64-.08V11h5.52v28zM27.68 19.4c1.173-.507 2.593-.761 4.26-.761s3.073.374 4.22 1.12V11h2.88v28c-2.293.32-4.414.48-6.36.48-1.947 0-3.707-.4-5.28-1.2-2.08-1.066-3.12-2.92-3.12-5.561v-7.56c0-2.799 1.133-4.719 3.4-5.759zm8.48 3.12c-1.387-.746-2.907-1.119-4.56-1.119-1.574 0-2.714.406-3.42 1.22-.707.813-1.06 1.847-1.06 3.1v7.12c0 1.227.44 2.188 1.32 2.88.96.719 2.146 1.079 3.56 1.079 1.413 0 2.8-.106 4.16-.319V22.52z"
-                          fill="#e1c1cf"
-                          data-original="#ff70bd"
-                        />
-                      </g>
-                    </svg>
-                    InDesign
-                  </span>
-                  <div class="app-card__subtext">
-                    Design and publish great projects & mockups
-                  </div>
-                  <div class="app-card-buttons">
-                    <button class="content-button status-button">Update</button>
-                    <div class="menu"></div>
-                  </div>
-                </div>
-                <div class="app-card">
-                  <span>
-                    <svg viewBox="0 0 52 52" style="border: 1px solid #c75deb">
-                      <g xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M40.824 52H11.176C5.003 52 0 46.997 0 40.824V11.176C0 5.003 5.003 0 11.176 0h29.649C46.997 0 52 5.003 52 11.176v29.649C52 46.997 46.997 52 40.824 52z"
-                          fill="#3a3375"
-                          data-original="#3a3375"
-                        />
-                        <path
-                          d="M27.44 39H24.2l-2.76-9.04h-8.32L10.48 39H7.36l8.24-28h3.32l8.52 28zm-6.72-12l-3.48-11.36L13.88 27h6.84zM31.48 33.48c0 2.267 1.333 3.399 4 3.399 1.653 0 3.466-.546 5.44-1.64L42 37.6c-2.054 1.254-4.2 1.881-6.44 1.881-4.64 0-6.96-1.946-6.96-5.841v-8.2c0-2.16.673-3.841 2.02-5.04 1.346-1.2 3.126-1.801 5.34-1.801s3.94.594 5.18 1.78c1.24 1.187 1.86 2.834 1.86 4.94V30.8l-11.52.6v2.08zm8.6-5.24v-3.08c0-1.413-.44-2.42-1.32-3.021-.88-.6-1.907-.899-3.08-.899-1.174 0-2.167.359-2.98 1.08-.814.72-1.22 1.773-1.22 3.16v3.199l8.6-.439z"
-                          fill="#e4d1eb"
-                          data-original="#e7adfb"
-                        />
-                      </g>
-                    </svg>
-                    After Effects
-                  </span>
-                  <div class="app-card__subtext">
-                    Industry Standart motion graphics & visual effects
-                  </div>
-                  <div class="app-card-buttons">
-                    <button class="content-button status-button">Update</button>
-                    <div class="menu"></div>
-                  </div>
-                </div>
+                </aside>
               </div>
+              </div>
+              
             </div>
           </div>
         </div>
@@ -2290,14 +2154,16 @@ export default defineComponent({
     });
     this.initDropDownMenu();
     this.navMenuInit();
-    this.passengers = JSON.parse(
+    const tempPassengers = JSON.parse(
       window.localStorage.getItem("tripOptions")
-    ).passengers;
+    )
+    if (tempPassengers && tempPassengers.passengers) this.passengers = tempPassengers.passengers
+
     this.user = VueJwtDecode.decode(window.localStorage.getItem("token"));
     console.log(this.user);
     this.initPassengersArray(this.passengers.length);
     this.selectedTrip = JSON.parse(localStorage.getItem("selectedTrip"));
-    this.Bookings = await this.useRecallAPI(this.user.reservations);
+    if(this.user.reservations) this.Bookings = await this.useRecallAPI(this.user.reservations);
     console.log(this.Bookings);
   },
   created() {
@@ -2745,12 +2611,13 @@ dl {
   box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.06);
   border-radius: 4px;
   min-width: 45dvw;
-  margin-bottom: 4rem;
+  margin-bottom: 4rem!important;
 }
 
 .faq .card {
   border: none;
   background: none;
+  margin-bottom: 1rem;
 }
 
 .faq .card .card-header {
@@ -2787,6 +2654,7 @@ dl {
   cursor: pointer;
   padding-top: 20px;
   padding-bottom: 20px;
+  border-radius: 0.5rem;
 }
 
 .faq .card .card-header .faq-title .badge {
@@ -4059,5 +3927,504 @@ select {
   font-size: 0.9em;
   color: white;
   white-space: nowrap;
+}
+</style>
+
+<style lang="scss" name="booking-container">
+.Voyages {
+    .left-side {
+    height: 100%;
+    border-radius: 59px;
+    width: 596px;
+    background: #d8d8d8;
+    background-image: url("https://uupload.ir/files/w4ga_jeshoots-com-mseswdmzr-a-unsplash_(1).jpg");
+    background-size: cover;
+    background-position: right 0px;
+    position: relative;
+    overflow: hidden;
+  }
+  .left-side__inside {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.39);
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: 0;
+  }
+  .left-side__inside__line-shapes {
+    width: 200px;
+    position: absolute;
+    bottom: 35px;
+    left: 35px;
+  }
+  .left-side__inside__texts {
+    bottom: 83px;
+    left: 83px;
+    position: absolute;
+  }
+  .left-side__inside__texts h1 {
+    font-family: inherit;
+    font-size: 47px;
+    color: #ffffff;
+    line-height: 58px;
+  }
+  .left-side__inside__texts h4 {
+    font-family: inherit;
+    font-weight: 100;
+    font-size: 31px;
+    color: #ffffff;
+    margin-bottom: 0;
+  }
+
+  .right-side {
+    min-height: calc(100vh - 68px);
+    width: calc(100% - 640px);
+    padding-top: 170px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .right-side__container {
+    min-width: 550px;
+  }
+  .right-side h4 {
+    font-family: inherit;
+    font-size: 27px;
+    color: #19093b;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .travel-options {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .travel-options .travel-options__option {
+    width: 130px;
+    height: 130px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
+    border-radius: 31px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #19093b;
+
+    transform: scale(1);
+    transition: ease transform 0.15s, ease background 0.15s, ease color 0.15s,
+      ease box-shadow 0.15s;
+  }
+  .travel-options .travel-options__option i {
+    font-size: 41px;
+  }
+  .travel-options .travel-options__option:hover {
+    transform: scale(1.05);
+    box-shadow: -2px 39px 80px 0 rgba(25, 9, 59, 0.14);
+  }
+  .travel-options .travel-options__option.active {
+    background: #19093b;
+    color: #fabe23;
+  }
+  .travel-options .travel-options__option:active {
+    transform: scale(0.95);
+    box-shadow: -2px 39px 50px 0 rgba(25, 9, 59, 0.04);
+  }
+
+  form {
+    width: 100%;
+    padding-top: 30px;
+    box-sizing: border-box;
+  }
+  input,
+  select {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    height: 65px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+    outline: none;
+    -moz-appearance: none; /* Firefox */
+    -webkit-appearance: none; /* Safari and Chrome */
+    appearance: none;
+    font-family: inherit;
+    font-size: 17px;
+    color: #2d0079;
+    margin-top: 15px;
+    position: relative;
+    transition: ease border-color 0.2s;
+  }
+  select {
+    cursor: pointer;
+  }
+  input:focus,
+  select:focus {
+    border-color: #fabe23;
+  }
+  input:focus ~ i,
+  select:focus ~ i {
+    color: #fabe23;
+  }
+  input ~ i,
+  select ~ i {
+    position: absolute;
+    right: 25px;
+    top: 37px;
+    font-size: 20px;
+    color: #adb5bd;
+  }
+  .form-cntr {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    align-content: stretch;
+  }
+
+  ::placeholder {
+    font-family: inherit;
+    font-weight: 100;
+    font-size: 17px;
+    color: #adb5bd;
+    opacity: 1;
+  }
+
+  :-ms-input-placeholder {
+    font-family: inherit;
+    font-weight: 100;
+    font-size: 17px;
+    color: #adb5bd;
+  }
+
+  ::-ms-input-placeholder {
+    font-family: inherit;
+    font-weight: 100;
+    font-size: 17px;
+    color: #adb5bd;
+  }
+
+  .form-cntr__sub {
+    flex: 1;
+    margin-left: 10px;
+    position: relative;
+  }
+  .form-cntr__sub:first-child {
+    margin-left: 0px;
+  }
+
+  form button {
+    background: #fabe23;
+    box-shadow: -2px 19px 67px 0 rgba(250, 190, 35, 0.4);
+    border-radius: 16px;
+    height: 65px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 17px;
+    margin-top: 15px;
+    color: #19093b;
+    outline: none;
+    border: none;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: ease all 0.2s;
+  }
+  form button:hover {
+    background: #19093b;
+    color: #fabe23;
+  }
+  form button:active {
+    transform: scale(0.95);
+  }
+
+  /* more page */
+  .more-left-side {
+    width: 19%;
+  }
+  .more-right-side {
+    width: 70%;
+  }
+  .more-card {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
+    border-radius: 0.4rem;
+    border: 1px solid #e9ecef;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    margin-bottom: 30px;
+  }
+
+  .checkbox {
+    width: 100%;
+    display: block!important;
+  }
+  .checkbox label {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: stretch;
+    cursor: pointer;
+  }
+  .checkbox__check {
+    border: 1px solid #e9ecef;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: ease all 0.2s;
+  }
+  .checkbox.mini .checkbox__check {
+    width: 25px;
+    height: 25px;
+    border-radius: 7px;
+  }
+  .checkbox.mini input[type="radio"] ~ label .checkbox__check {
+    border-radius: 30px;
+  }
+
+  .checkbox__check i {
+    display: none;
+  }
+  input[type="checkbox"]:checked ~ label .checkbox__check {
+    background: #19093b;
+  }
+  input[type="checkbox"]:checked ~ label .checkbox__check i {
+    display: block;
+    color: #fabe23;
+  }
+  input[type="radio"]:checked ~ label .checkbox__check {
+    background: #fabe23;
+    box-shadow: inset 0 0 0px 7px #19093b;
+  }
+  input[type="radio"]:checked ~ label .checkbox__check i {
+    display: block;
+    color: #fabe23;
+  }
+  .checkbox__title {
+    font-family: inherit;
+    margin-left: 15px;
+    font-size: 16px;
+    color: #1b0445;
+  }
+  .checkbox.hasMargin {
+    margin-top: 15px;
+  }
+  .checkbox__title img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    margin-bottom: -4px;
+    margin-right: 4px;
+  }
+  .sorting-line {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    align-content: stretch;
+  }
+  .sorting-line__item {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
+    border-radius: 14px;
+    padding: 20px;
+    font-family: inherit;
+    font-size: 18px;
+    color: #1b0445;
+    text-align: center;
+    margin-right: 10px;
+    cursor: pointer;
+    transform: scale(1);
+    transition: ease all 0.2s;
+  }
+  .sorting-line__item:last-child {
+    margin-right: 0;
+  }
+  .sorting-line__item.active {
+    background: #1b0445;
+    color: #fabe23;
+  }
+  .sorting-line__item:hover {
+    transform: scale(1.1);
+    box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
+  }
+  .sorting-line__item:active {
+    transform: scale(0.95);
+  }
+  .sorting-line__item i {
+    margin-right: 5px;
+  }
+  .more-right-side h4 {
+    font-family: inherit;
+    font-weight: 100;
+    font-size: 1.5em;
+    color: #1b0445;
+    letter-spacing: 0;
+    margin-left: 34px;
+    margin-bottom: 0;
+  }
+  .more-right-side h4 i {
+    margin-right: 6px;
+  }
+  .ticket-card {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    transform: scale(1);
+    transition: ease transform 0.2s;
+  }
+  .airline {
+    width: 6rem;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
+    border-right: 1px solid #e9ecef;
+    padding-right: 1rem;
+  }
+  .airline img {
+    width: 4rem;
+  }
+  .airline__name {
+    font-family: inherit;
+    font-size: 17px;
+    color: #2d0079;
+    margin-top: 10px;
+  }
+  .ticket-card__info-line {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+  }
+  .ticket-card__info-line__title {
+    font-family: inherit;
+    font-size: 0.7em;
+    color: #6c757d;
+  }
+  .ticket-card__info-line__title i {
+    margin-right: 0.7em;
+  }
+  .ticket-card__info-line__value {
+    font-family: inherit;
+    font-size: 1.5em;
+    color: #1b0445;
+    margin-top: 0.4rem;
+  }
+
+  .ticket-card button {
+    cursor: pointer;
+    border: 1px solid #e9ecef;
+    border-radius: 22px;
+    font-family: inherit;
+    font-size: 0.75em;
+    color: #19093b;
+    background: transparent;
+    transition: ease all 0.15s;
+    box-shadow: -2px 9px 37px 0 rgba(25, 9, 59, 0);
+    outline: none;
+    transform: scale(1);
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
+  }
+  .ticket-card button i {
+    font-size: 20px;
+    margin-right: 13px;
+    color: #19093b;
+  }
+  .ticket-card button:hover {
+    background: #19093b;
+    transform: scale(1.1);
+    box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
+    color: #fabe23;
+  }
+  .ticket-card button:hover i {
+    color: #fabe23;
+  }
+  .ticket-card button:active {
+    transform: scale(0.95);
+  }
+  .dots {
+    margin: 2rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: flex-start;
+  }
+  .dots div {
+    width: 0.7rem;
+    height: 0.3rem;
+    border-radius: 5px;
+    background: #e9ecef;
+    margin-left: 0.8rem;
+  }
+
+  .booking-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    width: -webkit-fill-available;
+  }
+
+  .ticket-card:hover {
+    transform: scale(1.05);
+    box-shadow: -2px 39px 75px 0 rgba(25, 9, 59, 0.1);
+  }
+
+  .filter-title {
+    font-family: inherit;
+    font-weight: 100;
+    font-size: 1.4em;
+    padding-left: 0px;
+    color: #1b0445;
+  }
+  input[type="checkbox"],
+  input[type="radio"] {
+    display: none;
+  }
 }
 </style>

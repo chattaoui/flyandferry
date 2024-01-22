@@ -281,7 +281,7 @@
           </div>
         </div>
       </div>
-      <div class="grid-four" v-else>
+      <div class="grid-four fade-in-left" v-else>
         <div v-if="Object.keys(services).length">
           <div class="services-container fade-in-left">
             <h2>Accommodation Services</h2>
@@ -451,7 +451,9 @@ export default {
         this.getTripsMatrix(this.trips[0], this.trips[1])
       );
       this.addFadeOutLeft()
-      this.addFadeInLeft()
+      setTimeout(() => {
+      this.addFadeInLeft();
+    }, 700); // 700 milliseconds equals 0.7 seconds
     },
     totalCost() {
       let total = 0;
