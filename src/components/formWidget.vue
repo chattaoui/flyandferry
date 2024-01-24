@@ -359,7 +359,11 @@ export default {
             console.log(
                 this.departDate
             );
-            this.getTimeTable(this.departDate.start, this.departDate.end)
+            if(this.tripType == "roundTrip"){
+                this.getTimeTable(this.departDate.start, this.departDate.end)
+            } else {
+                this.getTimeTable(this.departDate, null)
+            }
         },
         getCarModel() {
             return carModels[this.selectedcarBrand]
@@ -439,13 +443,14 @@ export default {
 
 
             if (this.tripType !== "roundTrip") {
-                [fromDate, toDate] = this.getDatesOneWay(fromDate)
+                const Dates = this.getDatesOneWay(fromDate)
                 const Out = await this.useTimeTableAPI(
-                    fromDate,
-                    toDate,
-                    this.selectedRoute["$"].DepartPort,
-                    this.selectedRoute["$"].DestinationPort
+                    Dates[0],
+                    Dates[1],
+                    this.portNameCode[this.depPort],
+                    this.portNameCode[this.destPort]
                 );
+                console.log(Dates)
                 localStorage.setItem("trips", JSON.stringify([Out]))
 
                 localStorage.setItem("tripOptions", JSON.stringify(tripOptions))

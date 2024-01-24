@@ -13,16 +13,14 @@
           <button class="calendar">
             <svg width="14" height="14" viewBox="0 0 24 24">
               <path
-                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z"
-              />
+                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z" />
             </svg>
             <span>Tuesday, Apr 21</span>
           </button>
           <button class="calendar blank">
             <svg width="14" height="14" viewBox="0 0 24 24">
               <path
-                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z"
-              />
+                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z" />
             </svg>
             <span>One way</span>
           </button>
@@ -40,12 +38,8 @@
       <div class="grid-two rate-cards">
         <div class="rate">Best time</div>
       </div>
-      <div class="grid-four">
-        <div
-          v-for="(trip, index) in trips[0]"
-          :key="`trip_item_${index}`"
-          class="travel-card"
-        >
+      <div class="fade-in-left grid-four" v-if="showTripList">
+        <div v-for="(trip, index) in trips[0]" :key="`trip_item_${index}`" class="travel-card">
           <div class="travel-image">
             <div v-html="getFerryCompany('CTN')"></div>
           </div>
@@ -82,17 +76,132 @@
             </p>
           </div>
           <div class="travel-rate-final">
-            <div class="travel-rate"><sup>$</sup>56</div>
-            <button class="select-rate" @click="getSailtings(trip)">
+            <div v-if="showSummary" class="travel-rate"><sup>€</sup> {{ totalCost() }} </div>
+            <button v-if="!showSummary" class="select-rate" @click="getSailings(trip)">
               Select
             </button>
+          </div>
+        </div>
+
+        <div v-if="showSummary" style="text-align: -webkit-center">
+          <div class="card-container">
+            <h3 class="heading">Summary</h3>
+            <div class="card" id="price-card">
+              <table class="price-table">
+                <thead>
+                  <tr>
+                    <th class="font-bold">Option</th>
+                    <th class="text-center font-bold">Quantity</th>
+                    <th class="text-right font-bold">Unit price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="service in getServiceNames()" :key="service.serviceName">
+                    <td>{{ service["serviceName"] }}</td>
+                    <td class="text-center font-bold">
+                      {{ service["Quantity"] }}
+                    </td>
+                    <td class="text-right font-bold">
+                      {{ service["unitCost"] }} &nbsp;€
+                    </td>
+                  </tr>
+                  <!-- More rows go here -->
+                </tbody>
+              </table>
+            </div>
+            <div class="grid-container">
+              <div class="grid-item font-bold">Total</div>
+              <div class="spacer"></div>
+              <div class="grid-item font-size-large font-bold">
+                <span class="price">{{ totalCost() }}</span>
+              </div>
+            </div>
+            <div class="spacer"></div>
+            <p class="caption">
+              *The price may change depending on the accomodations.
+            </p>
+          </div>
+          <div style="display: inline-flex; gap: 4rem">
+            <button class="next-button" @click="resetTripList()">Select another trip</button>
+            <button class="next-button" @click="$router.push({ name: 'login' })">Continue ?</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid-four fade-in-left" v-else>
+        <div v-if="Object.keys(services).length">
+          <div class="services-container fade-in-left">
+            <h2>Accommodation Services</h2>
+            <div class="service-category">
+              <div class="service-cards">
+                <div v-for="(service, index) in services
+                  .OnBoardAccommodationServices.OnBoardAccommodationService" :key="index" class="service-card">
+                  <div style="flex: 1; padding: 3rem">
+                    <h3>{{ service["@Description"] }}</h3>
+                    <p>
+                      Available Quantity: {{ service["@QuantityAvailable"] }}
+                    </p>
+                  </div>
+                  <div style="flex: 1; align-self: center">
+                    <div v-html="getServiceIcon(service['@Code'])"></div>
+                  </div>
+                  <div style="
+                      flex: 1;
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: space-evenly;
+                    ">
+                    <div class="quantity-selector">
+                      <label for="quantity">Quantity:</label>
+                      <input type="number" v-model="selectedQuantities[service['@Code']]" min="0" :max="service['@Code'] === 'FAUT' ? getAdultCount() : null
+                        " />
+                    </div>
+                    <div class="travel-rate">
+                      Cost: <sup>€</sup>{{ parseFloat(service["@UnitCost"]).toFixed(2) }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h2 style="margin: 6rem !important">Other Services</h2>
+            <div class="service-category">
+              <div class="service-cards">
+                <div v-for="(service, index) in services.OnBoardServices
+                  .OnBoardService" :key="index" class="service-card">
+                  <div style="flex: 1; padding: 3rem">
+                    <h3>{{ service["@Description"] }}</h3>
+                    <p>
+                      Available Quantity: {{ service["@QuantityAvailable"] }}
+                    </p>
+                  </div>
+                  <div style="flex: 1; align-self: center">
+                    <div v-html="getServiceIcon(service['@Code'])"></div>
+                  </div>
+                  <div style="
+                      flex: 1;
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: space-evenly;
+                    ">
+                    <div class="quantity-selector">
+                      <label for="quantity">Quantity:</label>
+                      <input type="number" v-model="selectedQuantities[service['@Code']]" min="0" />
+                    </div>
+                    <div class="travel-rate">
+                      Cost: <sup>€</sup>
+                      {{ parseFloat(service["@UnitCost"]).toFixed(2) }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="next-button" @click="test()">Next</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="trip-container" v-else>
+  <div class="trip-container" v-if="trips.length == 2 && showList">
     <div class="grid">
       <div class="grid-one">
         <div class="current-travel">
@@ -103,16 +212,14 @@
           <button class="calendar">
             <svg width="14" height="14" viewBox="0 0 24 24">
               <path
-                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z"
-              />
+                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z" />
             </svg>
             <span>Tuesday, Apr 21</span>
           </button>
           <button class="calendar blank">
             <svg width="14" height="14" viewBox="0 0 24 24">
               <path
-                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z"
-              />
+                d="M10,4V8H14V4H10M16,4V8H20V4H16M16,10V14H20V10H16M16,16V20H20V16H16M14,20V16H10V20H14M8,20V16H4V20H8M8,14V10H4V14H8M8,8V4H4V8H8M10,14H14V10H10V14M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2Z" />
             </svg>
             <span>One way</span>
           </button>
@@ -131,11 +238,8 @@
         <div class="rate">Best time</div>
       </div>
       <div class="grid-four fade-in-left" v-if="showTripList">
-        <div
-          v-for="(trip, index) in listedTrips"
-          :key="`trip_item_${index}`"
-          style="display: flex; flex-direction: column"
-        >
+        <div v-for="(trip, index) in listedTrips" :key="`trip_item_${index}`"
+          style="display: flex; flex-direction: column">
           <div class="travel-card">
             <div class="travel-image">
               <div v-html="getFerryCompany('CTN')"></div>
@@ -222,12 +326,8 @@
               </div>
             </div>
             <div class="travel-rate-final">
-              <div v-if="showSummary" class="travel-rate"><sup>$</sup>56</div>
-              <button
-                v-if="!showSummary"
-                class="select-rate"
-                @click="getSailtings(trip)"
-              >
+              <div v-if="showSummary" class="travel-rate"><sup>€ </sup>{{ totalCost() }}</div>
+              <button v-if="!showSummary" class="select-rate" @click="getSailings(trip)">
                 Select
               </button>
             </div>
@@ -247,10 +347,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    v-for="service in getServiceNames()"
-                    :key="service.serviceName"
-                  >
+                  <tr v-for="service in getServiceNames()" :key="service.serviceName">
                     <td>{{ service["serviceName"] }}</td>
                     <td class="text-center font-bold">
                       {{ service["Quantity"] }}
@@ -287,12 +384,8 @@
             <h2>Accommodation Services</h2>
             <div class="service-category">
               <div class="service-cards">
-                <div
-                  v-for="(service, index) in services
-                    .OnBoardAccommodationServices.OnBoardAccommodationService"
-                  :key="index"
-                  class="service-card"
-                >
+                <div v-for="(service, index) in services
+                  .OnBoardAccommodationServices.OnBoardAccommodationService" :key="index" class="service-card">
                   <div style="flex: 1; padding: 3rem">
                     <h3>{{ service["@Description"] }}</h3>
                     <p>
@@ -302,28 +395,19 @@
                   <div style="flex: 1; align-self: center">
                     <div v-html="getServiceIcon(service['@Code'])"></div>
                   </div>
-                  <div
-                    style="
+                  <div style="
                       flex: 1;
                       display: flex;
                       flex-direction: column;
                       justify-content: space-evenly;
-                    "
-                  >
+                    ">
                     <div class="quantity-selector">
                       <label for="quantity">Quantity:</label>
-                      <input
-                        type="number"
-                        v-model="selectedQuantities[service['@Code']]"
-                        min="0"
-                        :max="
-                          service['@Code'] === 'FAUT' ? getAdultCount() : null
-                        "
-                      />
+                      <input type="number" v-model="selectedQuantities[service['@Code']]" min="0" :max="service['@Code'] === 'FAUT' ? getAdultCount() : null
+                        " />
                     </div>
                     <div class="travel-rate">
-                      Cost: <sup>€</sup
-                      >{{ parseFloat(service["@UnitCost"]).toFixed(2) }}
+                      Cost: <sup>€</sup>{{ parseFloat(service["@UnitCost"]).toFixed(2) }}
                     </div>
                   </div>
                 </div>
@@ -332,12 +416,8 @@
             <h2 style="margin: 6rem !important">Other Services</h2>
             <div class="service-category">
               <div class="service-cards">
-                <div
-                  v-for="(service, index) in services.OnBoardServices
-                    .OnBoardService"
-                  :key="index"
-                  class="service-card"
-                >
+                <div v-for="(service, index) in services.OnBoardServices
+                  .OnBoardService" :key="index" class="service-card">
                   <div style="flex: 1; padding: 3rem">
                     <h3>{{ service["@Description"] }}</h3>
                     <p>
@@ -347,21 +427,15 @@
                   <div style="flex: 1; align-self: center">
                     <div v-html="getServiceIcon(service['@Code'])"></div>
                   </div>
-                  <div
-                    style="
+                  <div style="
                       flex: 1;
                       display: flex;
                       flex-direction: column;
                       justify-content: space-evenly;
-                    "
-                  >
+                    ">
                     <div class="quantity-selector">
                       <label for="quantity">Quantity:</label>
-                      <input
-                        type="number"
-                        v-model="selectedQuantities[service['@Code']]"
-                        min="0"
-                      />
+                      <input type="number" v-model="selectedQuantities[service['@Code']]" min="0" />
                     </div>
                     <div class="travel-rate">
                       Cost: <sup>€</sup>
@@ -442,24 +516,32 @@ export default {
   },
   methods: {
     resetTripList() {
-        this.services = {},
+      this.services = {},
         this.selectedQuantities = []
-        this.showSummary = !this.showSummary
-        this.trips = JSON.parse(localStorage.getItem("trips"));
-    if (this.trips.length == 2)
-      this.listedTrips = this.transformTripsData(
-        this.getTripsMatrix(this.trips[0], this.trips[1])
-      );
+      this.showSummary = !this.showSummary
+      this.trips = JSON.parse(localStorage.getItem("trips"));
+      if (this.trips.length == 2)
+        this.listedTrips = this.transformTripsData(
+          this.getTripsMatrix(this.trips[0], this.trips[1])
+        );
       this.addFadeOutLeft()
       setTimeout(() => {
-      this.addFadeInLeft();
-    }, 700); // 700 milliseconds equals 0.7 seconds
+        this.addFadeInLeft();
+      }, 700); // 700 milliseconds equals 0.7 seconds
     },
     totalCost() {
       let total = 0;
-      this.selectedTrip["Accomodations"].forEach((accomod) => {
-        total += accomod.unitCost * accomod.Quantity;
-      });
+      if (this.trips.length == 1) {
+        console.log("this.trips[0]", this.trips[0]);
+        this.trips[0]["Accomodations"].forEach((accomod) => {
+          total += accomod.unitCost * accomod.Quantity;
+        });
+      }
+      else {
+        this.selectedTrip["Accomodations"].forEach((accomod) => {
+          total += accomod.unitCost * accomod.Quantity;
+        });
+      }
       return total;
     },
     getServiceNames() {
@@ -509,8 +591,8 @@ export default {
     test() {
       this.showTripList = true;
       this.showSummary = true;
-      this.selectedTrip["Accomodations"] = this.getServiceNames();
-      localStorage.setItem("selectedTrip", JSON.stringify(this.selectedTrip));
+      this.trips.length == 1 ? this.trips[0]["Accomodations"] = this.getServiceNames() : this.selectedTrip["Accomodations"] = this.getServiceNames();
+      this.trips.length == 1 ? localStorage.setItem("selectedTrip", JSON.stringify(this.trips[0])) : localStorage.setItem("selectedTrip", JSON.stringify(this.selectedTrip));
     },
     getServiceIcon(code) {
       return this.codSVG[code];
@@ -525,13 +607,14 @@ export default {
     },
     addFadeInLeft() {
       var elements = document.getElementsByClassName("fade-out-left");
-        console.log("elements", elements)
+      console.log("elements", elements)
       // Loop through the elements and add a new class
       for (var i = 0; i < elements.length; i++) {
         elements[i].classList.replace("fade-out-left", "fade-in-left");
       }
     },
-    async getSailtings(trip) {
+    async getSailings(trip) {
+      console.log(trip);
       this.selectedTrip["trip"] = trip;
       this.displayLoader = true;
       this.addFadeOutLeft();
@@ -625,7 +708,7 @@ export default {
       this.showTripList = false;
 
       this.getServices();
-      this.listedTrips = [trip];
+      this.trips.length == 2 ? this.listedTrips = [trip] : this.trips[0] = [trip];
       this.displayLoader = false;
     },
 
@@ -735,9 +818,8 @@ export default {
       const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
       const minutesDifference = Math.floor((timeDifference / (1000 * 60)) % 60);
 
-      return `${hoursDifference ? `${hoursDifference}h` : ``} ${
-        minutesDifference ? `${minutesDifference}m` : ``
-      }`;
+      return `${hoursDifference ? `${hoursDifference}h` : ``} ${minutesDifference ? `${minutesDifference}m` : ``
+        }`;
     },
     transformTripsData(inputData) {
       const outputData = [];
@@ -804,11 +886,15 @@ export default {
     this.tripOptions = JSON.parse(localStorage.getItem("tripOptions"));
     console.log(localStorage.getItem("tripOptions"));
     this.trips = JSON.parse(localStorage.getItem("trips"));
+    console.log("this.trips", this.trips);
     if (this.trips.length == 2)
       this.listedTrips = this.transformTripsData(
         this.getTripsMatrix(this.trips[0], this.trips[1])
       );
   },
+  beforeUnmount() {
+    localStorage.removeItem("trips");
+  }
   // beforeRouteLeave(){
   //     localStorage.removeItem('trips')
   // },
@@ -818,7 +904,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .total-cost {
   width: 100%;
   text-align: center;
@@ -961,12 +1047,12 @@ body {
   grid-gap: 1rem;
 }
 
-.grid > div {
+.grid>div {
   background: #fff;
   border-radius: 15px;
 }
 
-.grid > .grid-one {
+.grid>.grid-one {
   grid-column: span 4;
   background: $purple;
   padding: 20px 30px;
@@ -1097,7 +1183,7 @@ body {
   }
 }
 
-.travel-card + .travel-card {
+.travel-card+.travel-card {
   margin: 1.5rem 0px;
 }
 
@@ -1218,6 +1304,7 @@ body {
     color: $purple;
     font-size: 3rem;
     font-weight: bold;
+    text-wrap: nowrap;
 
     sup {
       font-size: 1.1rem;
@@ -1287,6 +1374,7 @@ input[type="number"] {
   margin-left: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  height: 4rem;
 }
 
 h2 {

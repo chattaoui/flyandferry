@@ -1203,8 +1203,8 @@
                 <div class="no-reservations-content" style=" display: inline-block;">
                   <img src="/Plan de travail 3.png" alt="No Reservations Available" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);height: 80dvh;width: 71dvw;">
                   <div class="no-reservations-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
-                    <h2 style="color:#084c61!important">Oops! You currently don't have any reservations</h2>
-                    <p style="color:#c7f2ff!important">Please make a reservation and check it here.</p>
+                    <h2 style="color:#084c61!important;font-size:1.1em!important;">Oops! You currently don't have any reservations</h2>
+                    <p style="color:#c7f2ff!important;font-size:.8em;">Please make a reservation and check it here.</p>
                   </div>
                 </div>
               </div>
@@ -1390,6 +1390,12 @@ export default defineComponent({
         data.vehicles = this.tripOptions.vehicles;
       data.onBoardAccommodationServices = rawServices[0];
       data.onBoardServices = rawServices[1];
+      if (Object.keys(this.selectedTrip.trip).length !== 2) {
+        let tempTrips = {...this.selectedTrip.trip}
+        this.selectedTrip.trip = {}
+        this.selectedTrip.trip.Out = tempTrips
+      }
+      console.log(this.selectedTrip.trip)
       data.sailings = Object.entries(this.selectedTrip.trip).map(
         ([key, value]) => ({ [key]: value })
       );
@@ -1801,7 +1807,7 @@ export default defineComponent({
       );
 
       const bookings = await Promise.all(bookingsPromises);
-
+        //this.Bookings[0].RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length
       return bookings; // return the bookings from this function
     },
   },
@@ -1831,6 +1837,7 @@ export default defineComponent({
     this.initPassengersArray(this.passengers.length);
     this.selectedTrip = JSON.parse(localStorage.getItem("selectedTrip"));
     if(this.user.reservations) this.Bookings = await this.useRecallAPI(this.user.reservations);
+    console.log(this.Bookings)
     this.oldBookings = this.Bookings
   },
   created() {
