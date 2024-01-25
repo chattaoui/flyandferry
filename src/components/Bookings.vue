@@ -4,7 +4,7 @@
       <h4><i class="fas fa-ticket-alt"></i> Pick your ticket:</h4>
 
       <div v-for="(booking, index) in Bookings" :key="`booking_${index}`" class="more-card ticket-card">
-        <div v-if="isObject(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)">
+        <div v-if="isObject(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)" style="display: flex;flex-direction: row;width: 100%;justify-content: space-between;align-items: center;">
           <div class="airline">
             <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
             <div class="airline__name">AirTour</div>
@@ -78,17 +78,17 @@
             </div>
           </div>
           <button v-if="type === 'current'" @click="selectedBooking = booking">
-          <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
-            fill="currentColor">
-            <path
-              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-          </svg>
-          Edit
-        </button>
+            <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+              height="18" fill="currentColor">
+              <path
+                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+            </svg>
+            Edit
+          </button>
         </div>
 
 
-        <div v-else style="display: inline-flex;align-items: center">
+        <div v-else style="display: inline-flex;align-items: center;width: 100%;justify-content: space-between;">
           <div class="airline">
             <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
             <div class="airline__name">AirTour</div>
@@ -105,8 +105,7 @@
                               ${booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.SailingInfo["@DepartDateTime"].replaceAll('-',
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
-            <div
-              class="dots">
+            <div class="dots">
               <div></div>
               <div></div>
               <div></div>
@@ -127,13 +126,13 @@
             </div>
           </div>
           <button v-if="type === 'current'" @click="selectedBooking = booking">
-          <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
-            fill="currentColor">
-            <path
-              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-          </svg>
-          Edit
-        </button>
+            <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+              height="18" fill="currentColor">
+              <path
+                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+            </svg>
+            Edit
+          </button>
         </div>
 
       </div>
@@ -202,6 +201,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import axios from "axios"
 
 export default defineComponent({
 
@@ -224,16 +224,13 @@ export default defineComponent({
   methods: {
     isObject(value) {
       return !(typeof value === 'object' && value !== null && !Array.isArray(value));
-    }
+    },
   },
   watch: {
     selectedBooking(value) {
       console.log(value.RecallBookingResponse)
     }
   },
-  mounted() {
-
-  }
 
 });
 
@@ -643,7 +640,7 @@ input[type="radio"]:checked~label .checkbox__check i {
   height: 0.3rem;
   border-radius: 5px;
   background: #084C61;
-  margin-left: 0.8rem;
+  margin-left: 0.3rem;
 }
 
 .dots2ways {
@@ -723,7 +720,7 @@ input[type="radio"] {
 
 .trip-Vertical-line {
   width: 0.2rem;
-  height: 10.7vh;
+  height: 19.7vh;
   background: #3a5a99;
 }
 </style>
