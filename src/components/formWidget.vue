@@ -9,13 +9,18 @@
                     d="M108.993,0c7.683-0.059,13.898,6.12,13.882,13.805 c-0.018,7.682-6.26,13.958-13.942,14.018c-31.683,0.222-63.368,0.444-95.051,0.666C6.2,28.549-0.016,22.369,0,14.685 C0.018,7.002,6.261,0.726,13.943,0.667C45.626,0.445,77.311,0.223,108.993,0L108.993,0z" />
             </g>
         </svg>
-        <div class="options-container">
+        <div style="display: flex;justify-content: space-evenly;width: 100%;flex-direction: row;">
+            <div class="options-container">
             <label v-for="option in tripTypes" :key="option.value" class="radio-button">
                 <input type="radio" v-model="tripType" :value="option.value" />
                 <span :class="{ selected: tripType === option.value }">{{
                     option.label
                 }}</span>
             </label>
+        </div>
+        <div>
+            
+        </div>
         </div>
 
         <div class="options-container flexContainer">
@@ -70,7 +75,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="menu-column">
+            <div class="map-column">
                 <MapView style="border-radius: 2rem;" :place="depPort.length !== ``
                     ? `${depPort.toString()}`
                     : null
@@ -94,7 +99,7 @@
         </div>
         <div v-if="currentMenu === 'passengers'" class="menu" style="
           flex-direction: column;
-          align-items: stretch;
+          align-items: center;
           margin-top: 4vh;
           gap: 3rem;
           height: 100%;
@@ -155,7 +160,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="currentMenu === 'vehicles'" class="menu" style="flex-direction: column; gap: 3rem">
+        <div v-if="currentMenu === 'vehicles'" class="menu" style="flex-direction: column; gap: 3rem;align-items: center;">
             <div v-if="!selectingTrailer">
                 <div class="searchbar">
                     <div class="searchbar-wrapper">
@@ -250,6 +255,7 @@ import carModels from "../../vehicle-models.json";
 export default {
     data() {
         return {
+            gnvRoutes: [],
             currentSelectedMonth: null,
             datestoHighlight: [],
             TrailerIsSelected: false,
@@ -605,13 +611,13 @@ export default {
             this.Routes = await this.$axios.request(config).then((res) => {
                 return res.data.GetRoutesResponse.Routes[0].Route;
             });
+            this.gnvRoutes = await this.$axios.get("https://cms.4help.tn/api/GNV_API/getTables").then((res) => {return res.data.Routes.Route})
         },
         showMenu(menu) {
             this.currentMenu = menu;
         },
         getDepartDest() {
             this.Routes.map((route) => {
-                console.log(route)
                 if (!Object.keys(this.portNameCode).includes(route["$"].DepartPortName)) this.portNameCode[route["$"].DepartPortName] = route["$"].DepartPort
                 if (!Object.keys(this.portNameCode).includes(route["$"].DestinationPortName)) this.portNameCode[route["$"].DestinationPortName] = route["$"].DestinationPort
                 if (
@@ -633,6 +639,7 @@ export default {
                     route["$"].DestinationPortCountry
                 ].push(route["$"].DestinationPortName);
             });
+            console.log(this.filteredRouteList)
         },
         getCurrentAndLastDayOfNextMonth() {
   const currentDate = new Date();
@@ -658,6 +665,23 @@ export default {
   return `${formattedYear}-${formattedMonth}-${formattedDay}`;
 }
 },
+removeAccents(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+},
+async getCityFrenchName(cityName) {
+  const url = `http://api.geonames.org/searchJSON?q=${cityName}&maxRows=1&lang=fr&username=ahmed_flyandferry`;
+  try {
+    const response = await this.$axios.get(url);
+    if (response.data.totalResultsCount > 0) {
+      // The 'name' field should now have the name in French
+      const frenchName = response.data.geonames[0]['name'];
+      return this.removeAccents(frenchName);
+    }
+  } catch (error) {
+    console.error('Error fetching French name:', error);
+  }
+  return null;
+}
     },
     computed: {
         language() {
@@ -690,16 +714,23 @@ export default {
     async mounted() {
         this.$parent.displayLoader = true
         await this.getRoutes()
+        console.log(this.gnvRoutes)
         await this.getVehiculesPassengers()
         this.getDepartDest()
         console.log(this.filteredRouteList)
         this.$parent.displayLoader = false
         this.carMODELS = Object.keys(carModels)
+        const name = await this.getCityFrenchName('Genova')
+        console.log(name)
     },
 };
 </script>
   
 <style>
+.date-time-picker {
+    width: auto!important;
+    margin: 0!important;
+}
 .radio-list::-webkit-scrollbar {
     width: 0.5rem;
     /* Adjust the width as needed */
@@ -725,6 +756,10 @@ export default {
     /* Change the border radius for the date picker */
     border-radius: 2rem !important;
 }
+
+.inline.datetimepicker.flex {
+    width: 99Rem!important
+}
 </style>
   
 <style scoped>
@@ -737,6 +772,8 @@ export default {
 .flexContainer {
     display: flex;
     align-items: center;
+    justify-content: space-around;
+    width: 100%;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -809,8 +846,8 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 1rem;
     padding: 2rem;
     position: absolute;
-    max-width: 80rem;
-    min-width: 82rem;
+    max-width: 110rem;
+    min-width: 110rem;
     max-height: 55rem;
     min-height: 50rem;
   left: 50vw;
@@ -873,11 +910,16 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     margin-top: 20px;
     column-gap: 2rem;
+    width: 95%;
 }
 
 .menu-column {
-    flex: 1;
-    padding: 10px;
+    width: 20%;
+}
+
+.map-column {
+    width: 60%;
+    text-align: -webkit-center;
 }
 
 .menu button {
