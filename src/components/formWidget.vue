@@ -1,5 +1,5 @@
 <template>
-    <div class="travel-booking" :style="!currentMenu? 'top:66.4vh;min-height:0px': 'top:60vh;height:55rem'">
+    <div class="travel-booking" :style="!currentMenu ? 'top:66.4vh;min-height:0px' : 'top:60vh;height:55rem'">
         <svg style="position: absolute; top: 1.3rem; right: 2rem; cursor: pointer;" @click="currentMenu = null"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px"
             y="0px" width="16px" height="10px" viewBox="0 0 122.875 28.489" enable-background="new 0 0 122.875 28.489"
@@ -11,16 +11,16 @@
         </svg>
         <div style="display: flex;justify-content: space-evenly;width: 100%;flex-direction: row;">
             <div class="options-container">
-            <label v-for="option in tripTypes" :key="option.value" class="radio-button">
-                <input type="radio" v-model="tripType" :value="option.value" />
-                <span :class="{ selected: tripType === option.value }">{{
-                    option.label
-                }}</span>
-            </label>
-        </div>
-        <div>
-            
-        </div>
+                <label v-for="option in tripTypes" :key="option.value" class="radio-button">
+                    <input type="radio" v-model="tripType" :value="option.value" />
+                    <span :class="{ selected: tripType === option.value }">{{
+                        option.label
+                    }}</span>
+                </label>
+            </div>
+            <div>
+
+            </div>
         </div>
 
         <div class="options-container flexContainer">
@@ -91,11 +91,11 @@
                 :range="tripType === `oneway` ? false : true" :noShortcuts="true" :no-header="true" :inline="true"
                 :only-date="true" :position="'bottom'" :no-button="true"  class="date-picker"
                 :noButtonNow="true" :label="`Select departure date`" :formatted="'YYYY-MM-DD'" />-->
-                <VueCtkDateTimePicker style="width: 4px" v-model="departDate" format="YYYY-MM-DD"
-                :enabledDates="datestoHighlight" ref="dateTimePicker" 
-                :range="tripType === `oneway` ? false : true" :noShortcuts="true" :no-header="true" :inline="true"
-                :only-date="true" :position="'bottom'" :no-button="true" :min-date="getCurrentDate()" class="date-picker"
-                :noButtonNow="true" :label="`Select departure date`" :formatted="'YYYY-MM-DD'" />
+            <VueCtkDateTimePicker style="width: 4px" v-model="departDate" format="YYYY-MM-DD"
+                :enabledDates="datestoHighlight" ref="dateTimePicker" :range="tripType === `oneway` ? false : true"
+                :noShortcuts="true" :no-header="true" :inline="true" :only-date="true" :position="'bottom'"
+                :no-button="true" :min-date="getCurrentDate()" class="date-picker" :noButtonNow="true"
+                :label="`Select departure date`" :formatted="'YYYY-MM-DD'" />
         </div>
         <div v-if="currentMenu === 'passengers'" class="menu" style="
           flex-direction: column;
@@ -203,7 +203,8 @@
                                 <label :for="vehicleBrand + `_item`">{{ vehicleBrand }}</label>
                             </div>
                         </div>
-                        <div v-if="selectedcarBrand !== ``" class="radio-list" style="transform: scale(0.8);margin-right:-2rem;">
+                        <div v-if="selectedcarBrand !== ``" class="radio-list"
+                            style="transform: scale(0.8);margin-right:-2rem;">
                             <div class="radio-item car-models" v-for="(vehicleModel, index) in getCarModel()"
                                 :key="vehicleModel['Model'] + `_item`">
                                 <input name="car-model" type="radio" :id="vehicleModel['Model'] + `_item`"
@@ -282,7 +283,6 @@ export default {
                 { value: "differentreturn", label: "Different Return" },
             ],
             Routes: [],
-            searchedRoutes: {},
             selectedRoute: {},
             svgVehicules: {
                 Car: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M241-223v49q0 8.925-6.325 14.962Q228.35-153 219-153h-44q-9.35 0-15.675-6.038Q153-165.075 153-174v-305.143L230-669q6.571-19.65 24.064-30.825Q271.557-711 293-711h374q21.443 0 38.936 11.175T730-669l77 189.857V-174q0 8.925-6.325 14.962Q794.35-153 785-153h-44q-9.35 0-15.675-6.038Q719-165.075 719-174v-49H241Zm2-299h474l-49-122H292l-49 122Zm70.882 195Q333-327 346.5-340.382q13.5-13.383 13.5-32.5Q360-392 346.618-405.5q-13.383-13.5-32.5-13.5Q295-419 281.5-405.618q-13.5 13.383-13.5 32.5Q268-354 281.382-340.5q13.383 13.5 32.5 13.5Zm332 0Q665-327 678.5-340.382q13.5-13.383 13.5-32.5Q692-392 678.618-405.5q-13.383-13.5-32.5-13.5Q627-419 613.5-405.618q-13.5 13.383-13.5 32.5Q600-354 613.382-340.5q13.383 13.5 32.5 13.5Z"/></svg>`,
@@ -365,7 +365,7 @@ export default {
             console.log(
                 this.departDate
             );
-            if(this.tripType == "roundTrip"){
+            if (this.tripType == "roundTrip") {
                 this.getTimeTable(this.departDate.start, this.departDate.end)
             } else {
                 this.getTimeTable(this.departDate, null)
@@ -488,44 +488,45 @@ export default {
         async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
             try {
                 const data = JSON.stringify({
-                TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
-                User: "",
-                LanguagePrefCode: "en",
-                Currency: "EUR",
-                CountryCode: "TUN",
-                OriginatingSystem: "",
-                FromSailingDate: fromDate,
-                ToSailingDate: toDate,
-                DepartPort: fromPort,
-                DestinationPort: toPort,
-            })
-            console.log(data)
-            const config = {
-                method: "post",
-                maxBodyLength: Infinity,
-                url: "https://cms.4help.tn/api/getTimeTables_API/getTimeTables",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                maxRedirects: 0,
-                data: data,
-            };
-            return await this.$axios.request(config).then((res) => {
-                console.log(res.data)
-                if (res.data !== "Pas de data à afficher avec les données entrées") {
-                    return res.data}
-                // } else {
-                //     if (this.tripType === "roundTrip")
-                //         window.alert(
-                //             "There are no available ferries in the selected dates"
-                //         )
-                //     else
-                //         window.alert(
-                //             "there are no ferries sailing on the date you selected"
-                //         )
-                // }
-            });
-            } catch(e) {
+                    TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
+                    User: "",
+                    LanguagePrefCode: "en",
+                    Currency: "EUR",
+                    CountryCode: "TUN",
+                    OriginatingSystem: "",
+                    FromSailingDate: fromDate,
+                    ToSailingDate: toDate,
+                    DepartPort: fromPort,
+                    DestinationPort: toPort,
+                })
+                console.log(data)
+                const config = {
+                    method: "post",
+                    maxBodyLength: Infinity,
+                    url: "https://cms.4help.tn/api/getTimeTables_API/getTimeTables",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    maxRedirects: 0,
+                    data: data,
+                };
+                return await this.$axios.request(config).then((res) => {
+                    console.log(res.data)
+                    if (res.data !== "Pas de data à afficher avec les données entrées") {
+                        return res.data
+                    }
+                    // } else {
+                    //     if (this.tripType === "roundTrip")
+                    //         window.alert(
+                    //             "There are no available ferries in the selected dates"
+                    //         )
+                    //     else
+                    //         window.alert(
+                    //             "there are no ferries sailing on the date you selected"
+                    //         )
+                    // }
+                });
+            } catch (e) {
                 console.log(e)
             }
         },
@@ -543,21 +544,7 @@ export default {
             this.selectedPortIndex2 = `${index}${indexx}`;
             this.destPort = port
             //this.selectedRoute =
-        },
-        filterRoutes() {
-            this.searchedRoutes = this.Routes.map((trip) => {
-                if (
-                    Object.values(trip["$"]).some((value) =>
-                        value.toUpperCase().includes(this.searchInp.toUpperCase())
-                    ) ||
-                    `${trip.departurePort} - ${trip.arrivalPort}`
-                        .toUpperCase()
-                        .includes(this.searchInp.toUpperCase())
-                ) {
-                    return trip
-                }
-                return null;
-            }).filter(Boolean)
+            console.log(port)
         },
         async getVehiculesPassengers() {
             let data = JSON.stringify({
@@ -611,77 +598,153 @@ export default {
             this.Routes = await this.$axios.request(config).then((res) => {
                 return res.data.GetRoutesResponse.Routes[0].Route;
             });
-            this.gnvRoutes = await this.$axios.get("https://cms.4help.tn/api/GNV_API/getTables").then((res) => {return res.data.Routes.Route})
+            this.gnvRoutes = await this.$axios.get("https://cms.4help.tn/api/GNV_API/getTables").then((res) => { return res.data.Routes.Route })
         },
         showMenu(menu) {
             this.currentMenu = menu;
         },
-        getDepartDest() {
-            this.Routes.map((route) => {
-                if (!Object.keys(this.portNameCode).includes(route["$"].DepartPortName)) this.portNameCode[route["$"].DepartPortName] = route["$"].DepartPort
-                if (!Object.keys(this.portNameCode).includes(route["$"].DestinationPortName)) this.portNameCode[route["$"].DestinationPortName] = route["$"].DestinationPort
-                if (
-                    !Object.keys(this.filteredRouteList).includes(
-                        route["$"].DepartPortName
-                    )
-                )
-                    this.filteredRouteList[route["$"].DepartPortName] = [];
-                if (
-                    !Object.keys(
-                        this.filteredRouteList[route["$"].DepartPortName]
-                    ).includes(route["$"].DestinationPortCountry)
-                )
-                    this.filteredRouteList[route["$"].DepartPortName][
-                        route["$"].DestinationPortCountry
-                    ] = [];
-                //this.filteredRouteList[route["$"].DepartPortName].push(route["$"].DestinationPortName)
-                this.filteredRouteList[route["$"].DepartPortName][
-                    route["$"].DestinationPortCountry
-                ].push(route["$"].DestinationPortName);
+        getDepartDest(ROUTES) {
+            // Check if the first route has the $ property to determine the property access pattern
+            const hasDollarProp = ROUTES.length > 0 && "$" in ROUTES[0];
+
+            ROUTES.forEach((route) => {
+                // Access properties based on whether they are wrapped in $ or not
+                const departPortName = hasDollarProp ? route["$"].DepartPortName : route.DepartPortName;
+                const destinationPortName = hasDollarProp ? route["$"].DestinationPortName : route.DestinationPortName;
+                const departPort = hasDollarProp ? route["$"].DepartPort : route.DepartPort;
+                const destinationPort = hasDollarProp ? route["$"].DestinationPort : route.DestinationPort;
+                const destinationPortCountry = hasDollarProp ? route["$"].DestinationPortCountry : route.DestinationPortCountry;
+
+                if (!this.portNameCode.hasOwnProperty(departPortName)) {
+                    this.portNameCode[departPortName] = departPort;
+                }
+
+                if (!this.portNameCode.hasOwnProperty(destinationPortName)) {
+                    this.portNameCode[destinationPortName] = destinationPort;
+                }
+
+                if (!this.filteredRouteList.hasOwnProperty(departPortName)) {
+                    this.filteredRouteList[departPortName] = {};
+                }
+
+                if (!this.filteredRouteList[departPortName].hasOwnProperty(destinationPortCountry)) {
+                    this.filteredRouteList[departPortName][destinationPortCountry] = [];
+                }
+
+                this.filteredRouteList[departPortName][destinationPortCountry].push(destinationPortName);
             });
-            console.log(this.filteredRouteList)
+            console.log(this.portNameCode)
+            console.log(this.filteredRouteList);
         },
         getCurrentAndLastDayOfNextMonth() {
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1;
-  const currentDay = currentDate.getDate();
-  const formattedCurrentDate = formatDate(currentYear, currentMonth, currentDay);
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth() + 1;
+            const currentDay = currentDate.getDate();
+            const formattedCurrentDate = formatDate(currentYear, currentMonth, currentDay);
 
-  const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
-  const nextMonthYear = currentMonth === 12 ? currentYear + 1 : currentYear;
-  const lastDayOfNextMonth = new Date(nextMonthYear, nextMonth, 0);
-  const lastDay = lastDayOfNextMonth.getDate();
-  const formattedLastDayOfNextMonth = formatDate(nextMonthYear, nextMonth, lastDay);
-  
-  return {
-    currentDate: formattedCurrentDate,
-    lastDayOfNextMonth: formattedLastDayOfNextMonth
-  }
-  function formatDate(year, month, day) {
-  const formattedYear = year.toString().padStart(4, '0');
-  const formattedMonth = month.toString().padStart(2, '0');
-  const formattedDay = day.toString().padStart(2, '0');
-  return `${formattedYear}-${formattedMonth}-${formattedDay}`;
-}
-},
-removeAccents(str) {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-},
-async getCityFrenchName(cityName) {
-  const url = `http://api.geonames.org/searchJSON?q=${cityName}&maxRows=1&lang=fr&username=ahmed_flyandferry`;
-  try {
-    const response = await this.$axios.get(url);
-    if (response.data.totalResultsCount > 0) {
-      // The 'name' field should now have the name in French
-      const frenchName = response.data.geonames[0]['name'];
-      return this.removeAccents(frenchName);
+            const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+            const nextMonthYear = currentMonth === 12 ? currentYear + 1 : currentYear;
+            const lastDayOfNextMonth = new Date(nextMonthYear, nextMonth, 0);
+            const lastDay = lastDayOfNextMonth.getDate();
+            const formattedLastDayOfNextMonth = formatDate(nextMonthYear, nextMonth, lastDay);
+
+            return {
+                currentDate: formattedCurrentDate,
+                lastDayOfNextMonth: formattedLastDayOfNextMonth
+            }
+            function formatDate(year, month, day) {
+                const formattedYear = year.toString().padStart(4, '0');
+                const formattedMonth = month.toString().padStart(2, '0');
+                const formattedDay = day.toString().padStart(2, '0');
+                return `${formattedYear}-${formattedMonth}-${formattedDay}`;
+            }
+        },
+        async translateCityName(cityName, to) {
+    const url = `https://cms.4help.tn/api/GNV_API/translate`; // Your server endpoint
+
+    try {
+        const response = await this.$axios.post(url, { text: cityName, to: to });
+        console.log(response) 
+        if (response.data && response.data.result) {
+            return this.removeAccents(response.data.result);
+        }
+    } catch (error) {
+        console.error('Error translating city name:', error);
+        return null;
     }
-  } catch (error) {
-    console.error('Error fetching French name:', error);
-  }
-  return null;
-}
+},
+        removeAccents(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        },
+        async getCountryNameFromCity(cityName) {
+            // const newName = await this.$axios.get(`http://geodb-free-service.wirefreethought.com/v1/geo/places?namePrefix=${cityName}&limit=1`).then(res => {return res.data.data[0].country})
+            // return newName
+
+            const engCityName = await this.translateCityName(cityName, 'en');
+            console.log(cityName)
+            const url = `https://countriesnow.space/api/v0.1/countries/population/cities`;
+
+            // Prepare data for the POST request
+            const data = {
+                city: engCityName
+            };
+            
+            const frenchCityName = await this.translateCityName(cityName, 'fr');
+
+
+            try {
+                const response = await this.$axios.post(url, data);
+                console.log(response.data.data)
+                if (response.data && response.data.data) {
+                console.log(response.data)
+                const frenchCountryName = await this.translateCityName(response.data.data.country, 'fr');
+                
+                    await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", {placeName: cityName, frenchPlaceName: frenchCityName, frenchCountryName: frenchCountryName})
+                    
+                    return { frenchCityName: frenchCityName, frenchCountryName: frenchCountryName };
+                }
+            } catch (error) {
+                console.log(error)
+                    const newName = await this.$axios.get(`http://geodb-free-service.wirefreethought.com/v1/geo/places?namePrefix=${cityName}&limit=1`).then(res => {return res.data.data[0].country})
+                    
+                    const frenchCountryName = await this.translateCityName(newName, 'fr');
+                    console.log (newName)
+                    await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", {placeName: cityName, frenchPlaceName: frenchCityName, frenchCountryName: frenchCountryName})
+
+                    return { frenchCityName: frenchCityName, frenchCountryName: frenchCountryName };
+            }
+        },
+        async getCityAndCountryName(cityName) {
+            try {
+                const frenchNames = await this.getCountryNameFromCity(cityName);
+
+                return {
+                    cityName: frenchNames.frenchCityName,
+                    countryName: frenchNames.frenchCountryName
+                };
+
+            } catch (error) {
+                console.error('Error during translation and lookup:', error);
+                return null;
+            }
+        },
+
+        async filterGNVRoutes() {
+            const updatePromises = this.gnvRoutes.map(async (route) => {
+                const departPortInfo = await this.getCityAndCountryName(route.DeparturePortDescription);
+                const arrivalPortInfo = await this.getCityAndCountryName(route.ArrivalPortDescription);
+                return {
+                    ...route,
+                    DepartPortName: departPortInfo.cityName,
+                    DestinationPortName: arrivalPortInfo.cityName,
+                    DestinationPortCountry: arrivalPortInfo.countryName
+                };
+            });
+
+            this.gnvRoutes = await Promise.all(updatePromises);
+            console.log("gnv routes   =>",this.gnvRoutes);
+        }
     },
     computed: {
         language() {
@@ -716,21 +779,21 @@ async getCityFrenchName(cityName) {
         await this.getRoutes()
         console.log(this.gnvRoutes)
         await this.getVehiculesPassengers()
-        this.getDepartDest()
+        this.getDepartDest(this.Routes)
         console.log(this.filteredRouteList)
         this.$parent.displayLoader = false
         this.carMODELS = Object.keys(carModels)
-        const name = await this.getCityFrenchName('Genova')
-        console.log(name)
+        this.filterGNVRoutes()
     },
 };
 </script>
   
 <style>
 .date-time-picker {
-    width: auto!important;
-    margin: 0!important;
+    width: auto !important;
+    margin: 0 !important;
 }
+
 .radio-list::-webkit-scrollbar {
     width: 0.5rem;
     /* Adjust the width as needed */
@@ -758,7 +821,7 @@ async getCityFrenchName(cityName) {
 }
 
 .inline.datetimepicker.flex {
-    width: 99Rem!important
+    width: 99Rem !important
 }
 </style>
   
@@ -842,6 +905,7 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     background-color: #f1f1f1;
     border-radius: 1rem;
     padding: 2rem;
@@ -850,7 +914,7 @@ input[type="number"]::-webkit-outer-spin-button {
     min-width: 110rem;
     max-height: 55rem;
     min-height: 50rem;
-  left: 50vw;
+    left: 50vw;
 }
 
 .options-container {
@@ -908,7 +972,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .menu {
     display: flex;
-    margin-top: 20px;
     column-gap: 2rem;
     width: 95%;
 }
@@ -1016,6 +1079,8 @@ input[type="number"]::-webkit-outer-spin-button {
 .trip-Vertical-line {
     width: 0.06rem;
     background: #3a5a99;
+    max-height: 97%;
+    margin-top: 2%;
 }
 </style>
 <style scoped>
