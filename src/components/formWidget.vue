@@ -660,28 +660,27 @@ export default {
                 return `${formattedYear}-${formattedMonth}-${formattedDay}`;
             }
         },
-        async translateCityName(cityName, to) {
-    const url = `https://cms.4help.tn/api/GNV_API/translate`; // Your server endpoint
+        async translateCityName(cityName, from, to) {
+            const url = `https://cms.4help.tn/api/GNV_API/translate`; // Your server endpoint
 
-    try {
-        const response = await this.$axios.post(url, { text: cityName, to: to });
-        console.log(response) 
-        if (response.data && response.data.result) {
-            return this.removeAccents(response.data.result);
-        }
-    } catch (error) {
-        console.error('Error translating city name:', error);
-        return null;
-    }
-},
+            try {
+                let options = { text: cityName, from: from, to: to }
+                const response = await this.$axios.post(url, options);
+                console.log(response)
+                if (response.data && response.data.result) {
+                    return this.removeAccents(response.data.result);
+                }
+            } catch (error) {
+                console.error('Error translating city name:', error);
+                return null;
+            }
+        },
         removeAccents(str) {
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         },
         async getCountryNameFromCity(cityName) {
-            // const newName = await this.$axios.get(`http://geodb-free-service.wirefreethought.com/v1/geo/places?namePrefix=${cityName}&limit=1`).then(res => {return res.data.data[0].country})
-            // return newName
 
-            const engCityName = await this.translateCityName(cityName, 'en');
+            const engCityName = await this.translateCityName(cityName, 'it','en');
             console.log(cityName)
             const url = `https://countriesnow.space/api/v0.1/countries/population/cities`;
 
@@ -689,30 +688,33 @@ export default {
             const data = {
                 city: engCityName
             };
-            
-            const frenchCityName = await this.translateCityName(cityName, 'fr');
+
+            const frenchCityName = await this.translateCityName(cityName ,'it' ,'fr');
 
 
             try {
                 const response = await this.$axios.post(url, data);
                 console.log(response.data.data)
                 if (response.data && response.data.data) {
-                console.log(response.data)
-                const frenchCountryName = await this.translateCityName(response.data.data.country, 'fr');
-                
-                    await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", {placeName: cityName, frenchPlaceName: frenchCityName, frenchCountryName: frenchCountryName})
-                    
+                    console.log(response.data)
+                    const frenchCountryName = await this.translateCityName(response.data.data.country, 'en','fr');
+
+                    await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", { placeName: cityName, frenchPlaceName: frenchCityName, frenchCountryName: frenchCountryName })
+
                     return { frenchCityName: frenchCityName, frenchCountryName: frenchCountryName };
                 }
             } catch (error) {
-                console.log(error)
-                    const newName = await this.$axios.get(`http://geodb-free-service.wirefreethought.com/v1/geo/places?namePrefix=${cityName}&limit=1`).then(res => {return res.data.data[0].country})
-                    
-                    const frenchCountryName = await this.translateCityName(newName, 'fr');
-                    console.log (newName)
-                    await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", {placeName: cityName, frenchPlaceName: frenchCityName, frenchCountryName: frenchCountryName})
+                try {
+                    const newName = await this.$axios.get(`http://geodb-free-service.wirefreethought.com/v1/geo/places?namePrefix=${cityName}&limit=1`).then(res => { return res.data.data[0].country })
 
-                    return { frenchCityName: frenchCityName, frenchCountryName: frenchCountryName };
+                const frenchCountryName = await this.translateCityName(newName, 'en', 'fr');
+                console.log(newName)
+                await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", { placeName: cityName, frenchPlaceName: frenchCityName, frenchCountryName: frenchCountryName })
+
+                return { frenchCityName: frenchCityName, frenchCountryName: frenchCountryName };
+                } catch (innerError) {
+                    return null;
+                }
             }
         },
         async getCityAndCountryName(cityName) {
@@ -734,6 +736,12 @@ export default {
             const updatePromises = this.gnvRoutes.map(async (route) => {
                 const departPortInfo = await this.getCityAndCountryName(route.DeparturePortDescription);
                 const arrivalPortInfo = await this.getCityAndCountryName(route.ArrivalPortDescription);
+                console.log({
+                    ...route,
+                    DepartPortName: departPortInfo.cityName,
+                    DestinationPortName: arrivalPortInfo.cityName,
+                    DestinationPortCountry: arrivalPortInfo.countryName
+                })
                 return {
                     ...route,
                     DepartPortName: departPortInfo.cityName,
@@ -743,7 +751,8 @@ export default {
             });
 
             this.gnvRoutes = await Promise.all(updatePromises);
-            console.log("gnv routes   =>",this.gnvRoutes);
+            console.log("doneeee")
+            console.log("gnv routes   =>", this.gnvRoutes);
         }
     },
     computed: {
