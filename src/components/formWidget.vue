@@ -256,6 +256,7 @@ import carModels from "../../vehicle-models.json";
 export default {
     data() {
         return {
+            oldPlaces: {},
             gnvRoutes: [],
             currentSelectedMonth: null,
             datestoHighlight: [],
@@ -631,6 +632,7 @@ export default {
                     this.filteredRouteList[departPortName][destinationPortCountry] = [];
                 }
 
+                if (!this.filteredRouteList[departPortName][destinationPortCountry].includes(destinationPortName))
                 this.filteredRouteList[departPortName][destinationPortCountry].push(destinationPortName);
             });
             console.log(this.portNameCode)
@@ -668,6 +670,7 @@ export default {
                 const response = await this.$axios.post(url, options);
                 console.log(response)
                 if (response.data && response.data.result) {
+                    console.log(this.removeAccents(response.data.result))
                     return this.removeAccents(response.data.result);
                 }
             } catch (error) {
@@ -681,7 +684,6 @@ export default {
         async getCountryNameFromCity(cityName) {
 
             const engCityName = await this.translateCityName(cityName, 'it','en');
-            console.log(cityName)
             const url = `https://countriesnow.space/api/v0.1/countries/population/cities`;
 
             // Prepare data for the POST request
@@ -689,41 +691,52 @@ export default {
                 city: engCityName
             };
 
-            const frenchCityName = await this.translateCityName(cityName ,'it' ,'fr');
+            const frenchPlaceName = await this.translateCityName(cityName ,'it' ,'fr');
 
 
             try {
                 const response = await this.$axios.post(url, data);
                 console.log(response.data.data)
                 if (response.data && response.data.data) {
-                    console.log(response.data)
                     const frenchCountryName = await this.translateCityName(response.data.data.country, 'en','fr');
 
-                    await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", { placeName: cityName, frenchPlaceName: frenchCityName, frenchCountryName: frenchCountryName })
+                    const countryCCA3 = await this.$axios.get(`https://restcountries.com/v3.1/name/${response.data.data.country}`).then(res => { return res.data[0].cca3 })
 
-                    return { frenchCityName: frenchCityName, frenchCountryName: frenchCountryName };
+                    await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", { placeName: cityName, frenchPlaceName: frenchPlaceName, frenchCountryName: frenchCountryName, countryCCA3: countryCCA3 })
+
+                    return { frenchPlaceName: frenchPlaceName, frenchCountryName: frenchCountryName, countryCCA3: countryCCA3 };
                 }
             } catch (error) {
                 try {
-                    const newName = await this.$axios.get(`http://geodb-free-service.wirefreethought.com/v1/geo/places?namePrefix=${cityName}&limit=1`).then(res => { return res.data.data[0].country })
+                    //const newName = await this.$axios.get(`http://geodb-free-service.wirefreethought.com/v1/geo/places?namePrefix=${engCityName}&limit=1`).then(res => { 
+                        //return res.data.data[0].country })
+                    const newName = await this.$axios.get(`http://api.geonames.org/searchJSON?q=${frenchPlaceName}&maxRows=1&lang=fr&username=ahmed_flyandferry`).then(res => { 
+                    return res.data.geonames[0].countryName })
 
-                const frenchCountryName = await this.translateCityName(newName, 'en', 'fr');
+                    const engCountryName = await this.translateCityName(newName, 'fr','en');
+
+                    const countryCCA3 = await this.$axios.get(`https://restcountries.com/v3.1/name/${engCountryName}`).then(res => { return res.data[0].cca3 })
+
+
+
+                const newFrenchCountryName = await this.translateCityName(newName, 'en', 'fr');
                 console.log(newName)
-                await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", { placeName: cityName, frenchPlaceName: frenchCityName, frenchCountryName: frenchCountryName })
+                await this.$axios.post("https://cms.4help.tn/api/GNV_API/places", { placeName: cityName, frenchPlaceName: frenchPlaceName, frenchCountryName: newFrenchCountryName, countryCCA3: countryCCA3 })
 
-                return { frenchCityName: frenchCityName, frenchCountryName: frenchCountryName };
+                return { frenchPlaceName: frenchPlaceName, frenchCountryName: newFrenchCountryName, countryCCA3: countryCCA3 };
                 } catch (innerError) {
-                    return null;
+                    console.log(innerError)
                 }
             }
         },
         async getCityAndCountryName(cityName) {
             try {
-                const frenchNames = await this.getCountryNameFromCity(cityName);
-
+                const frenchNames = this.oldPlaces[cityName] ? this.oldPlaces[cityName] : await this.getCountryNameFromCity(cityName);
+                if (!frenchNames) console.log(cityName)
                 return {
-                    cityName: frenchNames.frenchCityName,
-                    countryName: frenchNames.frenchCountryName
+                    cityName: frenchNames.frenchPlaceName,
+                    countryName: frenchNames.frenchCountryName,
+                    cca3: frenchNames.countryCCA3
                 };
 
             } catch (error) {
@@ -736,23 +749,20 @@ export default {
             const updatePromises = this.gnvRoutes.map(async (route) => {
                 const departPortInfo = await this.getCityAndCountryName(route.DeparturePortDescription);
                 const arrivalPortInfo = await this.getCityAndCountryName(route.ArrivalPortDescription);
-                console.log({
-                    ...route,
-                    DepartPortName: departPortInfo.cityName,
-                    DestinationPortName: arrivalPortInfo.cityName,
-                    DestinationPortCountry: arrivalPortInfo.countryName
-                })
+                this.countryCodes[arrivalPortInfo.cca3] = arrivalPortInfo.countryName;
                 return {
                     ...route,
                     DepartPortName: departPortInfo.cityName,
                     DestinationPortName: arrivalPortInfo.cityName,
-                    DestinationPortCountry: arrivalPortInfo.countryName
+                    DestinationPortCountry: arrivalPortInfo.cca3,
+                    DestinationPortCountryName: arrivalPortInfo.countryName
                 };
             });
 
             this.gnvRoutes = await Promise.all(updatePromises);
-            console.log("doneeee")
+            this.getDepartDest(this.gnvRoutes)
             console.log("gnv routes   =>", this.gnvRoutes);
+            console.log("country codes =>", this.countryCodes);
         }
     },
     computed: {
@@ -785,14 +795,16 @@ export default {
     },
     async mounted() {
         this.$parent.displayLoader = true
+        this.oldPlaces = await this.$axios.get("https://cms.4help.tn/api/GNV_API/places").then(res => { return res.data })
+        console.log(this.oldPlaces)
         await this.getRoutes()
         console.log(this.gnvRoutes)
         await this.getVehiculesPassengers()
         this.getDepartDest(this.Routes)
-        console.log(this.filteredRouteList)
         this.$parent.displayLoader = false
         this.carMODELS = Object.keys(carModels)
         this.filterGNVRoutes()
+
     },
 };
 </script>
@@ -987,6 +999,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .menu-column {
     width: 20%;
+    height: 37rem;
+    overflow-y: auto;
 }
 
 .map-column {
