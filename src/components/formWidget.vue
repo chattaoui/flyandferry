@@ -387,6 +387,7 @@ export default {
                 this.selectedPortIndex2 = ""
                 this.destPort = ""
             }
+            console.log(port)
             this.depPort = port
             this.selectedPortIndex = index
         },
@@ -612,15 +613,15 @@ export default {
                 // Access properties based on whether they are wrapped in $ or not
                 const departPortName = hasDollarProp ? route["$"].DepartPortName : route.DepartPortName;
                 const destinationPortName = hasDollarProp ? route["$"].DestinationPortName : route.DestinationPortName;
-                const departPort = hasDollarProp ? route["$"].DepartPort : route.DepartPort;
-                const destinationPort = hasDollarProp ? route["$"].DestinationPort : route.DestinationPort;
+                const departPort = hasDollarProp ? route["$"].DepartPort : route.DeparturePortCode;
+                const destinationPort = hasDollarProp ? route["$"].DestinationPort : null;
                 const destinationPortCountry = hasDollarProp ? route["$"].DestinationPortCountry : route.DestinationPortCountry;
 
                 if (!this.portNameCode.hasOwnProperty(departPortName)) {
                     this.portNameCode[departPortName] = departPort;
                 }
 
-                if (!this.portNameCode.hasOwnProperty(destinationPortName)) {
+                if (!this.portNameCode.hasOwnProperty(destinationPortName) && destinationPort) {
                     this.portNameCode[destinationPortName] = destinationPort;
                 }
 
@@ -781,6 +782,7 @@ export default {
         async depPort(value) {
             const monthDates = this.getCurrentAndLastDayOfNextMonth()
             const code = this.portNameCode[value]
+            console.log(code)
             const destPorts = this.Routes.filter(obj => obj['$'].DepartPort === code).map(obj => obj['$'].DestinationPort)
             let dates = await Promise.all(destPorts.map(async (destPort) => {
                 const res = await this.useTimeTableAPI(monthDates.currentDate, monthDates.lastDayOfNextMonth, code, destPort)
@@ -998,7 +1000,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .menu-column {
-    width: 20%;
+    width: -webkit-fill-available;
     height: 37rem;
     overflow-y: auto;
 }
@@ -1006,6 +1008,8 @@ input[type="number"]::-webkit-outer-spin-button {
 .map-column {
     width: 60%;
     text-align: -webkit-center;
+    max-height: 97%;
+    margin-top: 2%;
 }
 
 .menu button {
