@@ -3,8 +3,10 @@
     <aside class="more-right-side slide-in-from-left">
       <h4><i class="fas fa-ticket-alt"></i> Pick your ticket:</h4>
 
-      <div v-for="(booking, index) in Bookings" :key="`booking_${index}`" class="more-card ticket-card">
-        <div v-if="isObject(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)" style="display: flex;flex-direction: row;width: 100%;justify-content: space-between;align-items: center;">
+      <div v-for="(booking, index) in Object.keys(selectedBooking).length ? { selectedBooking } : Bookings"
+        :key="`booking_${index}`" class="more-card ticket-card">
+        <div v-if="isObject(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)"
+          style="display: flex;flex-direction: row;width: 100%;justify-content: space-between;align-items: center;">
           <div class="airline">
             <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
             <div class="airline__name">AirTour</div>
@@ -77,7 +79,7 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="selectedBooking = booking">
+          <button v-if="type === 'current'" @click="initiateEdit(booking)">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -125,7 +127,7 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="selectedBooking = booking">
+          <button v-if="type === 'current'" @click="initiateEdit(booking)">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -139,61 +141,73 @@
 
       <br />
     </aside>
-    <aside class="more-left-side slide-in-from-right" v-if="Object.keys(selectedBooking).length">
-      <div style="height: 7rem"></div>
+    <aside class="change-booking-form-container" v-if="Object.keys(selectedBooking).length">
+      <div class="change-booking-form">
+        <h2>Modify Reservation</h2>
+        <form @submit="preventDefault">
+          <!-- Reservation dates -->
+          <label for="departureDate">Departure Date</label>
+          <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate" v-model="bookingModifications.dates.from">
 
-      <div class="more-card">
-        <div class="filter-title">Airlines Filter</div>
+          <div v-if="bookingModifications.dates.to">
+            <label for="returnDate">Return Date</label>
+            <input type="date" id="returnDate" name="returnDate" :min="bookingModifications.dates.from" v-model="bookingModifications.dates.to">
+          </div>
 
-        <div class="checkbox hasMargin mini">
-          <input id="AirTour" type="checkbox" />
-          <label for="AirTour">
-            <div class="checkbox__check">
-              <i class="fas fa-check"></i>
-            </div>
-            <div class="checkbox__title">
-              <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
-              AirTour
-            </div>
-          </label>
-        </div>
-        <div class="checkbox hasMargin mini">
-          <input id="Ata" type="checkbox" />
-          <label for="Ata">
-            <div class="checkbox__check">
-              <i class="fas fa-check"></i>
-            </div>
-            <div class="checkbox__title">
-              <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/I3.png" />
-              Ata
-            </div>
-          </label>
-        </div>
-      </div>
+          <label for="route">Departure ~ Destination</label>
+          <input disabled style="text-align: center;" name="route" :value="selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length > 1
+            ? `${bookingModifications.route.from} - ${bookingModifications.route.to} ~ ${bookingModifications.route.to} - ${bookingModifications.route.from}`
+            : `${bookingModifications.route.from} ~ ${bookingModifications.route.to}`">
 
-      <div class="more-card">
-        <div class="filter-title">Ticket Class</div>
-        <div class="checkbox hasMargin mini">
-          <input id="All" name="ticketclass" type="radio" value="All" checked />
-          <label for="All">
-            <div class="checkbox__check"></div>
-            <div class="checkbox__title">All</div>
-          </label>
-        </div>
-        <div class="checkbox hasMargin mini">
-          <input id="Economy" name="ticketclass" type="radio" value="Economy" />
-          <label for="Economy">
-            <div class="checkbox__check"></div>
-            <div class="checkbox__title">Economy</div>
-          </label>
-        </div>
-        <div class="checkbox hasMargin mini">
-          <input id="Business" name="ticketclass" type="radio" value="Business" />
-          <label for="Business">
-            <div class="checkbox__check"></div>
-            <div class="checkbox__title">Business</div>
-          </label>
-        </div>
+          <!-- Number of passengers with indication for type -->
+          <label for="numAdults">Adults</label>
+          <input type="number" id="numAdults" name="numAdults" min="1" v-model="bookingModifications.passengers.Adults">
+
+          <label for="numChildren">Children</label>
+          <input type="number" id="numChildren" name="numChildren" min="0"
+            v-model="bookingModifications.passengers.Childs">
+
+          <!-- Accommodation room type -->
+          <label for="roomType">Accommodation - Room Type</label>
+          <select id="roomType" name="roomType">
+            <option value="single">Single</option>
+            <option value="double">Double</option>
+            <option value="suite">Suite</option>
+            <!-- Add other room types as needed -->
+          </select>
+
+          <!-- Onboard services -->
+          <fieldset>
+            <legend>Onboard Services</legend>
+
+          </fieldset>
+
+          <!-- Vehicle details -->
+          <div id="vehicleDetails">
+            <!-- Button to add vehicle details -->
+            <label class="custom-checkbox" style="display: inline-flex;align-items: center;gap: 3rem;width: 100%; margin-top: 2rem;">
+          <input type="checkbox" name="foodService" v-model="showVehicleForm">
+          Include car
+        </label>
+
+            <!-- Hidden fields for vehicle information to be displayed when Add Car is clicked -->
+            <fieldset v-if="showVehicleForm" id="vehicleInfo">
+              <label for="vehicleOwnership">Vehicle Ownership</label>
+              <select id="vehicleOwnership" name="vehicleOwnership">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+
+              <label for="vehiclePlateNumber">Vehicle Plate Number</label>
+              <input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" placeholder="Plate number">
+            </fieldset>
+          </div>
+          <!-- Submit button -->
+          <div style="display:inline-flex;gap:0.9rem;">
+            <button>Submit Changes</button>
+            <button id="cancel-submit" @click="selectedBooking = {}">Cancel</button>
+          </div>
+        </form>
       </div>
     </aside>
   </div>
@@ -215,7 +229,8 @@ export default defineComponent({
 
     return {
       selectedBooking: {},
-
+      bookingModifications: {},
+      showVehicleForm: false
     }
 
   },
@@ -224,12 +239,57 @@ export default defineComponent({
     isObject(value) {
       return !(typeof value === 'object' && value !== null && !Array.isArray(value));
     },
+    preventDefault(event) {
+      event.preventDefault()
+    },
+    initiateEdit(booking) {
+      this.selectedBooking = booking;
+
+      console.log(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)
+      const sailings = booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing;
+      const sailingArray = Array.isArray(sailings) ? sailings : [sailings];
+      console.log(booking)
+      this.bookingModifications.route = {
+        from: sailingArray[0].SailingInfo["@DepartPortName"],
+        to: sailingArray[0].SailingInfo["@DestinationPortName"]
+      }
+
+      this.bookingModifications.dates = {
+        from: sailingArray[0].SailingInfo["@DepartDateTime"].split('T')[0],
+        ...(Array.isArray(sailings) && {
+          to: sailingArray[1].SailingInfo["@DepartDateTime"].split('T')[0]
+        })
+      };
+
+      this.bookingModifications.passengers = {
+        Adults: 0,
+        Childs: 0
+      };
+
+      const passengers = booking.RecallBookingResponse.Passengers.Passenger;
+      const passengerArray = Array.isArray(passengers) ? passengers : [passengers];
+
+      passengerArray.forEach((passenger) => {
+        if (passenger['@Category'] === "Adult") {
+          this.bookingModifications.passengers.Adults++;
+        } else if (passenger['@Category'] === "Child") {
+          this.bookingModifications.passengers.Childs++;
+        }
+      });
+
+      console.log(this.selectedBooking);
+    }
   },
   watch: {
     selectedBooking(value) {
-      console.log(value.RecallBookingResponse)
-    }
+      console.log(value)
+    },
+    showVehicleForm(value) {
+      console.log(value)
+    },
   },
+  mounted() {
+  }
 
 });
 
@@ -248,9 +308,7 @@ select {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid #e9ecef;
   border-radius: 16px;
-  height: 65px;
-  padding-left: 20px;
-  padding-right: 20px;
+  height: 3.5rem;
   box-sizing: border-box;
   outline: none;
   -moz-appearance: none;
@@ -258,7 +316,7 @@ select {
   -webkit-appearance: none;
   /* Safari and Chrome */
   appearance: none;
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 17px;
   color: #2d0079;
   margin-top: 15px;
@@ -300,7 +358,7 @@ select~i {
 }
 
 ::placeholder {
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-weight: 100;
   font-size: 17px;
   color: #adb5bd;
@@ -308,14 +366,14 @@ select~i {
 }
 
 :-ms-input-placeholder {
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-weight: 100;
   font-size: 17px;
   color: #adb5bd;
 }
 
 ::-ms-input-placeholder {
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-weight: 100;
   font-size: 17px;
   color: #adb5bd;
@@ -332,14 +390,12 @@ select~i {
 }
 
 form button {
-  background: #fabe23;
-  box-shadow: -2px 19px 67px 0 rgba(250, 190, 35, 0.4);
   border-radius: 16px;
-  height: 65px;
+  height: 3.5rem;
   padding-left: 20px;
   padding-right: 20px;
   box-sizing: border-box;
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 17px;
   margin-top: 15px;
   color: #19093b;
@@ -364,10 +420,6 @@ form button:active {
   transform: scale(0.95);
 }
 
-/* more page */
-.more-left-side {
-  width: 19%;
-}
 
 .more-right-side {
   width: 70%;
@@ -397,118 +449,8 @@ form button:active {
   cursor: pointer;
 }
 
-.checkbox__check {
-  border: 1px solid #e9ecef;
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: ease all 0.2s;
-}
-
-.checkbox.mini .checkbox__check {
-  width: 25px;
-  height: 25px;
-  border-radius: 7px;
-}
-
-.checkbox.mini input[type="radio"]~label .checkbox__check {
-  border-radius: 30px;
-}
-
-.checkbox__check i {
-  display: none;
-}
-
-input[type="checkbox"]:checked~label .checkbox__check {
-  background: #19093b;
-}
-
-input[type="checkbox"]:checked~label .checkbox__check i {
-  display: block;
-  color: #fabe23;
-}
-
-input[type="radio"]:checked~label .checkbox__check {
-  background: #fabe23;
-  box-shadow: inset 0 0 0px 7px #19093b;
-}
-
-input[type="radio"]:checked~label .checkbox__check i {
-  display: block;
-  color: #fabe23;
-}
-
-.checkbox__title {
-  font-family: inherit;
-  margin-left: 15px;
-  font-size: 16px;
-  color: #1b0445;
-}
-
-.checkbox.hasMargin {
-  margin-top: 15px;
-}
-
-.checkbox__title img {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  margin-bottom: -4px;
-  margin-right: 4px;
-}
-
-.sorting-line {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: center;
-  align-content: stretch;
-}
-
-.sorting-line__item {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
-  border-radius: 14px;
-  padding: 20px;
-  font-family: inherit;
-  font-size: 18px;
-  color: #1b0445;
-  text-align: center;
-  margin-right: 10px;
-  cursor: pointer;
-  transform: scale(1);
-  transition: ease all 0.2s;
-}
-
-.sorting-line__item:last-child {
-  margin-right: 0;
-}
-
-.sorting-line__item.active {
-  background: #1b0445;
-  color: #fabe23;
-}
-
-.sorting-line__item:hover {
-  transform: scale(1.1);
-  box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
-}
-
-.sorting-line__item:active {
-  transform: scale(0.95);
-}
-
-.sorting-line__item i {
-  margin-right: 5px;
-}
-
 .more-right-side h4 {
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-weight: 100;
   font-size: 1.5em;
   color: #1b0445;
@@ -550,7 +492,7 @@ input[type="radio"]:checked~label .checkbox__check i {
 }
 
 .airline__name {
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 17px;
   color: #2d0079;
   margin-top: 10px;
@@ -566,7 +508,7 @@ input[type="radio"]:checked~label .checkbox__check i {
 }
 
 .ticket-card__info-line__title {
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 0.7em;
   color: #6c757d;
 }
@@ -576,7 +518,7 @@ input[type="radio"]:checked~label .checkbox__check i {
 }
 
 .ticket-card__info-line__value {
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 1.5em;
   color: #1b0445;
   margin-top: 0.4rem;
@@ -586,7 +528,7 @@ input[type="radio"]:checked~label .checkbox__check i {
   cursor: pointer;
   border: 1px solid #e9ecef;
   border-radius: 22px;
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 0.75em;
   color: #19093b;
   background: transparent;
@@ -675,7 +617,7 @@ input[type="radio"]:checked~label .checkbox__check i {
 }
 
 .filter-title {
-  font-family: inherit;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-weight: 100;
   font-size: 1.4em;
   padding-left: 0px;
@@ -684,7 +626,11 @@ input[type="radio"]:checked~label .checkbox__check i {
 
 input[type="checkbox"],
 input[type="radio"] {
-  display: none;
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 16px;
+  margin-top: 0px
 }
 
 @keyframes slideInFromRight {
@@ -721,5 +667,120 @@ input[type="radio"] {
   width: 0.2rem;
   height: 19.7vh;
   background: #3a5a99;
+}
+
+.change-booking-form {
+  padding: 2rem;
+}
+
+.change-booking-form-container {
+  width: 23%;
+}
+
+.change-booking-form h2 {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 100;
+  font-size: 1.2em;
+  color: #1b0445;
+  letter-spacing: 0;
+  margin-bottom: 0;
+}
+
+.change-booking-form form {
+  padding: 2rem !important;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
+  border-radius: 0.4rem;
+  border: 1px solid #e9ecef;
+}
+
+.change-booking-form label {
+  margin-top: .7rem;
+  color: #084c61;
+}
+
+.change-booking-form input[type="number"],
+.change-booking-form input[type="text"],
+.change-booking-form input[type="date"],
+.change-booking-form select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.change-booking-form fieldset {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-top: 1rem;
+}
+
+.change-booking-form legend {
+  padding: 0 0.5rem;
+  border-bottom: none
+}
+
+.change-booking-form button {
+  border: none;
+  outline: none;
+  background-color: rgb(255, 193, 69);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1em;
+  transform: 0.3s ease;
+  align-self: center;
+  text-wrap: nowrap;
+}
+
+.change-booking-form button:hover {
+  background-color: rgba(255, 193, 69, 0.78);
+  color: #fff;
+}
+
+#cancel-submit {
+  background-color: rgb(255, 100, 100);
+}
+
+#cancel-submit:hover {
+  background-color: rgba(255, 100, 100, 0.78);
+  color: #fff;
+}
+
+#addVehicleButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#addVehicleButton .icon {
+  margin-right: 0.5rem;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-indicator {
+  background-color: #2196F3;
+  border-color: #2196F3;
+}
+
+/* Style to add a checkmark when checked */
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-indicator:after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 11px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
 }
 </style>

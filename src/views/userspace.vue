@@ -1800,6 +1800,7 @@ export default defineComponent({
             const response = await this.$axios.request(config);
             return response.data;
           } catch (error) {
+            console.log(error.message)
             // handle error (for now just returning null)
             return null;
           }
@@ -2486,7 +2487,6 @@ select {
   color: #fff;
   font-size: 16px;
   transform: 0.3s ease;
-  width: 30rem;
   align-self: center;
 }
 
