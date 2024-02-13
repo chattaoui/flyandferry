@@ -147,11 +147,13 @@
         <form @submit="preventDefault">
           <!-- Reservation dates -->
           <label for="departureDate">Departure Date</label>
-          <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate" v-model="bookingModifications.dates.from">
+          <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate"
+            v-model="bookingModifications.dates.from">
 
           <div v-if="bookingModifications.dates.to">
             <label for="returnDate">Return Date</label>
-            <input type="date" id="returnDate" name="returnDate" :min="bookingModifications.dates.from" v-model="bookingModifications.dates.to">
+            <input type="date" id="returnDate" name="returnDate" :min="bookingModifications.dates.from"
+              v-model="bookingModifications.dates.to">
           </div>
 
           <label for="route">Departure ~ Destination</label>
@@ -178,28 +180,127 @@
 
           <!-- Onboard services -->
           <fieldset>
-            <legend>Onboard Services</legend>
+            <legend>Outgoing trip</legend>
+            <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
+              <label for="numChildren">Accomodation servics</label>
+              <span style="cursor: pointer"
+                @click="bookingModifications.services.accommodationServices.out[bookingModifications.services.accommodationServices.out.length] = {}">
+                ➕
+              </span>
+            </div>
+            <div v-for="service in bookingModifications.services.accommodationServices.out" class="onboard-service">
+              <span style="cursor: pointer"
+                @click="bookingModifications.services.accommodationServices.out.splice(bookingModifications.services.accommodationServices.out.indexOf(service), 1)">
+                ➖
+              </span>
+              <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
+                {{ service.Description }}
+              </label>
+              <select v-else v-model="service.Description">
+                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits- avec Hublot</option>
+              </select>
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
+            </div>
 
+            <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
+              <label for="numChildren">Onboard services</label>
+              <span style="cursor: pointer"
+                @click="bookingModifications.services.onboardservices.out[bookingModifications.services.onboardservices.out.length] = {}">
+                ➕
+              </span>
+            </div>
+            <div v-for="service in bookingModifications.services.onboardservices.out" class="onboard-service">
+              <span style="cursor: pointer"
+                @click="bookingModifications.services.onboardservices.out.splice(bookingModifications.services.onboardservices.out.indexOf(service), 1)">
+                ➖
+              </span>
+              <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
+                {{ service.Description }}
+              </label>
+              <select v-else v-model="service.Description">
+                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits- avec Hublot</option>
+              </select>
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
+            </div>
+          </fieldset>
+          <fieldset
+            v-if="selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length > 1">
+            <legend>Return trip</legend>
+            <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
+              <label for="numChildren">Accomodation servics</label>
+              <span style="cursor: pointer"
+                @click="bookingModifications.services.accommodationServices.rtn[bookingModifications.services.accommodationServices.rtn.length] = {}">
+                ➕
+              </span>
+            </div>
+            <div v-for="service in bookingModifications.services.accommodationServices.rtn" class="onboard-service">
+              <span style="cursor: pointer" @click="bookingModifications.services.accommodationServices.rtn.splice(bookingModifications.services.accommodationServices.rtn.indexOf(service), 1)">
+                  ➖
+              </span>
+              <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
+                {{ service.Description }}
+              </label>
+              <select v-else v-model="service.Description">
+                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits- avec Hublot</option>
+              </select>
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
+            </div>
+
+            <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
+              <label for="numChildren">Onboard services</label>
+              <span style="cursor: pointer"
+                @click="bookingModifications.services.onboardservices.rtn[bookingModifications.services.onboardservices.rtn.length] = {}">
+                ➕
+              </span>
+            </div>
+            <div v-for="service in bookingModifications.services.onboardservices.rtn" class="onboard-service">
+              <span style="cursor: pointer" @click="bookingModifications.services.onboardservices.rtn.splice(bookingModifications.services.onboardservices.rtn.indexOf(service), 1)">
+                  ➖
+              </span>
+              <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
+                {{ service.Description }}
+              </label>
+              <select v-else v-model="service.Description">
+                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits- avec Hublot</option>
+              </select>
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
+            </div>
           </fieldset>
 
           <!-- Vehicle details -->
           <div id="vehicleDetails">
             <!-- Button to add vehicle details -->
-            <label class="custom-checkbox" style="display: inline-flex;align-items: center;gap: 3rem;width: 100%; margin-top: 2rem;">
-          <input type="checkbox" name="foodService" v-model="showVehicleForm">
-          Include car
-        </label>
+            <label class="custom-checkbox"
+              style="display: inline-flex;align-items: center;gap: 3rem;width: 100%; margin-top: 2rem;">
+              <input type="checkbox" name="foodService" v-model="showVehicleForm">
+              Include car
+            </label>
 
             <!-- Hidden fields for vehicle information to be displayed when Add Car is clicked -->
             <fieldset v-if="showVehicleForm" id="vehicleInfo">
               <label for="vehicleOwnership">Vehicle Ownership</label>
-              <select id="vehicleOwnership" name="vehicleOwnership">
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+              <select id="vehicleOwnership" name="vehicleOwnership" v-model="bookingModifications.vehicle.Ownership">
+                <option value="Owner">Yes</option>
+                <option value="Rent">No</option>
               </select>
 
+              <label for="vehicleBrand">Car Brand</label>
+              <select id="vehicleBrand" name="vehicleBrand" v-model="bookingModifications.vehicle.Brand">
+                <option v-for="brand in Object.keys(vehicleModels)" :value="brand">{{ brand }}</option>
+              </select>
+
+              <div
+                v-if="bookingModifications.vehicle.Brand && Object.keys(bookingModifications.vehicle.Brand).length > 0">
+                <label for="vehicleOwnership">Car Model</label>
+                <select id="vehicleOwnership" name="vehicleOwnership" v-model="bookingModifications.vehicle.Model">
+                  <option v-for="model in vehicleModels[bookingModifications.vehicle.Brand]" :value="model">{{ model.Model
+                  }}</option>
+                </select>
+              </div>
+
               <label for="vehiclePlateNumber">Vehicle Plate Number</label>
-              <input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" placeholder="Plate number">
+              <input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" placeholder="Plate number"
+                v-model="bookingModifications.vehicle.PlateNumber">
             </fieldset>
           </div>
           <!-- Submit button -->
@@ -215,6 +316,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import carModels from "../../vehicle-models.json";
 
 export default defineComponent({
 
@@ -230,7 +332,8 @@ export default defineComponent({
     return {
       selectedBooking: {},
       bookingModifications: {},
-      showVehicleForm: false
+      showVehicleForm: false,
+      vehicleModels: carModels
     }
 
   },
@@ -248,7 +351,7 @@ export default defineComponent({
       console.log(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)
       const sailings = booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing;
       const sailingArray = Array.isArray(sailings) ? sailings : [sailings];
-      console.log(booking)
+      console.log(sailingArray[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService)
       this.bookingModifications.route = {
         from: sailingArray[0].SailingInfo["@DepartPortName"],
         to: sailingArray[0].SailingInfo["@DestinationPortName"]
@@ -260,6 +363,76 @@ export default defineComponent({
           to: sailingArray[1].SailingInfo["@DepartDateTime"].split('T')[0]
         })
       };
+
+      this.bookingModifications.services = {
+        onboardservices: {
+          out: [],
+          ...(sailingArray.length > 1) && { rtn: [] }
+        },
+        accommodationServices: {
+          out: [],
+          ...(sailingArray.length > 1) && { rtn: [] }
+        }
+      }
+
+      const AccomodationOUT = sailingArray[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService
+      const AccomodationOUTArray = Array.isArray(AccomodationOUT) ? AccomodationOUT : [AccomodationOUT];
+
+      const OnboardServiceOUT = sailingArray[0].Services.OnBoardServices.OnBoardService
+      const OnboardServiceOUTArray = Array.isArray(OnboardServiceOUT) ? OnboardServiceOUT : [OnboardServiceOUT];
+
+      AccomodationOUTArray.forEach(service => {
+        this.bookingModifications.services.accommodationServices.out.push({
+          Description: service["@Description"],
+          Quantity: service["@Quantity"],
+          Code: service["@Code"]
+        })
+      })
+
+      OnboardServiceOUTArray.forEach(service => {
+        this.bookingModifications.services.onboardservices.out.push({
+          Description: service["@Description"],
+          Quantity: service["@Quantity"],
+          Code: service["@Code"]
+        })
+      })
+
+      if (sailingArray.length > 1) {
+
+        const AccomodationRTN = sailingArray[1].Services.OnBoardAccommodationServices.OnBoardAccommodationService
+        const AccomodationRTNArray = Array.isArray(AccomodationRTN) ? AccomodationRTN : [AccomodationRTN];
+
+        const OnboardServiceRTN = sailingArray[1].Services.OnBoardServices.OnBoardService
+        const OnboardServiceRTNArray = Array.isArray(OnboardServiceRTN) ? OnboardServiceRTN : [OnboardServiceRTN];
+
+
+        AccomodationRTNArray.forEach(service => {
+          this.bookingModifications.services.accommodationServices.rtn.push({
+            Description: service["@Description"],
+            Quantity: service["@Quantity"],
+            Code: service["@Code"]
+          })
+        })
+
+        OnboardServiceRTNArray.forEach(service => {
+          this.bookingModifications.services.onboardservices.rtn.push({
+            Description: service["@Description"],
+            Quantity: service["@Quantity"],
+            Code: service["@Code"]
+          })
+        })
+      }
+
+
+      if (booking.RecallBookingResponse.Vehicles) {
+        this.showVehicleForm = true
+        this.bookingModifications.vehicle = {
+          Ownership: booking.RecallBookingResponse.Vehicles.Vehicle.Lead["@OperatorCode"].includes("Owner") ? "Owner" : "Rent",
+          PlateNumber: booking.RecallBookingResponse.Vehicles.Vehicle.Lead["@Registration"],
+          Brand: booking.RecallBookingResponse.Vehicles.Vehicle.Lead["@OperatorCode"].split(';')[1]
+        }
+        this.bookingModifications.vehicle.Model = this.vehicleModels[this.bookingModifications.vehicle.Brand].filter(model => model.Model === booking.RecallBookingResponse.Vehicles.Vehicle.Lead["@OperatorCode"].split(';')[2])[0]
+      } else this.bookingModifications.vehicle = {}
 
       this.bookingModifications.passengers = {
         Adults: 0,
@@ -278,6 +451,7 @@ export default defineComponent({
       });
 
       console.log(this.selectedBooking);
+      console.log(this.bookingModifications);
     }
   },
   watch: {
@@ -285,10 +459,19 @@ export default defineComponent({
       console.log(value)
     },
     showVehicleForm(value) {
-      console.log(value)
+      if (!value) {
+        this.bookingModifications.vehicle = {
+          Ownership: "No",
+          PlateNumber: ""
+        }
+      }
     },
+    bookingModifications(value) {
+      console.log(value)
+    }
   },
   mounted() {
+
   }
 
 });
@@ -721,7 +904,8 @@ input[type="radio"] {
 
 .change-booking-form legend {
   padding: 0 0.5rem;
-  border-bottom: none
+  border-bottom: none;
+  margin-bottom:.5rem
 }
 
 .change-booking-form button {
@@ -766,13 +950,13 @@ input[type="radio"] {
   margin-right: 0.5rem;
 }
 
-.custom-checkbox input[type="checkbox"]:checked + .checkbox-indicator {
+.custom-checkbox input[type="checkbox"]:checked+.checkbox-indicator {
   background-color: #2196F3;
   border-color: #2196F3;
 }
 
 /* Style to add a checkmark when checked */
-.custom-checkbox input[type="checkbox"]:checked + .checkbox-indicator:after {
+.custom-checkbox input[type="checkbox"]:checked+.checkbox-indicator:after {
   content: "";
   position: absolute;
   left: 7px;
@@ -782,5 +966,13 @@ input[type="radio"] {
   border: solid white;
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
+}
+
+.onboard-service {
+  display: inline-flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 </style>
