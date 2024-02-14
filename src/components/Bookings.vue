@@ -11,7 +11,7 @@
             <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
             <div class="airline__name">AirTour</div>
           </div>
-          <div>
+          <div> 
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-departure"></i>
@@ -79,7 +79,7 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="initiateEdit(booking)">
+          <button v-if="type === 'current'" @click="selectedBooking=booking;initiateEdit(booking)">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -127,7 +127,7 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="initiateEdit(booking)">
+          <button v-if="type === 'current'" @click="selectedBooking=booking;initiateEdit(booking)">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -142,18 +142,16 @@
       <br />
     </aside>
     <aside class="change-booking-form-container" v-if="Object.keys(selectedBooking).length">
-      <div class="change-booking-form">
+      <div class="change-booking-form" @seeked="initDatePicker">
         <h2>Modify Reservation</h2>
         <form @submit="preventDefault">
           <!-- Reservation dates -->
           <label for="departureDate">Departure Date</label>
-          <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate"
-            v-model="bookingModifications.dates.from">
-
+          <!-- <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate"
+            v-model="bookingModifications.dates.from"> -->  
+            <Datepicker style="margin-top:0px" value="2/2/2024" :range="false" :enable-time-picker="false" />
           <div v-if="bookingModifications.dates.to">
             <label for="returnDate">Return Date</label>
-            <input type="date" id="returnDate" name="returnDate" :min="bookingModifications.dates.from"
-              v-model="bookingModifications.dates.to">
           </div>
 
           <label for="route">Departure ~ Destination</label>
@@ -183,13 +181,13 @@
             <legend>Outgoing trip</legend>
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
               <label for="numChildren">Accomodation servics</label>
-              <span style="cursor: pointer"
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
                 @click="bookingModifications.services.accommodationServices.out[bookingModifications.services.accommodationServices.out.length] = {}">
                 ➕
               </span>
             </div>
             <div v-for="service in bookingModifications.services.accommodationServices.out" class="onboard-service">
-              <span style="cursor: pointer"
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
                 @click="bookingModifications.services.accommodationServices.out.splice(bookingModifications.services.accommodationServices.out.indexOf(service), 1)">
                 ➖
               </span>
@@ -204,13 +202,13 @@
 
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
               <label for="numChildren">Onboard services</label>
-              <span style="cursor: pointer"
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
                 @click="bookingModifications.services.onboardservices.out[bookingModifications.services.onboardservices.out.length] = {}">
                 ➕
               </span>
             </div>
             <div v-for="service in bookingModifications.services.onboardservices.out" class="onboard-service">
-              <span style="cursor: pointer"
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
                 @click="bookingModifications.services.onboardservices.out.splice(bookingModifications.services.onboardservices.out.indexOf(service), 1)">
                 ➖
               </span>
@@ -228,13 +226,14 @@
             <legend>Return trip</legend>
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
               <label for="numChildren">Accomodation servics</label>
-              <span style="cursor: pointer"
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
                 @click="bookingModifications.services.accommodationServices.rtn[bookingModifications.services.accommodationServices.rtn.length] = {}">
                 ➕
               </span>
             </div>
             <div v-for="service in bookingModifications.services.accommodationServices.rtn" class="onboard-service">
-              <span style="cursor: pointer" @click="bookingModifications.services.accommodationServices.rtn.splice(bookingModifications.services.accommodationServices.rtn.indexOf(service), 1)">
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" 
+              @click="bookingModifications.services.accommodationServices.rtn.splice(bookingModifications.services.accommodationServices.rtn.indexOf(service), 1)">
                   ➖
               </span>
               <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
@@ -248,13 +247,14 @@
 
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
               <label for="numChildren">Onboard services</label>
-              <span style="cursor: pointer"
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
                 @click="bookingModifications.services.onboardservices.rtn[bookingModifications.services.onboardservices.rtn.length] = {}">
                 ➕
               </span>
             </div>
             <div v-for="service in bookingModifications.services.onboardservices.rtn" class="onboard-service">
-              <span style="cursor: pointer" @click="bookingModifications.services.onboardservices.rtn.splice(bookingModifications.services.onboardservices.rtn.indexOf(service), 1)">
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" 
+              @click="bookingModifications.services.onboardservices.rtn.splice(bookingModifications.services.onboardservices.rtn.indexOf(service), 1)">
                   ➖
               </span>
               <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
@@ -305,8 +305,8 @@
           </div>
           <!-- Submit button -->
           <div style="display:inline-flex;gap:0.9rem;">
-            <button>Submit Changes</button>
-            <button id="cancel-submit" @click="selectedBooking = {}">Cancel</button>
+            <button class="change-booking-form-button">Submit Changes</button>
+            <button class="change-booking-form-button" id="cancel-submit" @click="selectedBooking = {}">Cancel</button>
           </div>
         </form>
       </div>
@@ -315,8 +315,10 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, nextTick } from "vue";
 import carModels from "../../vehicle-models.json";
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 export default defineComponent({
 
@@ -327,13 +329,18 @@ export default defineComponent({
     type: String,
   },
 
+  components: {
+    Datepicker
+  },
+
   data() {
 
     return {
       selectedBooking: {},
       bookingModifications: {},
       showVehicleForm: false,
-      vehicleModels: carModels
+      vehicleModels: carModels,
+      modifDate: null
     }
 
   },
@@ -346,11 +353,11 @@ export default defineComponent({
       event.preventDefault()
     },
     initiateEdit(booking) {
-      this.selectedBooking = booking;
 
       console.log(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)
       const sailings = booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing;
       const sailingArray = Array.isArray(sailings) ? sailings : [sailings];
+
       console.log(sailingArray[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService)
       this.bookingModifications.route = {
         from: sailingArray[0].SailingInfo["@DepartPortName"],
@@ -364,6 +371,9 @@ export default defineComponent({
         })
       };
 
+      sailingArray.length > 1 ? this.modifDate = ['2/2/2024','2/20/2024'] : this.modifDate = '2/4/2024'
+
+      console.log(this.modifDate)
       this.bookingModifications.services = {
         onboardservices: {
           out: [],
@@ -452,10 +462,14 @@ export default defineComponent({
 
       console.log(this.selectedBooking);
       console.log(this.bookingModifications);
-    }
+    },
   },
   watch: {
+    modifDate(value) {
+      console.log(value)
+    },
     selectedBooking(value) {
+      this.modifDate = []
       console.log(value)
     },
     showVehicleForm(value) {
@@ -471,7 +485,7 @@ export default defineComponent({
     }
   },
   mounted() {
-
+    
   }
 
 });
@@ -488,7 +502,7 @@ form {
 input,
 select {
   width: 100%;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(255 255 255 / 49%);
   border: 1px solid #e9ecef;
   border-radius: 16px;
   height: 3.5rem;
@@ -500,7 +514,7 @@ select {
   /* Safari and Chrome */
   appearance: none;
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  font-size: 17px;
+  font-size: .9em;
   color: #2d0079;
   margin-top: 15px;
   position: relative;
@@ -908,7 +922,7 @@ input[type="radio"] {
   margin-bottom:.5rem
 }
 
-.change-booking-form button {
+.change-booking-form-button {
   border: none;
   outline: none;
   background-color: rgb(255, 193, 69);
@@ -920,7 +934,7 @@ input[type="radio"] {
   text-wrap: nowrap;
 }
 
-.change-booking-form button:hover {
+.change-booking-form-button:hover {
   background-color: rgba(255, 193, 69, 0.78);
   color: #fff;
 }
@@ -974,5 +988,10 @@ input[type="radio"] {
   align-items: center;
   justify-content: space-between;
   width: 100%;
+}
+
+.dp__input {
+  margin-top: 0px!important;
+  font-size: .9em;
 }
 </style>

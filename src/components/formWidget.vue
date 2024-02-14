@@ -1145,6 +1145,7 @@ export default {
     },
   },
   async mounted() {
+    console.log(this.carModels)
     this.$parent.displayLoader = true;
     this.oldPlaces = await this.$axios
       .get("https://cms.4help.tn/api/GNV_API/places")
