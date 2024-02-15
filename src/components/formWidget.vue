@@ -674,6 +674,7 @@ export default {
       this.$parent.displayLoader = false;
     },
     async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
+      console.log(fromDate)
       try {
         const data = JSON.stringify({
           TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",

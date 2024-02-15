@@ -5,13 +5,13 @@
 
       <div v-for="(booking, index) in Object.keys(selectedBooking).length ? { selectedBooking } : Bookings"
         :key="`booking_${index}`" class="more-card ticket-card">
-        <div v-if="isObject(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)"
+        <div v-if="booking && isObject(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)"
           style="display: flex;flex-direction: row;width: 100%;justify-content: space-between;align-items: center;">
           <div class="airline">
             <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
             <div class="airline__name">AirTour</div>
           </div>
-          <div> 
+          <div>
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-departure"></i>
@@ -79,7 +79,7 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="selectedBooking=booking;initiateEdit(booking)">
+          <button v-if="type === 'current'" @click="selectedBooking = booking; initiateEdit(booking)">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -127,7 +127,7 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="selectedBooking=booking;initiateEdit(booking)">
+          <button v-if="type === 'current'" @click="selectedBooking = booking; initiateEdit(booking)">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -141,23 +141,24 @@
 
       <br />
     </aside>
-    <aside class="change-booking-form-container" v-if="Object.keys(selectedBooking).length">
-      <div class="change-booking-form" @seeked="initDatePicker">
+    <aside class="change-booking-form-container" v-if="displayModifPannel">
+      <div class="change-booking-form">
         <h2>Modify Reservation</h2>
         <form @submit="preventDefault">
           <!-- Reservation dates -->
-          <label for="departureDate">Departure Date</label>
+          <label for="departureDate">Booking Date{{ isRange ? 's' : '' }}</label>
           <!-- <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate"
-            v-model="bookingModifications.dates.from"> -->  
-            <Datepicker style="margin-top:0px" value="2/2/2024" :range="false" :enable-time-picker="false" />
+            v-model="bookingModifications.dates.from"> -->
+          <Datepicker style="margin-top:0px" v-model="modifDate" :range="isRange" :allowed-dates="fetchedDates" :highlight="{dates: fetchedDates, customClass: 'highlighted-dates'}"
+            :enable-time-picker="false" />
           <div v-if="bookingModifications.dates.to">
             <label for="returnDate">Return Date</label>
           </div>
 
           <label for="route">Departure ~ Destination</label>
           <input disabled style="text-align: center;" name="route" :value="selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length > 1
-            ? `${bookingModifications.route.from} - ${bookingModifications.route.to} ~ ${bookingModifications.route.to} - ${bookingModifications.route.from}`
-            : `${bookingModifications.route.from} ~ ${bookingModifications.route.to}`">
+            ? `${bookingModifications.route.from.name} - ${bookingModifications.route.to.name} ~ ${bookingModifications.route.to.name} - ${bookingModifications.route.from.name}`
+            : `${bookingModifications.route.from.name} ~ ${bookingModifications.route.to.name}`">
 
           <!-- Number of passengers with indication for type -->
           <label for="numAdults">Adults</label>
@@ -195,7 +196,8 @@
                 {{ service.Description }}
               </label>
               <select v-else v-model="service.Description">
-                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits- avec Hublot</option>
+                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits-
+                  avec Hublot</option>
               </select>
               <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
             </div>
@@ -216,7 +218,8 @@
                 {{ service.Description }}
               </label>
               <select v-else v-model="service.Description">
-                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits- avec Hublot</option>
+                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits-
+                  avec Hublot</option>
               </select>
               <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
             </div>
@@ -232,15 +235,16 @@
               </span>
             </div>
             <div v-for="service in bookingModifications.services.accommodationServices.rtn" class="onboard-service">
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" 
-              @click="bookingModifications.services.accommodationServices.rtn.splice(bookingModifications.services.accommodationServices.rtn.indexOf(service), 1)">
-                  ➖
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
+                @click="bookingModifications.services.accommodationServices.rtn.splice(bookingModifications.services.accommodationServices.rtn.indexOf(service), 1)">
+                ➖
               </span>
               <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
                 {{ service.Description }}
               </label>
               <select v-else v-model="service.Description">
-                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits- avec Hublot</option>
+                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits-
+                  avec Hublot</option>
               </select>
               <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
             </div>
@@ -253,15 +257,16 @@
               </span>
             </div>
             <div v-for="service in bookingModifications.services.onboardservices.rtn" class="onboard-service">
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" 
-              @click="bookingModifications.services.onboardservices.rtn.splice(bookingModifications.services.onboardservices.rtn.indexOf(service), 1)">
-                  ➖
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
+                @click="bookingModifications.services.onboardservices.rtn.splice(bookingModifications.services.onboardservices.rtn.indexOf(service), 1)">
+                ➖
               </span>
               <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
                 {{ service.Description }}
               </label>
               <select v-else v-model="service.Description">
-                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits- avec Hublot</option>
+                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits-
+                  avec Hublot</option>
               </select>
               <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
             </div>
@@ -306,7 +311,7 @@
           <!-- Submit button -->
           <div style="display:inline-flex;gap:0.9rem;">
             <button class="change-booking-form-button">Submit Changes</button>
-            <button class="change-booking-form-button" id="cancel-submit" @click="selectedBooking = {}">Cancel</button>
+            <button class="change-booking-form-button" id="cancel-submit" @click="hideModifPannel">Cancel</button>
           </div>
         </form>
       </div>
@@ -340,12 +345,53 @@ export default defineComponent({
       bookingModifications: {},
       showVehicleForm: false,
       vehicleModels: carModels,
-      modifDate: null
+      modifDate: '',
+      displayModifPannel: false,
+      fetchedDates: []
     }
 
   },
 
   methods: {
+    async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
+      try {
+        const data = JSON.stringify({
+          TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
+          User: "",
+          LanguagePrefCode: "en",
+          Currency: "EUR",
+          CountryCode: "TUN",
+          OriginatingSystem: "",
+          FromSailingDate: fromDate,
+          ToSailingDate: toDate,
+          DepartPort: fromPort,
+          DestinationPort: toPort,
+        });
+        console.log(data);
+        const config = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: "https://cms.4help.tn/api/getTimeTables_API/getTimeTables",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          maxRedirects: 0,
+          data: data,
+        };
+        return await this.$axios.request(config).then((res) => {
+          console.log(res.data);
+          if (res.data !== "Pas de data à afficher avec les données entrées") {
+            return res.data;
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    hideModifPannel() {
+      this.displayModifPannel = false
+      this.selectedBooking = {}
+    },
     isObject(value) {
       return !(typeof value === 'object' && value !== null && !Array.isArray(value));
     },
@@ -360,8 +406,14 @@ export default defineComponent({
 
       console.log(sailingArray[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService)
       this.bookingModifications.route = {
-        from: sailingArray[0].SailingInfo["@DepartPortName"],
-        to: sailingArray[0].SailingInfo["@DestinationPortName"]
+        from: {
+          name: sailingArray[0].SailingInfo["@DepartPortName"],
+          code: sailingArray[0].SailingInfo["@DepartPort"]
+        },
+        to: {
+          name: sailingArray[0].SailingInfo["@DestinationPortName"],
+          code: sailingArray[0].SailingInfo["@DestinationPort"]
+        }
       }
 
       this.bookingModifications.dates = {
@@ -371,9 +423,7 @@ export default defineComponent({
         })
       };
 
-      sailingArray.length > 1 ? this.modifDate = ['2/2/2024','2/20/2024'] : this.modifDate = '2/4/2024'
-
-      console.log(this.modifDate)
+      console.log(this.bookingModifications.dates)
       this.bookingModifications.services = {
         onboardservices: {
           out: [],
@@ -390,6 +440,7 @@ export default defineComponent({
 
       const OnboardServiceOUT = sailingArray[0].Services.OnBoardServices.OnBoardService
       const OnboardServiceOUTArray = Array.isArray(OnboardServiceOUT) ? OnboardServiceOUT : [OnboardServiceOUT];
+
 
       AccomodationOUTArray.forEach(service => {
         this.bookingModifications.services.accommodationServices.out.push({
@@ -459,9 +510,43 @@ export default defineComponent({
           this.bookingModifications.passengers.Childs++;
         }
       });
-
+      this.displayModifPannel = true
       console.log(this.selectedBooking);
       console.log(this.bookingModifications);
+    },
+    getCurrentAndLastDayOfNextMonth() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+      const currentDay = currentDate.getDate();
+      const formattedCurrentDate = this.formatDate(currentYear, currentMonth + 1, currentDay);
+
+      const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+      const nextMonthYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+      const lastDayOfNextMonth = new Date(nextMonthYear, nextMonth + 1, 0);
+      const lastDay = lastDayOfNextMonth.getDate();
+      const formattedLastDayOfNextMonth = this.formatDate(nextMonthYear, nextMonth + 1, lastDay);
+
+      return {
+        currentDate: formattedCurrentDate,
+        lastDayOfNextMonth: formattedLastDayOfNextMonth,
+      };
+    },
+    formatDate(year, month, day) {
+      const formattedYear = year.toString().padStart(4, "0");
+      const formattedMonth = month.toString().padStart(2, "0");
+      const formattedDay = day.toString().padStart(2, "0");
+      return `${formattedYear}-${formattedMonth}-${formattedDay}`;
+    },
+    async fetchDates() {
+      const { currentDate, lastDayOfNextMonth } = this.getCurrentAndLastDayOfNextMonth();
+      let dates = await this.useTimeTableAPI(currentDate, lastDayOfNextMonth, this.bookingModifications.route.from.code, this.bookingModifications.route.to.code);
+      this.fetchedDates = dates
+        .filter(date => !!date)
+        .map(date => {
+          const dt = date.DepartDateTime.split("T")[0];
+          return new Date(dt);
+        });
     },
   },
   watch: {
@@ -469,8 +554,12 @@ export default defineComponent({
       console.log(value)
     },
     selectedBooking(value) {
-      this.modifDate = []
-      console.log(value)
+      if (Object.keys(value).length == 0) return
+      const isArray = Array.isArray(value.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)
+      isArray ? this.modifDate = [this.bookingModifications.dates.from, this.bookingModifications.dates.to] : this.modifDate = this.bookingModifications.dates.from
+
+
+      console.log(this.modifDate)
     },
     showVehicleForm(value) {
       if (!value) {
@@ -482,10 +571,21 @@ export default defineComponent({
     },
     bookingModifications(value) {
       console.log(value)
+    },
+    'bookingModifications.route.from.code': 'fetchDates',
+  },
+  computed: {
+    isRange() {
+      // Check if modifDate is an array to determine if the range is enabled
+      const state = Array.isArray(this.modifDate)
+      return state;
+    },
+    async allowedDates() {
+      return this.fetchedDates
     }
   },
   mounted() {
-    
+
   }
 
 });
@@ -919,7 +1019,7 @@ input[type="radio"] {
 .change-booking-form legend {
   padding: 0 0.5rem;
   border-bottom: none;
-  margin-bottom:.5rem
+  margin-bottom: .5rem
 }
 
 .change-booking-form-button {
@@ -991,7 +1091,13 @@ input[type="radio"] {
 }
 
 .dp__input {
-  margin-top: 0px!important;
+  margin-top: 0px !important;
   font-size: .9em;
+}
+
+.highlighted-dates {
+  background-color: #ffecb3; /* Light orange background */
+  color: #000; /* Dark text color */
+  border-radius: 50%;
 }
 </style>
