@@ -685,8 +685,8 @@ export default {
           OriginatingSystem: "",
           FromSailingDate: fromDate,
           ToSailingDate: toDate,
-          DepartPort: fromPort,
-          DestinationPort: toPort,
+          DepartPort: fromPort['CTN'],
+          DestinationPort: toPort['CTN'],
         });
         console.log(data);
         const config = {
@@ -1110,39 +1110,39 @@ export default {
 
         console.log(this.datestoHighlight);
       }
-      if (Object.keys(Provider).includes("GNV")) {
-        const code = Provider["GNV"];
-        const destPorts = this.gnvRoutes
-          .filter((obj) => obj.DeparturePortCode === code)
-          .map((obj) => obj.RouteCode);
-        console.log(destPorts);
-        let dates = await Promise.all(
-          destPorts.map(async (LineCode) => {
-            const res = await this.useGetScheduleByLine(LineCode);
-            return res.Sailings.Sailing;
-          })
-        );
-        let reducedDates = dates.reduce((acc, innerArray) => {
-          if (Array.isArray(innerArray)) {
-            const dates = innerArray
-              .map((object) => {
-                const [day, month, year] = object.DepartureDate.split("/");
-                return `${year}-${month}-${day}`;
-              })
-              .filter(
-                (date) =>
-                  new Date(date) < new Date(monthDates.lastDayOfNextMonth)
-              );
-            return acc.concat(dates);
-          } else {
-            return acc;
-          }
-        }, []);
-        this.datestoHighlight = [
-          ...new Set([...reducedDates, ...this.datestoHighlight]),
-        ];
-        console.log(this.datestoHighlight);
-      }
+      // if (Object.keys(Provider).includes("GNV")) {
+      //   const code = Provider["GNV"];
+      //   const destPorts = this.gnvRoutes
+      //     .filter((obj) => obj.DeparturePortCode === code)
+      //     .map((obj) => obj.RouteCode);
+      //   console.log(destPorts);
+      //   let dates = await Promise.all(
+      //     destPorts.map(async (LineCode) => {
+      //       const res = await this.useGetScheduleByLine(LineCode);
+      //       return res.Sailings.Sailing;
+      //     })
+      //   );
+      //   let reducedDates = dates.reduce((acc, innerArray) => {
+      //     if (Array.isArray(innerArray)) {
+      //       const dates = innerArray
+      //         .map((object) => {
+      //           const [day, month, year] = object.DepartureDate.split("/");
+      //           return `${year}-${month}-${day}`;
+      //         })
+      //         .filter(
+      //           (date) =>
+      //             new Date(date) < new Date(monthDates.lastDayOfNextMonth)
+      //         );
+      //       return acc.concat(dates);
+      //     } else {
+      //       return acc;
+      //     }
+      //   }, []);
+      //   this.datestoHighlight = [
+      //     ...new Set([...reducedDates, ...this.datestoHighlight]),
+      //   ];
+      //   console.log(this.datestoHighlight);
+      // }
     },
   },
   async mounted() {
@@ -1198,6 +1198,7 @@ export default {
 
 .inline.datetimepicker.flex {
   width: 99rem !important;
+  padding: 0rem!important;
 }
 </style>
 

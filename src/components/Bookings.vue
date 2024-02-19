@@ -144,16 +144,15 @@
     <aside class="change-booking-form-container" v-if="displayModifPannel">
       <div class="change-booking-form">
         <h2>Modify Reservation</h2>
-        <form @submit="preventDefault">
+        <form @submit="preventDefault" @input="handleFormInput">
           <!-- Reservation dates -->
           <label for="departureDate">Booking Date{{ isRange ? 's' : '' }}</label>
           <!-- <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate"
             v-model="bookingModifications.dates.from"> -->
-          <Datepicker style="margin-top:0px" v-model="modifDate" :range="isRange" :allowed-dates="fetchedDates" :highlight="{dates: fetchedDates, customClass: 'highlighted-dates'}"
-            :enable-time-picker="false" />
-          <div v-if="bookingModifications.dates.to">
-            <label for="returnDate">Return Date</label>
-          </div>
+          <Datepicker style="margin-top:0px" v-model="modifDate" @range-start="handleRangeStart"
+            @closed="datePickerClosed" :range="isRange" :allowed-dates="fetchedDates"
+            :highlight="{ dates: fetchedDates, customClass: 'highlighted-dates' }" :enable-time-picker="false"
+            :auto-apply="true" />
 
           <label for="route">Departure ~ Destination</label>
           <input disabled style="text-align: center;" name="route" :value="selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length > 1
@@ -196,8 +195,7 @@
                 {{ service.Description }}
               </label>
               <select v-else v-model="service.Description">
-                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits-
-                  avec Hublot</option>
+                <option v-for="service in services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService" :key="service" :value="service['@Code']">{{ service['@Description'] }}</option>
               </select>
               <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
             </div>
@@ -218,8 +216,7 @@
                 {{ service.Description }}
               </label>
               <select v-else v-model="service.Description">
-                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits-
-                  avec Hublot</option>
+                <option v-for="service in services[0].ServicesOptions.OnBoardServices.OnBoardService" :value="service['@Code']">{{ service['@Description'] }}</option>
               </select>
               <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
             </div>
@@ -228,7 +225,7 @@
             v-if="selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length > 1">
             <legend>Return trip</legend>
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
-              <label for="numChildren">Accomodation servics</label>
+              <label for="numChildren">Accomodation services</label>
               <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
                 @click="bookingModifications.services.accommodationServices.rtn[bookingModifications.services.accommodationServices.rtn.length] = {}">
                 ➕
@@ -307,10 +304,12 @@
               <input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" placeholder="Plate number"
                 v-model="bookingModifications.vehicle.PlateNumber">
             </fieldset>
+            <label style="font-weight: 800;margin-top: 2rem;">Cost <u>{{ bookingModifications.cost }}</u> €</label>
+
           </div>
           <!-- Submit button -->
           <div style="display:inline-flex;gap:0.9rem;">
-            <button class="change-booking-form-button">Submit Changes</button>
+            <button class="change-booking-form-button" @click="getServices">Submit Changes</button>
             <button class="change-booking-form-button" id="cancel-submit" @click="hideModifPannel">Cancel</button>
           </div>
         </form>
@@ -347,12 +346,122 @@ export default defineComponent({
       vehicleModels: carModels,
       modifDate: '',
       displayModifPannel: false,
-      fetchedDates: []
+      fetchedDates: [],
+      services: []
     }
 
   },
 
   methods: {
+    async getServices() {
+        let data = {
+          TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
+          User: "",
+          LanguagePrefCode: "en",
+          Currency: "EUR",
+          CountryCode: "TUN",
+          OriginatingSystem: "",
+          passengers: [],
+          vehicles: [],
+          sailings: [],
+        };
+
+        for (let i = 0; i < this.bookingModifications.passengers.Adults; i++) {
+          data.passengers.push({
+            Age: "35",
+            Category: "Adult",
+          })
+        }
+
+        for (let i = 0; i < this.bookingModifications.passengers.Childs; i++) {
+          data.passengers.push({
+            Age: "6",
+            Category: "Child",
+          })
+        }
+
+        const sailings = Array.isArray(this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing : [this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing]
+        if (sailings.length > 1) {
+          data.sailings.push({
+            id: "Out",
+            DepartDateTime: sailings[0].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
+            DepartPort: sailings[0].SailingInfo["@DepartPort"],
+            DestinationPort: sailings[0].SailingInfo["@DestinationPort"],
+            FareType: sailings[0].FareDetails["@FareType"],
+            AccommodationCode: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Code"],
+            AccommodationQuantity: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Quantity"],
+          })
+          data.sailings.push({
+            id: "Rtn",
+            DepartDateTime: sailings[1].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
+            DepartPort: sailings[1].SailingInfo["@DepartPort"],
+            DestinationPort: sailings[1].SailingInfo["@DestinationPort"],
+            FareType: sailings[1].FareDetails["@FareType"],
+            AccommodationCode: sailings[1].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Code"],
+            AccommodationQuantity: sailings[1].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Quantity"],
+          })
+        } else {
+          data.sailings.push({
+            id: "Out",
+            DepartDateTime: sailings[0].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
+            DepartPort: sailings[0].SailingInfo["@DepartPort"],
+            DestinationPort: sailings[0].SailingInfo["@DestinationPort"],
+            FareType: sailings[0].FareDetails["@FareType"],
+            AccommodationCode: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Code"],
+            AccommodationQuantity: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Quantity"],
+          })
+        }
+
+        if (Object.keys(this.bookingModifications.vehicle).length > 0) {
+          data.vehicles.push({OperatorCode: this.bookingModifications.vehicle.Model.Code,
+            Height: this.bookingModifications.vehicle.Model.Height.toString().replaceAll('.', ''),
+            Length: this.bookingModifications.vehicle.Model.Length.toString().replaceAll('.', ''),
+            Brand: this.bookingModifications.vehicle.Brand,
+            Model: this.bookingModifications.vehicle.Model.Model
+          })
+        }
+
+        console.log(data)
+        try {
+          let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://cms.4help.tn/api/getServices_API/getServicesAPI",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        maxRedirects: 0,
+        data: JSON.stringify(data),
+      };
+      const response = await this.$axios.request(config);
+      console.log(
+        ">>>>>>SERVICES<<<<<<<",
+        response
+      );
+      this.services = Array.isArray(response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing : [response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing]
+        ;
+        console.log(this.services)
+        } catch (e) {
+          console.log(e)
+        }
+    },
+    handleFormInput() {
+      console.log("zdqzfoihqzfol")
+    },
+    datePickerClosed(value) {
+      JSON.stringify(this.modifDate) === JSON.stringify([this.bookingModifications.dates.from, this.bookingModifications.dates.to]) ? this.fetchDates() : this.modifDate
+    },
+    async handleRangeStart(DATE) {
+      console.log(DATE);
+      const { lastDayOfNextMonth } = this.getCurrentAndLastDayOfNextMonth();
+      let dates = await this.useTimeTableAPI(this.formatDate(DATE.getFullYear(), DATE.getMonth(), DATE.getDate()), lastDayOfNextMonth, this.bookingModifications.route.to.code, this.bookingModifications.route.from.code);
+      console.log(dates);
+      this.fetchedDates = dates
+        .map(date => new Date(date.DepartDateTime))
+        .filter(dt => dt > DATE);
+      this.fetchedDates.unshift(DATE);
+      console.log(this.fetchedDates);
+    },
     async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
       try {
         const data = JSON.stringify({
@@ -400,10 +509,14 @@ export default defineComponent({
     },
     initiateEdit(booking) {
 
-      console.log(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)
+      console.log(booking.RecallBookingResponse.FerryComponents.FerryComponent.Cost)
       const sailings = booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing;
       const sailingArray = Array.isArray(sailings) ? sailings : [sailings];
 
+      const costs = booking.RecallBookingResponse.FerryComponents.FerryComponent.Cost.CostDetails;
+      const costsArray = Array.isArray(costs) ? costs : [costs];
+
+      console.log(sailings)
       console.log(sailingArray[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService)
       this.bookingModifications.route = {
         from: {
@@ -434,6 +547,12 @@ export default defineComponent({
           ...(sailingArray.length > 1) && { rtn: [] }
         }
       }
+      this.bookingModifications.cost = 0
+      costsArray.forEach(sail => {
+        console.log(parseFloat(sail["@GrossAmount"]))
+        this.bookingModifications.cost += parseFloat(sail["@GrossAmount"])
+      })
+      console.log(this.bookingModifications.cost)
 
       const AccomodationOUT = sailingArray[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService
       const AccomodationOUTArray = Array.isArray(AccomodationOUT) ? AccomodationOUT : [AccomodationOUT];
@@ -538,15 +657,17 @@ export default defineComponent({
       const formattedDay = day.toString().padStart(2, "0");
       return `${formattedYear}-${formattedMonth}-${formattedDay}`;
     },
-    async fetchDates() {
+    async fetchDates(fromCode, toCode) {
+      console.log("called fetchDates")
       const { currentDate, lastDayOfNextMonth } = this.getCurrentAndLastDayOfNextMonth();
-      let dates = await this.useTimeTableAPI(currentDate, lastDayOfNextMonth, this.bookingModifications.route.from.code, this.bookingModifications.route.to.code);
+      let dates = await this.useTimeTableAPI(currentDate, lastDayOfNextMonth, fromCode ? fromCode : this.bookingModifications.route.from.code, toCode ? toCode : this.bookingModifications.route.to.code);
       this.fetchedDates = dates
         .filter(date => !!date)
         .map(date => {
           const dt = date.DepartDateTime.split("T")[0];
           return new Date(dt);
         });
+      console.log(this.fetchedDates)
     },
   },
   watch: {
@@ -580,7 +701,7 @@ export default defineComponent({
       const state = Array.isArray(this.modifDate)
       return state;
     },
-    async allowedDates() {
+    allowedDates() {
       return this.fetchedDates
     }
   },
@@ -616,7 +737,6 @@ select {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: .9em;
   color: #2d0079;
-  margin-top: 15px;
   position: relative;
   transition: ease border-color 0.2s;
 }
@@ -991,6 +1111,7 @@ input[type="radio"] {
   box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
   border-radius: 0.4rem;
   border: 1px solid #e9ecef;
+  gap: 0.6rem;
 }
 
 .change-booking-form label {
@@ -1096,8 +1217,9 @@ input[type="radio"] {
 }
 
 .highlighted-dates {
-  background-color: #ffecb3; /* Light orange background */
-  color: #000; /* Dark text color */
+  background-color: #ffecb3;
+  /* Light orange background */
+  color: #000;
+  /* Dark text color */
   border-radius: 50%;
-}
-</style>
+}</style>

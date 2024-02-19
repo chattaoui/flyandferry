@@ -791,6 +791,7 @@ export default {
       if (this.tripOptions.passengers.length)
         data.vehicles = this.tripOptions.vehicles;
 
+        console.log(data)
       let config = {
         method: "post",
         maxBodyLength: Infinity,
