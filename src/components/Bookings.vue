@@ -186,18 +186,18 @@
                 ➕
               </span>
             </div>
-            <div v-for="service in bookingModifications.services.accommodationServices.out" class="onboard-service">
+            <div v-for="(service, index) in bookingModifications.services.accommodationServices.out" class="onboard-service">
               <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.accommodationServices.out.splice(bookingModifications.services.accommodationServices.out.indexOf(service), 1)">
+                @click="bookingModifications.services.accommodationServices.out.splice(index, 1)">
                 ➖
               </span>
-              <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
-                {{ service.Description }}
+              <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
+                {{ service['@Description'] }}
               </label>
-              <select v-else v-model="service.Description">
-                <option v-for="service in services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService" :key="service" :value="service['@Code']">{{ service['@Description'] }}</option>
+              <select v-else v-model="bookingModifications.services.accommodationServices.out[index]">
+                <option v-for="service in services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService" :key="service" :value="service">{{ service['@Description'] }}</option>
               </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service['@Quantity']">
             </div>
 
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
@@ -207,18 +207,18 @@
                 ➕
               </span>
             </div>
-            <div v-for="service in bookingModifications.services.onboardservices.out" class="onboard-service">
+            <div v-for="(service, index) in bookingModifications.services.onboardservices.out" class="onboard-service">
               <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.onboardservices.out.splice(bookingModifications.services.onboardservices.out.indexOf(service), 1)">
+                @click="bookingModifications.services.onboardservices.out.splice(index, 1)">
                 ➖
               </span>
-              <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
-                {{ service.Description }}
+              <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
+                {{ service['@Description'] }}
               </label>
-              <select v-else v-model="service.Description">
-                <option v-for="service in services[0].ServicesOptions.OnBoardServices.OnBoardService" :value="service['@Code']">{{ service['@Description'] }}</option>
+              <select v-else v-model="bookingModifications.services.onboardservices.out[index]">
+                <option v-for="service in services[0].ServicesOptions.OnBoardServices.OnBoardService" :value="service">{{ service['@Description'] }}</option>
               </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service['@Quantity']">
             </div>
           </fieldset>
           <fieldset
@@ -231,19 +231,18 @@
                 ➕
               </span>
             </div>
-            <div v-for="service in bookingModifications.services.accommodationServices.rtn" class="onboard-service">
+            <div v-for="(service, index) in bookingModifications.services.accommodationServices.rtn" class="onboard-service">
               <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.accommodationServices.rtn.splice(bookingModifications.services.accommodationServices.rtn.indexOf(service), 1)">
+                @click="bookingModifications.services.accommodationServices.rtn.splice(index, 1)">
                 ➖
               </span>
-              <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
-                {{ service.Description }}
+              <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
+                {{ service['@Description'] }}
               </label>
-              <select v-else v-model="service.Description">
-                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits-
-                  avec Hublot</option>
+              <select v-else v-model="bookingModifications.services.accommodationServices.rtn[index]">
+                <option v-for="service in services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService" :value="service">{{ service['@Description'] }}</option>
               </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service['@Quantity']">
             </div>
 
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
@@ -253,19 +252,18 @@
                 ➕
               </span>
             </div>
-            <div v-for="service in bookingModifications.services.onboardservices.rtn" class="onboard-service">
+            <div v-for="(service, index) in bookingModifications.services.onboardservices.rtn" class="onboard-service">
               <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.onboardservices.rtn.splice(bookingModifications.services.onboardservices.rtn.indexOf(service), 1)">
+                @click="bookingModifications.services.onboardservices.rtn.splice(index, 1)">
                 ➖
               </span>
-              <label v-if="service.Description" style="font-weight: 500;font-size: .8em;">
-                {{ service.Description }}
+              <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
+                {{ service['@Description'] }}
               </label>
-              <select v-else v-model="service.Description">
-                <option value="Cabine avec Sanitaires Privés- 4 lits- avec Hublot">Cabine avec Sanitaires Privés- 4 lits-
-                  avec Hublot</option>
+              <select v-else v-model="bookingModifications.services.onboardservices.rtn[index]">
+                <option v-for="service in services[0].ServicesOptions.OnBoardServices.OnBoardService" :value="service">{{ service['@Description'] }}</option>
               </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service.Quantity">
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service['@Quantity']">
             </div>
           </fieldset>
 
@@ -562,19 +560,11 @@ export default defineComponent({
 
 
       AccomodationOUTArray.forEach(service => {
-        this.bookingModifications.services.accommodationServices.out.push({
-          Description: service["@Description"],
-          Quantity: service["@Quantity"],
-          Code: service["@Code"]
-        })
+        this.bookingModifications.services.accommodationServices.out.push(service)
       })
 
       OnboardServiceOUTArray.forEach(service => {
-        this.bookingModifications.services.onboardservices.out.push({
-          Description: service["@Description"],
-          Quantity: service["@Quantity"],
-          Code: service["@Code"]
-        })
+        this.bookingModifications.services.onboardservices.out.push(service)
       })
 
       if (sailingArray.length > 1) {
@@ -587,19 +577,11 @@ export default defineComponent({
 
 
         AccomodationRTNArray.forEach(service => {
-          this.bookingModifications.services.accommodationServices.rtn.push({
-            Description: service["@Description"],
-            Quantity: service["@Quantity"],
-            Code: service["@Code"]
-          })
+          this.bookingModifications.services.accommodationServices.rtn.push(service)
         })
 
         OnboardServiceRTNArray.forEach(service => {
-          this.bookingModifications.services.onboardservices.rtn.push({
-            Description: service["@Description"],
-            Quantity: service["@Quantity"],
-            Code: service["@Code"]
-          })
+          this.bookingModifications.services.onboardservices.rtn.push(service)
         })
       }
 
