@@ -79,7 +79,7 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="selectedBooking = booking; initiateEdit(booking)">
+          <button v-if="type === 'current'" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -127,7 +127,7 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="selectedBooking = booking; initiateEdit(booking)">
+          <button v-if="type === 'current'" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -167,58 +167,81 @@
           <input type="number" id="numChildren" name="numChildren" min="0"
             v-model="bookingModifications.passengers.Childs">
 
-          <!-- Accommodation room type -->
-          <label for="roomType">Accommodation - Room Type</label>
-          <select id="roomType" name="roomType">
-            <option value="single">Single</option>
-            <option value="double">Double</option>
-            <option value="suite">Suite</option>
-            <!-- Add other room types as needed -->
-          </select>
-
           <!-- Onboard services -->
           <fieldset>
             <legend>Outgoing trip</legend>
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
               <label for="numChildren">Accomodation servics</label>
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.accommodationServices.out[bookingModifications.services.accommodationServices.out.length] = {}">
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[0] && (services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
+                .filter(
+                  s => !bookingModifications.services.accommodationServices.Out.some(
+                    rtnService => rtnService['@Description'] === s['@Description']
+                  )
+                ).length >= bookingModifications.services.accommodationServices.Out.length)"
+                @click="bookingModifications.services.accommodationServices.Out[bookingModifications.services.accommodationServices.Out.length] = {}">
                 ➕
               </span>
             </div>
-            <div v-for="(service, index) in bookingModifications.services.accommodationServices.out" class="onboard-service">
+            <div v-for="(service, index) in bookingModifications.services.accommodationServices.Out"
+              class="onboard-service">
               <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.accommodationServices.out.splice(index, 1)">
+                @click="bookingModifications.services.accommodationServices.Out.splice(index, 1)">
                 ➖
               </span>
               <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
                 {{ service['@Description'] }}
               </label>
-              <select v-else v-model="bookingModifications.services.accommodationServices.out[index]">
-                <option v-for="service in services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService" :key="service" :value="service">{{ service['@Description'] }}</option>
+              <select v-else v-model="bookingModifications.services.accommodationServices.Out[index]">
+                <option v-for="service in services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
+                  .filter(
+                    s => !bookingModifications.services.accommodationServices.Out.some(
+                      rtnService => rtnService['@Description'] === s['@Description']
+                    )
+                  )
+                " :key="service" :value="service">{{ service['@Description'] }}</option>
               </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service['@Quantity']">
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
             </div>
 
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
               <label for="numChildren">Onboard services</label>
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.onboardservices.out[bookingModifications.services.onboardservices.out.length] = {}">
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[0] && (Array.isArray(services[0].ServicesOptions.OnBoardServices.OnBoardService)
+                ? services[0].ServicesOptions.OnBoardServices.OnBoardService.filter(
+                  s => !bookingModifications.services.onboardServices.Out.some(
+                    rtnService => rtnService['@Description'] === s['@Description']
+                  )
+                ).length >= bookingModifications.services.onboardServices.Out.length
+                : [services[0].ServicesOptions.OnBoardServices.OnBoardService].filter(
+                  s => !bookingModifications.services.onboardServices.Out.some(
+                    rtnService => rtnService['@Description'] === s['@Description']
+                  )
+                ).length >= bookingModifications.services.onboardServices.Out.length)"
+                @click="bookingModifications.services.onboardServices.Out[bookingModifications.services.onboardServices.Out.length] = {}">
                 ➕
               </span>
             </div>
-            <div v-for="(service, index) in bookingModifications.services.onboardservices.out" class="onboard-service">
+            <div v-for="(service, index) in bookingModifications.services.onboardServices.Out" class="onboard-service">
               <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.onboardservices.out.splice(index, 1)">
+                @click="bookingModifications.services.onboardServices.Out.splice(index, 1)">
                 ➖
               </span>
               <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
                 {{ service['@Description'] }}
               </label>
-              <select v-else v-model="bookingModifications.services.onboardservices.out[index]">
-                <option v-for="service in services[0].ServicesOptions.OnBoardServices.OnBoardService" :value="service">{{ service['@Description'] }}</option>
+              <select v-else v-model="bookingModifications.services.onboardServices.Out[index]">
+                <option v-for="service in Array.isArray(services[0].ServicesOptions.OnBoardServices.OnBoardService)
+                  ? services[0].ServicesOptions.OnBoardServices.OnBoardService.filter(
+                    s => !bookingModifications.services.onboardServices.Out.some(
+                      rtnService => rtnService['@Description'] === s['@Description']
+                    )
+                  )
+                  : [services[0].ServicesOptions.OnBoardServices.OnBoardService].filter(
+                    s => !bookingModifications.services.onboardServices.Out.some(
+                      rtnService => rtnService['@Description'] === s['@Description']
+                    )
+                  )" :value="service">{{ service['@Description'] }}</option>
               </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service['@Quantity']">
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
             </div>
           </fieldset>
           <fieldset
@@ -226,44 +249,78 @@
             <legend>Return trip</legend>
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
               <label for="numChildren">Accomodation services</label>
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.accommodationServices.rtn[bookingModifications.services.accommodationServices.rtn.length] = {}">
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[1] && services[1].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
+                .filter(
+                  s => !bookingModifications.services.accommodationServices.Rtn.some(
+                    rtnService => rtnService['@Description'] === s['@Description']
+                  )
+                ).length >= bookingModifications.services.accommodationServices.Rtn.length"
+                @click="bookingModifications.services.accommodationServices.Rtn[bookingModifications.services.accommodationServices.Rtn.length] = {}">
                 ➕
               </span>
             </div>
-            <div v-for="(service, index) in bookingModifications.services.accommodationServices.rtn" class="onboard-service">
+            <div v-for="(service, index) in bookingModifications.services.accommodationServices.Rtn"
+              class="onboard-service">
               <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.accommodationServices.rtn.splice(index, 1)">
+                @click="bookingModifications.services.accommodationServices.Rtn.splice(index, 1)">
                 ➖
               </span>
               <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
                 {{ service['@Description'] }}
               </label>
-              <select v-else v-model="bookingModifications.services.accommodationServices.rtn[index]">
-                <option v-for="service in services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService" :value="service">{{ service['@Description'] }}</option>
+              <select v-else v-model="bookingModifications.services.accommodationServices.Rtn[index]">
+                <option v-for="service in services[1].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
+                  .filter(
+                    s => !bookingModifications.services.accommodationServices.Rtn.some(
+                      rtnService => rtnService['@Description'] === s['@Description']
+                    )
+                  )
+                " :value="service">{{ service['@Description'] }}</option>
               </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service['@Quantity']">
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
             </div>
 
             <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
               <label for="numChildren">Onboard services</label>
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.onboardservices.rtn[bookingModifications.services.onboardservices.rtn.length] = {}">
+              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[1] && ((Array.isArray(services[1].ServicesOptions.OnBoardServices.OnBoardService)
+                ? services[1].ServicesOptions.OnBoardServices.OnBoardService.filter(
+                  s => !bookingModifications.services.onboardServices.Rtn.some(
+                    rtnService => rtnService['@Description'] === s['@Description']
+                  )
+                ).length >= bookingModifications.services.onboardServices.Rtn.length
+                : [services[1].ServicesOptions.OnBoardServices.OnBoardService].filter(
+                  s => !bookingModifications.services.onboardServices.Rtn.some(
+                    rtnService => rtnService['@Description'] === s['@Description']
+                  )
+                ).length >= bookingModifications.services.onboardServices.Rtn.length))"
+                @click="bookingModifications.services.onboardServices.Rtn[bookingModifications.services.onboardServices.Rtn.length] = {}">
                 ➕
               </span>
             </div>
-            <div v-for="(service, index) in bookingModifications.services.onboardservices.rtn" class="onboard-service">
+            <div v-for="(service, index) in bookingModifications.services.onboardServices.Rtn" class="onboard-service">
               <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.onboardservices.rtn.splice(index, 1)">
+                @click="bookingModifications.services.onboardServices.Rtn.splice(index, 1)">
                 ➖
               </span>
               <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
                 {{ service['@Description'] }}
               </label>
-              <select v-else v-model="bookingModifications.services.onboardservices.rtn[index]">
-                <option v-for="service in services[0].ServicesOptions.OnBoardServices.OnBoardService" :value="service">{{ service['@Description'] }}</option>
+              <select v-else v-model="bookingModifications.services.onboardServices.Rtn[index]">
+                <option v-for="service in Array.isArray(services[1].ServicesOptions.OnBoardServices.OnBoardService)
+                  ? services[1].ServicesOptions.OnBoardServices.OnBoardService.filter(
+                    s => !bookingModifications.services.onboardServices.Rtn.some(
+                      rtnService => rtnService['@Description'] === s['@Description']
+                    )
+                  )
+                  : [services[1].ServicesOptions.OnBoardServices.OnBoardService].filter(
+                    s => !bookingModifications.services.onboardServices.Rtn.some(
+                      rtnService => rtnService['@Description'] === s['@Description']
+                    )
+                  )" :value="service">
+                  {{ service['@Description'] }}
+                </option>
               </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" :value="service['@Quantity']">
+              <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
             </div>
           </fieldset>
 
@@ -302,12 +359,18 @@
               <input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" placeholder="Plate number"
                 v-model="bookingModifications.vehicle.PlateNumber">
             </fieldset>
-            <label style="font-weight: 800;margin-top: 2rem;">Cost <u>{{ bookingModifications.cost }}</u> €</label>
-
+            <div style="display: grid;">
+              <label style="font-weight: 800;margin-top: 2rem;text-wrap: nowrap;">Cost <u>{{ bookingModifications.cost
+              }}</u> €</label>
+              <label v-if="newCost && newCost !== bookingModifications.cost"
+                style="font-weight: 800;margin-top: 2rem;text-wrap: nowrap;">New cost <u
+                  style="background-color: rgb(255 255 255);padding: 0.8rem;border-radius: 4rem;">{{ newCost }}</u>
+                €</label>
+            </div>
           </div>
           <!-- Submit button -->
           <div style="display:inline-flex;gap:0.9rem;">
-            <button class="change-booking-form-button" @click="getServices">Submit Changes</button>
+            <button class="change-booking-form-button" @click="">Submit Changes</button>
             <button class="change-booking-form-button" id="cancel-submit" @click="hideModifPannel">Cancel</button>
           </div>
         </form>
@@ -345,106 +408,225 @@ export default defineComponent({
       modifDate: '',
       displayModifPannel: false,
       fetchedDates: [],
-      services: []
+      services: [],
+      newCost: null,
     }
 
   },
 
   methods: {
-    async getServices() {
-        let data = {
-          TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
-          User: "",
-          LanguagePrefCode: "en",
-          Currency: "EUR",
-          CountryCode: "TUN",
-          OriginatingSystem: "",
-          passengers: [],
-          vehicles: [],
-          sailings: [],
+    async getPrice() {
+      let getPriceData = {
+        TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
+        User: "",
+        LanguagePrefCode: "en",
+        Currency: "EUR",
+        CountryCode: "TUN",
+        OriginatingSystem: "",
+        passengers: [],
+        vehicles: [],
+        sailings: [],
+        onBoardAccomodationServices: [],
+        onBoardServices: []
+      };
+      for (let i = 0; i < this.bookingModifications.passengers.Adults; i++) {
+        getPriceData.passengers.push({
+          Age: "35",
+          Category: "Adult",
+        })
+      }
+
+      for (let i = 0; i < this.bookingModifications.passengers.Childs; i++) {
+        getPriceData.passengers.push({
+          Age: "6",
+          Category: "Child",
+        })
+      }
+
+      const sailings = Array.isArray(this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing : [this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing]
+      if (sailings.length > 1) {
+        getPriceData.sailings.push({
+          id: "Out",
+          DepartDateTime: sailings[0].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
+          DepartPort: sailings[0].SailingInfo["@DepartPort"],
+          DestinationPort: sailings[0].SailingInfo["@DestinationPort"],
+          FareType: sailings[0].FareDetails["@FareType"],
+        })
+        getPriceData.sailings.push({
+          id: "Rtn",
+          DepartDateTime: sailings[1].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
+          DepartPort: sailings[1].SailingInfo["@DepartPort"],
+          DestinationPort: sailings[1].SailingInfo["@DestinationPort"],
+          FareType: sailings[1].FareDetails["@FareType"],
+        })
+      } else {
+        getPriceData.sailings.push({
+          id: "Out",
+          DepartDateTime: sailings[0].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
+          DepartPort: sailings[0].SailingInfo["@DepartPort"],
+          DestinationPort: sailings[0].SailingInfo["@DestinationPort"],
+          FareType: sailings[0].FareDetails["@FareType"],
+        })
+      }
+      console.log("dataaaa", getPriceData)
+
+      if (!this.showVehicleForm && Object.keys(this.bookingModifications.vehicle).length > 0) {
+        getPriceData.vehicles = [{
+          OperatorCode: this.bookingModifications.vehicle.Model.Code,
+          Height: this.bookingModifications.vehicle.Model.Height.toString().replaceAll('.', ''),
+          Length: this.bookingModifications.vehicle.Model.Length.toString().replaceAll('.', ''),
+          Brand: this.bookingModifications.vehicle.Brand,
+          Model: this.bookingModifications.vehicle.Model.Model
+        }]
+      }
+
+      Object.keys(this.bookingModifications.services.accommodationServices).forEach((way) => {
+        this.bookingModifications.services.accommodationServices[way].forEach((service) => {
+          getPriceData.onBoardAccomodationServices.push({
+            id: way,
+            Code: service['@Code'],
+            Quantity: service['@Quantity']
+          })
+        })
+      })
+
+      Object.keys(this.bookingModifications.services.onboardServices).forEach((way) => {
+        this.bookingModifications.services.onboardServices[way].forEach((service) => {
+          getPriceData.onBoardServices.push({
+            id: way,
+            Code: service['@Code'],
+            Quantity: service['@Quantity']
+          })
+        })
+      })
+
+      console.log(getPriceData)
+      let price = 0
+      try {
+
+        let config = {
+          method: 'post',
+          maxBodyLength: Infinity,
+          url: 'https://cms.4help.tn/api/getPrice_API/callgetPriceAPIFn',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          maxRedirects: 0,
+          data: getPriceData
         };
 
-        for (let i = 0; i < this.bookingModifications.passengers.Adults; i++) {
-          data.passengers.push({
-            Age: "35",
-            Category: "Adult",
+        const response = await this.$axios.request(config);
+        if (response.data.GetPriceResponse) {
+
+          const priceArray = Array.isArray(response.data.GetPriceResponse.FerryComponents.FerryComponent.Cost.CostDetails) ? response.data.GetPriceResponse.FerryComponents.FerryComponent.Cost.CostDetails : [response.data.GetPriceResponse.FerryComponents.FerryComponent.Cost.CostDetails]
+          priceArray.forEach(sail => {
+            price += parseFloat(sail["@GrossAmount"])
           })
+
+          return price
         }
 
-        for (let i = 0; i < this.bookingModifications.passengers.Childs; i++) {
-          data.passengers.push({
-            Age: "6",
-            Category: "Child",
-          })
-        }
-
-        const sailings = Array.isArray(this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing : [this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing]
-        if (sailings.length > 1) {
-          data.sailings.push({
-            id: "Out",
-            DepartDateTime: sailings[0].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
-            DepartPort: sailings[0].SailingInfo["@DepartPort"],
-            DestinationPort: sailings[0].SailingInfo["@DestinationPort"],
-            FareType: sailings[0].FareDetails["@FareType"],
-            AccommodationCode: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Code"],
-            AccommodationQuantity: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Quantity"],
-          })
-          data.sailings.push({
-            id: "Rtn",
-            DepartDateTime: sailings[1].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
-            DepartPort: sailings[1].SailingInfo["@DepartPort"],
-            DestinationPort: sailings[1].SailingInfo["@DestinationPort"],
-            FareType: sailings[1].FareDetails["@FareType"],
-            AccommodationCode: sailings[1].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Code"],
-            AccommodationQuantity: sailings[1].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Quantity"],
-          })
-        } else {
-          data.sailings.push({
-            id: "Out",
-            DepartDateTime: sailings[0].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
-            DepartPort: sailings[0].SailingInfo["@DepartPort"],
-            DestinationPort: sailings[0].SailingInfo["@DestinationPort"],
-            FareType: sailings[0].FareDetails["@FareType"],
-            AccommodationCode: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Code"],
-            AccommodationQuantity: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Quantity"],
-          })
-        }
-
-        if (Object.keys(this.bookingModifications.vehicle).length > 0) {
-          data.vehicles.push({OperatorCode: this.bookingModifications.vehicle.Model.Code,
-            Height: this.bookingModifications.vehicle.Model.Height.toString().replaceAll('.', ''),
-            Length: this.bookingModifications.vehicle.Model.Length.toString().replaceAll('.', ''),
-            Brand: this.bookingModifications.vehicle.Brand,
-            Model: this.bookingModifications.vehicle.Model.Model
-          })
-        }
-
-        console.log(data)
-        try {
-          let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "https://cms.4help.tn/api/getServices_API/getServicesAPI",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        maxRedirects: 0,
-        data: JSON.stringify(data),
-      };
-      const response = await this.$axios.request(config);
-      console.log(
-        ">>>>>>SERVICES<<<<<<<",
-        response
-      );
-      this.services = Array.isArray(response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing : [response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing]
-        ;
-        console.log(this.services)
-        } catch (e) {
-          console.log(e)
-        }
+      } catch (e) {
+        console.log(e)
+        return 0
+      }
     },
-    handleFormInput() {
-      console.log("zdqzfoihqzfol")
+    async getServices() {
+      let getServicesData = {
+        TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
+        User: "",
+        LanguagePrefCode: "en",
+        Currency: "EUR",
+        CountryCode: "TUN",
+        OriginatingSystem: "",
+        passengers: [],
+        vehicles: [],
+        sailings: [],
+      };
+
+      for (let i = 0; i < this.bookingModifications.passengers.Adults; i++) {
+        getServicesData.passengers.push({
+          Age: "35",
+          Category: "Adult",
+        })
+      }
+
+      for (let i = 0; i < this.bookingModifications.passengers.Childs; i++) {
+        getServicesData.passengers.push({
+          Age: "6",
+          Category: "Child",
+        })
+      }
+
+      const sailings = Array.isArray(this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing : [this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing]
+      if (sailings.length > 1) {
+        getServicesData.sailings.push({
+          id: "Out",
+          DepartDateTime: sailings[0].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
+          DepartPort: sailings[0].SailingInfo["@DepartPort"],
+          DestinationPort: sailings[0].SailingInfo["@DestinationPort"],
+          FareType: sailings[0].FareDetails["@FareType"],
+          AccommodationCode: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Code"],
+          AccommodationQuantity: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Quantity"],
+        })
+        getServicesData.sailings.push({
+          id: "Rtn",
+          DepartDateTime: sailings[1].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
+          DepartPort: sailings[1].SailingInfo["@DepartPort"],
+          DestinationPort: sailings[1].SailingInfo["@DestinationPort"],
+          FareType: sailings[1].FareDetails["@FareType"],
+          AccommodationCode: sailings[1].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Code"],
+          AccommodationQuantity: sailings[1].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Quantity"],
+        })
+      } else {
+        getServicesData.sailings.push({
+          id: "Out",
+          DepartDateTime: sailings[0].SailingInfo["@DepartDateTime"].replace(/:00$/, ''),
+          DepartPort: sailings[0].SailingInfo["@DepartPort"],
+          DestinationPort: sailings[0].SailingInfo["@DestinationPort"],
+          FareType: sailings[0].FareDetails["@FareType"],
+          AccommodationCode: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Code"],
+          AccommodationQuantity: sailings[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService["@Quantity"],
+        })
+      }
+      console.log("dataaaa", getServicesData)
+
+      if (Object.keys(this.bookingModifications.vehicle).length > 0) {
+        getServicesData.vehicles.push({
+          OperatorCode: this.bookingModifications.vehicle.Model.Code,
+          Height: this.bookingModifications.vehicle.Model.Height.toString().replaceAll('.', ''),
+          Length: this.bookingModifications.vehicle.Model.Length.toString().replaceAll('.', ''),
+          Brand: this.bookingModifications.vehicle.Brand,
+          Model: this.bookingModifications.vehicle.Model.Model
+        })
+      }
+
+      console.log(getServicesData)
+      try {
+        let config = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: "https://cms.4help.tn/api/getServices_API/getServicesAPI",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          maxRedirects: 0,
+          data: JSON.stringify(getServicesData),
+        };
+        const response = await this.$axios.request(config);
+        console.log(
+          ">>>>>>SERVICES<<<<<<<",
+          response
+        );
+        this.services = Array.isArray(response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing : [response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing]
+          ;
+        console.log(this.services)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async handleFormInput() {
+      this.newCost = await this.getPrice()
     },
     datePickerClosed(value) {
       JSON.stringify(this.modifDate) === JSON.stringify([this.bookingModifications.dates.from, this.bookingModifications.dates.to]) ? this.fetchDates() : this.modifDate
@@ -505,7 +687,7 @@ export default defineComponent({
     preventDefault(event) {
       event.preventDefault()
     },
-    initiateEdit(booking) {
+    async initiateEdit(booking) {
 
       console.log(booking.RecallBookingResponse.FerryComponents.FerryComponent.Cost)
       const sailings = booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing;
@@ -536,21 +718,15 @@ export default defineComponent({
 
       console.log(this.bookingModifications.dates)
       this.bookingModifications.services = {
-        onboardservices: {
-          out: [],
-          ...(sailingArray.length > 1) && { rtn: [] }
+        onboardServices: {
+          Out: [],
+          ...(sailingArray.length > 1) && { Rtn: [] }
         },
         accommodationServices: {
-          out: [],
-          ...(sailingArray.length > 1) && { rtn: [] }
+          Out: [],
+          ...(sailingArray.length > 1) && { Rtn: [] }
         }
       }
-      this.bookingModifications.cost = 0
-      costsArray.forEach(sail => {
-        console.log(parseFloat(sail["@GrossAmount"]))
-        this.bookingModifications.cost += parseFloat(sail["@GrossAmount"])
-      })
-      console.log(this.bookingModifications.cost)
 
       const AccomodationOUT = sailingArray[0].Services.OnBoardAccommodationServices.OnBoardAccommodationService
       const AccomodationOUTArray = Array.isArray(AccomodationOUT) ? AccomodationOUT : [AccomodationOUT];
@@ -560,11 +736,11 @@ export default defineComponent({
 
 
       AccomodationOUTArray.forEach(service => {
-        this.bookingModifications.services.accommodationServices.out.push(service)
+        this.bookingModifications.services.accommodationServices.Out.push(service)
       })
 
       OnboardServiceOUTArray.forEach(service => {
-        this.bookingModifications.services.onboardservices.out.push(service)
+        this.bookingModifications.services.onboardServices.Out.push(service)
       })
 
       if (sailingArray.length > 1) {
@@ -577,11 +753,11 @@ export default defineComponent({
 
 
         AccomodationRTNArray.forEach(service => {
-          this.bookingModifications.services.accommodationServices.rtn.push(service)
+          this.bookingModifications.services.accommodationServices.Rtn.push(service)
         })
 
         OnboardServiceRTNArray.forEach(service => {
-          this.bookingModifications.services.onboardservices.rtn.push(service)
+          this.bookingModifications.services.onboardServices.Rtn.push(service)
         })
       }
 
@@ -594,7 +770,7 @@ export default defineComponent({
           Brand: booking.RecallBookingResponse.Vehicles.Vehicle.Lead["@OperatorCode"].split(';')[1]
         }
         this.bookingModifications.vehicle.Model = this.vehicleModels[this.bookingModifications.vehicle.Brand].filter(model => model.Model === booking.RecallBookingResponse.Vehicles.Vehicle.Lead["@OperatorCode"].split(';')[2])[0]
-      } else this.bookingModifications.vehicle = {}
+      } else this.bookingModifications.vehicle = [{}]
 
       this.bookingModifications.passengers = {
         Adults: 0,
@@ -611,9 +787,13 @@ export default defineComponent({
           this.bookingModifications.passengers.Childs++;
         }
       });
+
+      console.log(this.bookingModifications.cost)
+
       this.displayModifPannel = true
       console.log(this.selectedBooking);
       console.log(this.bookingModifications);
+      this.bookingModifications.cost = await this.getPrice()
     },
     getCurrentAndLastDayOfNextMonth() {
       const currentDate = new Date();
@@ -663,14 +843,6 @@ export default defineComponent({
 
 
       console.log(this.modifDate)
-    },
-    showVehicleForm(value) {
-      if (!value) {
-        this.bookingModifications.vehicle = {
-          Ownership: "No",
-          PlateNumber: ""
-        }
-      }
     },
     bookingModifications(value) {
       console.log(value)

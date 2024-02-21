@@ -350,7 +350,6 @@ export default {
   mounted() {
     this.getTopDest()
     this.getSlides()
-    console.log("!!!!!!!pipeline works!!!!!")
   }
 }
 </script>
