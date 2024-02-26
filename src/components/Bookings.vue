@@ -141,16 +141,17 @@
 
       <br />
     </aside>
-    <aside class="change-booking-form-container" v-if="displayModifPannel">
+    <aside class="change-booking-form-container" id="change-booking-form" v-if="displayModifPannel">
       <div class="change-booking-form">
         <h2>Modify Reservation</h2>
-        <form @submit="preventDefault" @input="handleFormInput">
+        <fieldset :disabled="false">
+          <form id="BookingForm" @submit="preventDefault" @input="handleFormInput" :disabled="false">
           <!-- Reservation dates -->
           <label for="departureDate">Booking Date{{ isRange ? 's' : '' }}</label>
           <!-- <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate"
             v-model="bookingModifications.dates.from"> -->
           <Datepicker style="margin-top:0px" v-model="modifDate" @range-start="handleRangeStart"
-            @closed="datePickerClosed" :range="isRange" :allowed-dates="fetchedDates"
+            @closed="datePickerClosed" :range="isRange" :allowed-dates="fetchedDates" :disabled="true"
             :highlight="{ dates: fetchedDates, customClass: 'highlighted-dates' }" :enable-time-picker="false"
             :auto-apply="true" />
 
@@ -370,10 +371,12 @@
           </div>
           <!-- Submit button -->
           <div style="display:inline-flex;gap:0.9rem;">
-            <button class="change-booking-form-button" @click="">Submit Changes</button>
+            <button class="change-booking-form-button" @click="submitChange">Submit Changes</button>
             <button class="change-booking-form-button" id="cancel-submit" @click="hideModifPannel">Cancel</button>
           </div>
         </form>
+        </fieldset>
+        
       </div>
     </aside>
   </div>
@@ -384,6 +387,7 @@ import { defineComponent, nextTick } from "vue";
 import carModels from "../../vehicle-models.json";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import swal from 'sweetalert'
 
 export default defineComponent({
 
@@ -410,11 +414,74 @@ export default defineComponent({
       fetchedDates: [],
       services: [],
       newCost: null,
+      vehiclesData: {},
+      initialForm: "",
+      modifsForm: "",
     }
 
   },
 
   methods: {
+    extractStylesFromForm(formId) {
+  const formElement = document.querySelector(formId);
+  if (!formElement) {
+    console.log('Form not found');
+    return '';
+  }
+
+  // Retrieve styles as per your provided function
+  const styleElements = document.getElementsByTagName('STYLE');
+  let styleText = '';
+  for (let i = 0; i < styleElements.length; i++) {
+    styleText += styleElements[i].textContent;
+  }
+
+  // Collect all classes, IDs, and potential pseudo-classes used in the form
+  const allElements = formElement.querySelectorAll('*');
+  const selectors = Array.from(allElements).reduce((acc, el) => {
+    if (el.id) acc.push('#' + el.id);
+    el.classList.forEach(cls => acc.push('.' + cls));
+    // Consider :disabled pseudo-class for styles
+    if (el.disabled) acc.push(':disabled');
+    return acc;
+  }, []);
+
+  // Filter the styles to only include selectors that are used inside the form
+  const usedStyles = styleText.split('}').filter(rule => {
+    const selectorPart = rule.split('{')[0];
+    return selectors.some(sel => selectorPart.includes(sel));
+  }).join('}') + '}'; // Add closing brace for the last rule
+
+  // Create a new style element with the filtered styles
+  const styleElement = document.createElement('style');
+  styleElement.type = 'text/css';
+  styleElement.textContent = usedStyles;
+
+  // Set input values explicitly to preserve them
+  const inputs = formElement.querySelectorAll('input');
+  inputs.forEach(input => {
+    if (input.type === 'checkbox' || input.type === 'radio') {
+      if (input.checked) {
+        input.setAttribute('checked', 'checked');
+      } else {
+        input.removeAttribute('checked');
+      }
+    } else {
+      input.setAttribute('value', input.value);
+    }
+  });
+
+  // Prepend the style element to the form's HTML
+  const formHTMLWithStyles = styleElement.outerHTML + formElement.outerHTML;
+
+  return formHTMLWithStyles;
+},
+    submitChange(){
+      this.modifsForm = this.extractStylesFromForm('#change-booking-form').replace('<fieldset>','<fieldset disabled="disabled">')
+      console.log(this.initialForm)
+      console.log(this.modifsForm)
+      //this.$axios.post("https://cms.4help.tn/api/Authentication_API/requestbookingmodif")
+    },
     async getPrice() {
       let getPriceData = {
         TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
@@ -470,7 +537,7 @@ export default defineComponent({
       }
       console.log("dataaaa", getPriceData)
 
-      if (!this.showVehicleForm && Object.keys(this.bookingModifications.vehicle).length > 0) {
+      if (Object.keys(this.bookingModifications.vehicle).length > 0) {
         getPriceData.vehicles = [{
           OperatorCode: this.bookingModifications.vehicle.Model.Code,
           Height: this.bookingModifications.vehicle.Model.Height.toString().replaceAll('.', ''),
@@ -501,6 +568,7 @@ export default defineComponent({
       })
 
       console.log(getPriceData)
+      console.log('bookingModifs \n',this.bookingModifications)
       let price = 0
       try {
 
@@ -860,7 +928,13 @@ export default defineComponent({
     }
   },
   mounted() {
-
+    const style_elements = document.getElementsByTagName("STYLE")
+    let style_text = "";
+    for (let i = 0; i < style_elements.length; i++)
+                    style_text += style_elements[i].outerHTML;
+ 
+                    style_text = style_text.toString();
+                        console.log(style_text)
   }
 
 });

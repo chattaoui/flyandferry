@@ -200,7 +200,8 @@ export default defineComponent({
   props: [
     'from',
     'to',
-
+    'fromDate',
+    'toDate',
   ],
 
   data() {

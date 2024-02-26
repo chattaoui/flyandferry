@@ -1494,8 +1494,7 @@ export default defineComponent({
         : (this.profilePicture = "img/1635932302.png");
     },
     logoutUser() {
-      localStorage.removeItem("token");
-      //localStorage.clear();
+      localStorage.clear();
       this.$router.push({ path: "/login" });
     },
     getFutureYears() {
