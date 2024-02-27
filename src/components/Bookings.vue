@@ -45,7 +45,12 @@
             </div>
           </div>
 
-          <div class="trip-Vertical-line"></div>
+          <div style="display: flex;flex-direction: column;align-items: center;gap: 1rem;">
+            <div class="trip-Vertical-line"></div>
+            <label style="color:#3a5a99;display: inline-flex;gap:1rem;place-items: center;">Booking reference:
+              <b>{{ booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"] }}</b>
+            </label>
+          </div>
 
           <div>
             <div class="ticket-card__info-line">
@@ -90,12 +95,12 @@
         </div>
 
 
-        <div v-else style="display: inline-flex;align-items: center;width: 100%;justify-content: space-between;">
+        <div v-else style="display: inline-flex;align-items: center;width: 100%;justify-content: space-between;padding:.8rem">
           <div class="airline">
             <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
             <div class="airline__name">AirTour</div>
           </div>
-          <div style="display: inline-flex;">
+          <div style="display: inline-flex;justify-content: space-evenly;width: 100%;">
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-departure"></i>
@@ -107,7 +112,8 @@
                               ${booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.SailingInfo["@DepartDateTime"].replaceAll('-',
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
-            <div class="dots">
+            <div style="display: flex;flex-direction: column;align-items: center;">
+              <div class="dots">
               <div></div>
               <div></div>
               <div></div>
@@ -115,6 +121,10 @@
               <div></div>
               <div></div>
             </div>
+            <label style="color:#3a5a99;display: inline-flex;gap:1rem;place-items: center;">Booking reference:
+              <b>{{ booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"] }}</b>
+            </label>
+          </div>
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-arrival"></i>
@@ -146,237 +156,238 @@
         <h2>Modify Reservation</h2>
         <fieldset :disabled="false">
           <form id="BookingForm" @submit="preventDefault" @input="handleFormInput" :disabled="false">
-          <!-- Reservation dates -->
-          <label for="departureDate">Booking Date{{ isRange ? 's' : '' }}</label>
-          <!-- <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate"
+            <!-- Reservation dates -->
+            <label for="departureDate">Booking Date{{ isRange ? 's' : '' }}</label>
+            <!-- <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate"
             v-model="bookingModifications.dates.from"> -->
-          <Datepicker style="margin-top:0px" v-model="modifDate" @range-start="handleRangeStart"
-            @closed="datePickerClosed" :range="isRange" :allowed-dates="fetchedDates" :disabled="true"
-            :highlight="{ dates: fetchedDates, customClass: 'highlighted-dates' }" :enable-time-picker="false"
-            :auto-apply="true" />
+            <Datepicker style="margin-top:0px" v-model="modifDate" @range-start="handleRangeStart"
+              @closed="datePickerClosed" :range="isRange" :allowed-dates="fetchedDates" :disabled="false"
+              :highlight="{ dates: fetchedDates, customClass: 'highlighted-dates' }" :enable-time-picker="false"
+              :auto-apply="true" />
 
-          <label for="route">Departure ~ Destination</label>
-          <input disabled style="text-align: center;" name="route" :value="selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length > 1
-            ? `${bookingModifications.route.from.name} - ${bookingModifications.route.to.name} ~ ${bookingModifications.route.to.name} - ${bookingModifications.route.from.name}`
-            : `${bookingModifications.route.from.name} ~ ${bookingModifications.route.to.name}`">
+            <label for="route">Departure ~ Destination</label>
+            <input disabled style="text-align: center;" name="route" :value="selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length > 1
+              ? `${bookingModifications.route.from.name} - ${bookingModifications.route.to.name} ~ ${bookingModifications.route.to.name} - ${bookingModifications.route.from.name}`
+              : `${bookingModifications.route.from.name} ~ ${bookingModifications.route.to.name}`">
 
-          <!-- Number of passengers with indication for type -->
-          <label for="numAdults">Adults</label>
-          <input type="number" id="numAdults" name="numAdults" min="1" v-model="bookingModifications.passengers.Adults">
+            <!-- Number of passengers with indication for type -->
+            <label for="numAdults">Adults</label>
+            <input type="number" id="numAdults" name="numAdults" min="1" v-model="bookingModifications.passengers.Adults">
 
-          <label for="numChildren">Children</label>
-          <input type="number" id="numChildren" name="numChildren" min="0"
-            v-model="bookingModifications.passengers.Childs">
+            <label for="numChildren">Children</label>
+            <input type="number" id="numChildren" name="numChildren" min="0"
+              v-model="bookingModifications.passengers.Childs">
 
-          <!-- Onboard services -->
-          <fieldset>
-            <legend>Outgoing trip</legend>
-            <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
-              <label for="numChildren">Accomodation servics</label>
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[0] && (services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
-                .filter(
-                  s => !bookingModifications.services.accommodationServices.Out.some(
-                    rtnService => rtnService['@Description'] === s['@Description']
-                  )
-                ).length >= bookingModifications.services.accommodationServices.Out.length)"
-                @click="bookingModifications.services.accommodationServices.Out[bookingModifications.services.accommodationServices.Out.length] = {}">
-                ➕
-              </span>
-            </div>
-            <div v-for="(service, index) in bookingModifications.services.accommodationServices.Out"
-              class="onboard-service">
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.accommodationServices.Out.splice(index, 1)">
-                ➖
-              </span>
-              <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
-                {{ service['@Description'] }}
-              </label>
-              <select v-else v-model="bookingModifications.services.accommodationServices.Out[index]">
-                <option v-for="service in services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
+            <!-- Onboard services -->
+            <fieldset>
+              <legend>Outgoing trip</legend>
+              <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
+                <label for="numChildren">Accomodation servics</label>
+                <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[0] && (services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
                   .filter(
                     s => !bookingModifications.services.accommodationServices.Out.some(
                       rtnService => rtnService['@Description'] === s['@Description']
                     )
-                  )
+                  ).length >= bookingModifications.services.accommodationServices.Out.length)"
+                  @click="bookingModifications.services.accommodationServices.Out[bookingModifications.services.accommodationServices.Out.length] = {}">
+                  ➕
+                </span>
+              </div>
+              <div v-for="(service, index) in bookingModifications.services.accommodationServices.Out"
+                class="onboard-service">
+                <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
+                  @click="bookingModifications.services.accommodationServices.Out.splice(index, 1)">
+                  ➖
+                </span>
+                <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
+                  {{ service['@Description'] }}
+                </label>
+                <select v-else v-model="bookingModifications.services.accommodationServices.Out[index]">
+                  <option v-for="service in services[0].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
+                    .filter(
+                      s => !bookingModifications.services.accommodationServices.Out.some(
+                        rtnService => rtnService['@Description'] === s['@Description']
+                      )
+                    )
                 " :key="service" :value="service">{{ service['@Description'] }}</option>
-              </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
-            </div>
+                </select>
+                <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
+              </div>
 
-            <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
-              <label for="numChildren">Onboard services</label>
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[0] && (Array.isArray(services[0].ServicesOptions.OnBoardServices.OnBoardService)
-                ? services[0].ServicesOptions.OnBoardServices.OnBoardService.filter(
-                  s => !bookingModifications.services.onboardServices.Out.some(
-                    rtnService => rtnService['@Description'] === s['@Description']
-                  )
-                ).length >= bookingModifications.services.onboardServices.Out.length
-                : [services[0].ServicesOptions.OnBoardServices.OnBoardService].filter(
-                  s => !bookingModifications.services.onboardServices.Out.some(
-                    rtnService => rtnService['@Description'] === s['@Description']
-                  )
-                ).length >= bookingModifications.services.onboardServices.Out.length)"
-                @click="bookingModifications.services.onboardServices.Out[bookingModifications.services.onboardServices.Out.length] = {}">
-                ➕
-              </span>
-            </div>
-            <div v-for="(service, index) in bookingModifications.services.onboardServices.Out" class="onboard-service">
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.onboardServices.Out.splice(index, 1)">
-                ➖
-              </span>
-              <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
-                {{ service['@Description'] }}
-              </label>
-              <select v-else v-model="bookingModifications.services.onboardServices.Out[index]">
-                <option v-for="service in Array.isArray(services[0].ServicesOptions.OnBoardServices.OnBoardService)
+              <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
+                <label for="numChildren">Onboard services</label>
+                <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[0] && (Array.isArray(services[0].ServicesOptions.OnBoardServices.OnBoardService)
                   ? services[0].ServicesOptions.OnBoardServices.OnBoardService.filter(
                     s => !bookingModifications.services.onboardServices.Out.some(
                       rtnService => rtnService['@Description'] === s['@Description']
                     )
-                  )
+                  ).length >= bookingModifications.services.onboardServices.Out.length
                   : [services[0].ServicesOptions.OnBoardServices.OnBoardService].filter(
                     s => !bookingModifications.services.onboardServices.Out.some(
                       rtnService => rtnService['@Description'] === s['@Description']
                     )
-                  )" :value="service">{{ service['@Description'] }}</option>
-              </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
-            </div>
-          </fieldset>
-          <fieldset
-            v-if="selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length > 1">
-            <legend>Return trip</legend>
-            <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
-              <label for="numChildren">Accomodation services</label>
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[1] && services[1].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
-                .filter(
-                  s => !bookingModifications.services.accommodationServices.Rtn.some(
-                    rtnService => rtnService['@Description'] === s['@Description']
-                  )
-                ).length >= bookingModifications.services.accommodationServices.Rtn.length"
-                @click="bookingModifications.services.accommodationServices.Rtn[bookingModifications.services.accommodationServices.Rtn.length] = {}">
-                ➕
-              </span>
-            </div>
-            <div v-for="(service, index) in bookingModifications.services.accommodationServices.Rtn"
-              class="onboard-service">
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.accommodationServices.Rtn.splice(index, 1)">
-                ➖
-              </span>
-              <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
-                {{ service['@Description'] }}
-              </label>
-              <select v-else v-model="bookingModifications.services.accommodationServices.Rtn[index]">
-                <option v-for="service in services[1].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
+                  ).length >= bookingModifications.services.onboardServices.Out.length)"
+                  @click="bookingModifications.services.onboardServices.Out[bookingModifications.services.onboardServices.Out.length] = {}">
+                  ➕
+                </span>
+              </div>
+              <div v-for="(service, index) in bookingModifications.services.onboardServices.Out" class="onboard-service">
+                <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
+                  @click="bookingModifications.services.onboardServices.Out.splice(index, 1)">
+                  ➖
+                </span>
+                <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
+                  {{ service['@Description'] }}
+                </label>
+                <select v-else v-model="bookingModifications.services.onboardServices.Out[index]">
+                  <option v-for="service in Array.isArray(services[0].ServicesOptions.OnBoardServices.OnBoardService)
+                    ? services[0].ServicesOptions.OnBoardServices.OnBoardService.filter(
+                      s => !bookingModifications.services.onboardServices.Out.some(
+                        rtnService => rtnService['@Description'] === s['@Description']
+                      )
+                    )
+                    : [services[0].ServicesOptions.OnBoardServices.OnBoardService].filter(
+                      s => !bookingModifications.services.onboardServices.Out.some(
+                        rtnService => rtnService['@Description'] === s['@Description']
+                      )
+                    )" :value="service">{{ service['@Description'] }}</option>
+                </select>
+                <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
+              </div>
+            </fieldset>
+            <fieldset
+              v-if="selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length > 1">
+              <legend>Return trip</legend>
+              <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
+                <label for="numChildren">Accomodation services</label>
+                <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[1] && services[1].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
                   .filter(
                     s => !bookingModifications.services.accommodationServices.Rtn.some(
                       rtnService => rtnService['@Description'] === s['@Description']
                     )
-                  )
+                  ).length >= bookingModifications.services.accommodationServices.Rtn.length"
+                  @click="bookingModifications.services.accommodationServices.Rtn[bookingModifications.services.accommodationServices.Rtn.length] = {}">
+                  ➕
+                </span>
+              </div>
+              <div v-for="(service, index) in bookingModifications.services.accommodationServices.Rtn"
+                class="onboard-service">
+                <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
+                  @click="bookingModifications.services.accommodationServices.Rtn.splice(index, 1)">
+                  ➖
+                </span>
+                <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
+                  {{ service['@Description'] }}
+                </label>
+                <select v-else v-model="bookingModifications.services.accommodationServices.Rtn[index]">
+                  <option v-for="service in services[1].ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService
+                    .filter(
+                      s => !bookingModifications.services.accommodationServices.Rtn.some(
+                        rtnService => rtnService['@Description'] === s['@Description']
+                      )
+                    )
                 " :value="service">{{ service['@Description'] }}</option>
-              </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
-            </div>
+                </select>
+                <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
+              </div>
 
-            <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
-              <label for="numChildren">Onboard services</label>
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[1] && ((Array.isArray(services[1].ServicesOptions.OnBoardServices.OnBoardService)
-                ? services[1].ServicesOptions.OnBoardServices.OnBoardService.filter(
-                  s => !bookingModifications.services.onboardServices.Rtn.some(
-                    rtnService => rtnService['@Description'] === s['@Description']
-                  )
-                ).length >= bookingModifications.services.onboardServices.Rtn.length
-                : [services[1].ServicesOptions.OnBoardServices.OnBoardService].filter(
-                  s => !bookingModifications.services.onboardServices.Rtn.some(
-                    rtnService => rtnService['@Description'] === s['@Description']
-                  )
-                ).length >= bookingModifications.services.onboardServices.Rtn.length))"
-                @click="bookingModifications.services.onboardServices.Rtn[bookingModifications.services.onboardServices.Rtn.length] = {}">
-                ➕
-              </span>
-            </div>
-            <div v-for="(service, index) in bookingModifications.services.onboardServices.Rtn" class="onboard-service">
-              <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
-                @click="bookingModifications.services.onboardServices.Rtn.splice(index, 1)">
-                ➖
-              </span>
-              <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
-                {{ service['@Description'] }}
-              </label>
-              <select v-else v-model="bookingModifications.services.onboardServices.Rtn[index]">
-                <option v-for="service in Array.isArray(services[1].ServicesOptions.OnBoardServices.OnBoardService)
+              <div class="onboard-service" style="width: 100%;justify-content: space-evenly;">
+                <label for="numChildren">Onboard services</label>
+                <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;" v-if="services[1] && ((Array.isArray(services[1].ServicesOptions.OnBoardServices.OnBoardService)
                   ? services[1].ServicesOptions.OnBoardServices.OnBoardService.filter(
                     s => !bookingModifications.services.onboardServices.Rtn.some(
                       rtnService => rtnService['@Description'] === s['@Description']
                     )
-                  )
+                  ).length >= bookingModifications.services.onboardServices.Rtn.length
                   : [services[1].ServicesOptions.OnBoardServices.OnBoardService].filter(
                     s => !bookingModifications.services.onboardServices.Rtn.some(
                       rtnService => rtnService['@Description'] === s['@Description']
                     )
-                  )" :value="service">
-                  {{ service['@Description'] }}
-                </option>
-              </select>
-              <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
-            </div>
-          </fieldset>
-
-          <!-- Vehicle details -->
-          <div id="vehicleDetails">
-            <!-- Button to add vehicle details -->
-            <label class="custom-checkbox"
-              style="display: inline-flex;align-items: center;gap: 3rem;width: 100%; margin-top: 2rem;">
-              <input type="checkbox" name="foodService" v-model="showVehicleForm">
-              Include car
-            </label>
-
-            <!-- Hidden fields for vehicle information to be displayed when Add Car is clicked -->
-            <fieldset v-if="showVehicleForm" id="vehicleInfo">
-              <label for="vehicleOwnership">Vehicle Ownership</label>
-              <select id="vehicleOwnership" name="vehicleOwnership" v-model="bookingModifications.vehicle.Ownership">
-                <option value="Owner">Yes</option>
-                <option value="Rent">No</option>
-              </select>
-
-              <label for="vehicleBrand">Car Brand</label>
-              <select id="vehicleBrand" name="vehicleBrand" v-model="bookingModifications.vehicle.Brand">
-                <option v-for="brand in Object.keys(vehicleModels)" :value="brand">{{ brand }}</option>
-              </select>
-
-              <div
-                v-if="bookingModifications.vehicle.Brand && Object.keys(bookingModifications.vehicle.Brand).length > 0">
-                <label for="vehicleOwnership">Car Model</label>
-                <select id="vehicleOwnership" name="vehicleOwnership" v-model="bookingModifications.vehicle.Model">
-                  <option v-for="model in vehicleModels[bookingModifications.vehicle.Brand]" :value="model">{{ model.Model
-                  }}</option>
-                </select>
+                  ).length >= bookingModifications.services.onboardServices.Rtn.length))"
+                  @click="bookingModifications.services.onboardServices.Rtn[bookingModifications.services.onboardServices.Rtn.length] = {}">
+                  ➕
+                </span>
               </div>
-
-              <label for="vehiclePlateNumber">Vehicle Plate Number</label>
-              <input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" placeholder="Plate number"
-                v-model="bookingModifications.vehicle.PlateNumber">
+              <div v-for="(service, index) in bookingModifications.services.onboardServices.Rtn" class="onboard-service">
+                <span style="cursor: pointer;background-color: #fff;border-radius: 6rem;"
+                  @click="bookingModifications.services.onboardServices.Rtn.splice(index, 1)">
+                  ➖
+                </span>
+                <label v-if="Object.keys(service).length" style="font-weight: 500;font-size: .8em;">
+                  {{ service['@Description'] }}
+                </label>
+                <select v-else v-model="bookingModifications.services.onboardServices.Rtn[index]">
+                  <option v-for="service in Array.isArray(services[1].ServicesOptions.OnBoardServices.OnBoardService)
+                    ? services[1].ServicesOptions.OnBoardServices.OnBoardService.filter(
+                      s => !bookingModifications.services.onboardServices.Rtn.some(
+                        rtnService => rtnService['@Description'] === s['@Description']
+                      )
+                    )
+                    : [services[1].ServicesOptions.OnBoardServices.OnBoardService].filter(
+                      s => !bookingModifications.services.onboardServices.Rtn.some(
+                        rtnService => rtnService['@Description'] === s['@Description']
+                      )
+                    )" :value="service">
+                    {{ service['@Description'] }}
+                  </option>
+                </select>
+                <input style="width: 4rem;" type="number" name="numChildren" min="0" v-model="service['@Quantity']">
+              </div>
             </fieldset>
-            <div style="display: grid;">
-              <label style="font-weight: 800;margin-top: 2rem;text-wrap: nowrap;">Cost <u>{{ bookingModifications.cost
-              }}</u> €</label>
-              <label v-if="newCost && newCost !== bookingModifications.cost"
-                style="font-weight: 800;margin-top: 2rem;text-wrap: nowrap;">New cost <u
-                  style="background-color: rgb(255 255 255);padding: 0.8rem;border-radius: 4rem;">{{ newCost }}</u>
-                €</label>
+
+            <!-- Vehicle details -->
+            <div id="vehicleDetails">
+              <!-- Button to add vehicle details -->
+              <label class="custom-checkbox"
+                style="display: inline-flex;align-items: center;gap: 3rem;width: 100%; margin-top: 2rem;">
+                <input type="checkbox" name="foodService" v-model="showVehicleForm">
+                Include car
+              </label>
+
+              <!-- Hidden fields for vehicle information to be displayed when Add Car is clicked -->
+              <fieldset v-if="showVehicleForm" id="vehicleInfo">
+                <label for="vehicleOwnership">Vehicle Ownership</label>
+                <select id="vehicleOwnership" name="vehicleOwnership" v-model="bookingModifications.vehicle.Ownership">
+                  <option value="Owner">Yes</option>
+                  <option value="Rent">No</option>
+                </select>
+
+                <label for="vehicleBrand">Car Brand</label>
+                <select id="vehicleBrand" name="vehicleBrand" v-model="bookingModifications.vehicle.Brand">
+                  <option v-for="brand in Object.keys(vehicleModels)" :value="brand">{{ brand }}</option>
+                </select>
+
+                <div
+                  v-if="bookingModifications.vehicle.Brand && Object.keys(bookingModifications.vehicle.Brand).length > 0">
+                  <label for="vehicleOwnership">Car Model</label>
+                  <select id="vehicleOwnership" name="vehicleOwnership" v-model="bookingModifications.vehicle.Model">
+                    <option v-for="model in vehicleModels[bookingModifications.vehicle.Brand]" :value="model">{{
+                      model.Model
+                    }}</option>
+                  </select>
+                </div>
+
+                <label for="vehiclePlateNumber">Vehicle Plate Number</label>
+                <input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" placeholder="Plate number"
+                  v-model="bookingModifications.vehicle.PlateNumber">
+              </fieldset>
+              <div style="display: grid;">
+                <label style="font-weight: 800;margin-top: 2rem;text-wrap: nowrap;">Cost <u>{{ bookingModifications.cost
+                }}</u> €</label>
+                <label v-if="newCost && newCost !== bookingModifications.cost"
+                  style="font-weight: 800;margin-top: 2rem;text-wrap: nowrap;">New cost <u
+                    style="background-color: rgb(255 255 255);padding: 0.8rem;border-radius: 4rem;">{{ newCost }}</u>
+                  €</label>
+              </div>
             </div>
-          </div>
-          <!-- Submit button -->
-          <div style="display:inline-flex;gap:0.9rem;">
-            <button class="change-booking-form-button" @click="submitChange">Submit Changes</button>
-            <button class="change-booking-form-button" id="cancel-submit" @click="hideModifPannel">Cancel</button>
-          </div>
-        </form>
+            <!-- Submit button -->
+            <div style="display:inline-flex;gap:0.9rem;">
+              <button class="change-booking-form-button" @click="submitChange">Submit Changes</button>
+              <button class="change-booking-form-button" id="cancel-submit" @click="hideModifPannel">Cancel</button>
+            </div>
+          </form>
         </fieldset>
-        
+
       </div>
     </aside>
   </div>
@@ -396,6 +407,7 @@ export default defineComponent({
   props: {
     Bookings: Object,
     type: String,
+    userMail: String,
   },
 
   components: {
@@ -417,72 +429,89 @@ export default defineComponent({
       vehiclesData: {},
       initialForm: "",
       modifsForm: "",
+      user: {}
     }
 
   },
 
   methods: {
     extractStylesFromForm(formId) {
-  const formElement = document.querySelector(formId);
-  if (!formElement) {
-    console.log('Form not found');
-    return '';
-  }
-
-  // Retrieve styles as per your provided function
-  const styleElements = document.getElementsByTagName('STYLE');
-  let styleText = '';
-  for (let i = 0; i < styleElements.length; i++) {
-    styleText += styleElements[i].textContent;
-  }
-
-  // Collect all classes, IDs, and potential pseudo-classes used in the form
-  const allElements = formElement.querySelectorAll('*');
-  const selectors = Array.from(allElements).reduce((acc, el) => {
-    if (el.id) acc.push('#' + el.id);
-    el.classList.forEach(cls => acc.push('.' + cls));
-    // Consider :disabled pseudo-class for styles
-    if (el.disabled) acc.push(':disabled');
-    return acc;
-  }, []);
-
-  // Filter the styles to only include selectors that are used inside the form
-  const usedStyles = styleText.split('}').filter(rule => {
-    const selectorPart = rule.split('{')[0];
-    return selectors.some(sel => selectorPart.includes(sel));
-  }).join('}') + '}'; // Add closing brace for the last rule
-
-  // Create a new style element with the filtered styles
-  const styleElement = document.createElement('style');
-  styleElement.type = 'text/css';
-  styleElement.textContent = usedStyles;
-
-  // Set input values explicitly to preserve them
-  const inputs = formElement.querySelectorAll('input');
-  inputs.forEach(input => {
-    if (input.type === 'checkbox' || input.type === 'radio') {
-      if (input.checked) {
-        input.setAttribute('checked', 'checked');
-      } else {
-        input.removeAttribute('checked');
+      const formElement = document.querySelector(formId);
+      if (!formElement) {
+        console.log('Form not found');
+        return '';
       }
-    } else {
-      input.setAttribute('value', input.value);
-    }
-  });
 
-  // Prepend the style element to the form's HTML
-  const formHTMLWithStyles = styleElement.outerHTML + formElement.outerHTML;
+      // Retrieve styles as per your provided function
+      const styleElements = document.getElementsByTagName('STYLE');
+      let styleText = '';
+      for (let i = 0; i < styleElements.length; i++) {
+        styleText += styleElements[i].textContent;
+      }
 
-  return formHTMLWithStyles;
-},
-    submitChange(){
-      this.modifsForm = this.extractStylesFromForm('#change-booking-form').replace('<fieldset>','<fieldset disabled="disabled">')
+      // Collect all classes, IDs, and potential pseudo-classes used in the form
+      const allElements = formElement.querySelectorAll('*');
+      const selectors = Array.from(allElements).reduce((acc, el) => {
+        if (el.id) acc.push('#' + el.id);
+        el.classList.forEach(cls => acc.push('.' + cls));
+        // Consider :disabled pseudo-class for styles
+        if (el.disabled) acc.push(':disabled');
+        return acc;
+      }, []);
+
+      // Filter the styles to only include selectors that are used inside the form
+      const usedStyles = styleText.split('}').filter(rule => {
+        const selectorPart = rule.split('{')[0];
+        return selectors.some(sel => selectorPart.includes(sel));
+      }).join('}') + '}'; // Add closing brace for the last rule
+
+      // Create a new style element with the filtered styles
+      const styleElement = document.createElement('style');
+      styleElement.type = 'text/css';
+      styleElement.textContent = usedStyles;
+
+      // Set input values explicitly to preserve them
+      const inputs = formElement.querySelectorAll('input');
+      inputs.forEach(input => {
+        if (input.type === 'checkbox' || input.type === 'radio') {
+          if (input.checked) {
+            input.setAttribute('checked', 'checked');
+          } else {
+            input.removeAttribute('checked');
+          }
+        } else {
+          input.setAttribute('value', input.value);
+        }
+      });
+
+      // Prepend the style element to the form's HTML
+      const formHTMLWithStyles = styleElement.outerHTML + formElement.outerHTML;
+
+      return formHTMLWithStyles;
+    },
+    submitChange() {
+      this.modifsForm = this.extractStylesFromForm('#change-booking-form').replace('<fieldset>', '<fieldset disabled="disabled">')
       console.log(this.initialForm)
       console.log(this.modifsForm)
-      //this.$axios.post("https://cms.4help.tn/api/Authentication_API/requestbookingmodif")
+      this.$axios.post("https://cms.4help.tn/api/Authentication_API/requestbookingmodif", {
+        user: this.$props.userMail,
+        oldbooking: this.initialForm,
+        newbooking: this.modifsForm,
+        bookingref: this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"]
+      })
+      console.log({
+        user: this.$props.userMail,
+        oldbooking: this.initialForm,
+        newbooking: this.modifsForm,
+        bookingref: this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"]
+      })
+      /*user: user,
+    oldbooking: oldBooking,
+    newbooking:bookingRequest,
+    bookingref: bookingRef,*/
     },
     async getPrice() {
+      console.log("priceee")
       let getPriceData = {
         TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
         User: "",
@@ -568,7 +597,7 @@ export default defineComponent({
       })
 
       console.log(getPriceData)
-      console.log('bookingModifs \n',this.bookingModifications)
+      console.log('bookingModifs \n', this.bookingModifications)
       let price = 0
       try {
 
@@ -688,6 +717,8 @@ export default defineComponent({
         );
         this.services = Array.isArray(response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing : [response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing]
           ;
+        this.initialForm = this.extractStylesFromForm('#change-booking-form').replace('<fieldset>', '<fieldset disabled="disabled">')
+        console.log(this.initialForm)
         console.log(this.services)
       } catch (e) {
         console.log(e)
@@ -901,8 +932,8 @@ export default defineComponent({
     },
   },
   watch: {
-    modifDate(value) {
-      console.log(value)
+    async modifDate(value) {
+      Array.isArray(this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing && value) ? (value[0] instanceof Date ? this.newCost = await this.getPrice() : null) : (value instanceof Date ? this.newCost = await this.getPrice() : null)
     },
     selectedBooking(value) {
       if (Object.keys(value).length == 0) return
@@ -928,13 +959,6 @@ export default defineComponent({
     }
   },
   mounted() {
-    const style_elements = document.getElementsByTagName("STYLE")
-    let style_text = "";
-    for (let i = 0; i < style_elements.length; i++)
-                    style_text += style_elements[i].outerHTML;
- 
-                    style_text = style_text.toString();
-                        console.log(style_text)
   }
 
 });
@@ -1075,7 +1099,7 @@ form button:active {
   box-shadow: -2px 39px 67px 0 rgba(25, 9, 59, 0.08);
   border-radius: 0.4rem;
   border: 1px solid #e9ecef;
-  padding: 1.5rem;
+  padding: 0 1.5rem;
   box-sizing: border-box;
   margin-bottom: 30px;
 }
@@ -1310,7 +1334,7 @@ input[type="radio"] {
 
 .trip-Vertical-line {
   width: 0.2rem;
-  height: 19.7vh;
+  height: 14.7vh;
   background: #3a5a99;
 }
 
@@ -1450,4 +1474,5 @@ input[type="radio"] {
   color: #000;
   /* Dark text color */
   border-radius: 50%;
-}</style>
+}
+</style>

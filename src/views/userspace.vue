@@ -1198,7 +1198,7 @@
           <div class="content-wrapper" style="position: relative;" :style="Bookings.length? '':'place-content: center'">
             <div class="content-section">
               
-              <BookingsComponent v-if="Bookings.length" :Bookings="Bookings" :type="'current'"></BookingsComponent>
+              <BookingsComponent v-if="Bookings.length" :Bookings="Bookings" :userMail="user.email" :type="'current'"></BookingsComponent>
               <div v-else class="no-reservations" style="text-align: center;">
                 <div class="no-reservations-content" style=" display: inline-block;">
                   <img src="/Plan de travail 3.png" alt="No Reservations Available" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);height: 80dvh;width: 71dvw;">
@@ -1218,7 +1218,7 @@
         >
           <div class="content-wrapper">
             <div class="content-section">
-              <BookingsComponent v-if="oldBookings.length" :Bookings="oldBookings" :type="'old'"></BookingsComponent>
+              <BookingsComponent v-if="oldBookings.length" :Bookings="oldBookings" :userMail="user.email" :type="'old'"></BookingsComponent>
               </div>
           </div>
         </div>

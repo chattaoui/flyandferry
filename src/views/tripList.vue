@@ -386,7 +386,7 @@
             <h2>Accommodation Services</h2>
             <div class="service-category">
               <div class="service-cards">
-                <div v-for="(service, index) in services
+                <div v-for="(service, index) in services[0].Sailing[0].ServicesOptions
                   .OnBoardAccommodationServices.OnBoardAccommodationService" :key="index" class="service-card">
                   <div style="flex: 1; padding: 3rem;align-self: center;">
                     <h3>{{ service["@Description"] }}</h3>
@@ -418,8 +418,10 @@
             <h2 style="margin: 6rem !important">Other Services</h2>
             <div class="service-category">
               <div class="service-cards">
-                <div v-for="(service, index) in services.OnBoardServices
-                  .OnBoardService" :key="index" class="service-card">
+                <div v-for="(service, index) in Array.isArray(services[0].Sailing[0].ServicesOptions.OnBoardServices
+                  .OnBoardService) ? services[0].Sailing[0].ServicesOptions.OnBoardServices
+                  .OnBoardService : [services[0].Sailing[0].ServicesOptions.OnBoardServices
+                  .OnBoardService]" :key="index" class="service-card">
                   <div style="flex: 1; padding: 3rem;align-self: center;">
                     <h3>{{ service["@Description"] }}</h3>
                     <p>
@@ -593,11 +595,6 @@ export default {
       }
     },
     async getSailings(trip) {
-      console.log(trip);
-      this.selectedTrip["trip"] = trip;
-      console.log(this.selectedTrip.trip)
-      this.displayLoader = true;
-      this.addFadeOutLeft();
       function getCurrentFormattedDate() {
         const currentDate = new Date();
         const year = currentDate.getFullYear();
@@ -609,6 +606,11 @@ export default {
 
         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
       }
+      console.log(trip);
+      this.selectedTrip["trip"] = trip;
+      console.log(this.selectedTrip.trip)
+      this.displayLoader = true;
+      this.addFadeOutLeft();
       let data = {};
       if (this.trips.length == 1) {
         const departDateTimeOut = trip.DepartDateTime;
@@ -676,10 +678,7 @@ export default {
         console.log(response.data);
         this.Sailings =
           response.data.GetSailingsResponse.FerryComponents.FerryComponent;
-      } catch (error) {
-        console.log(error);
-      }
-
+          
       this.Sailings.Sailings.Sailing.map((e) => {
         console.log(
           e.Services.OnBoardAccommodationServices.OnBoardAccommodationService
@@ -690,6 +689,10 @@ export default {
       this.getServices();
       this.trips.length == 2 ? this.listedTrips = [trip] : this.trips[0] = [trip];
       this.displayLoader = false;
+      } catch (error) {
+        console.log("error");
+      }
+
     },
 
     // let data = JSON.stringify({
@@ -732,7 +735,8 @@ export default {
     //response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing.ServicesOptions
 
     async getServices() {
-      let data = {
+      try {
+        let data = {
         TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
         User: "",
         LanguagePrefCode: "en",
@@ -817,6 +821,9 @@ export default {
       );
       this.services = Array.isArray(response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings) ? response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings : [response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings]
 
+      } catch (e) {
+        console.log(e)
+      }
     },
     calculateHourDifference(fromDate, toDate) {
       const startDate = new Date(fromDate);
