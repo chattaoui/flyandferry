@@ -1836,7 +1836,7 @@ export default defineComponent({
     console.log(this.user);
     this.initPassengersArray(this.passengers.length);
     this.selectedTrip = JSON.parse(localStorage.getItem("selectedTrip"));
-    if(this.user.reservations) this.Bookings = await this.useRecallAPI(this.user.reservations);
+    if(this.user.reservations.length) this.Bookings = await this.useRecallAPI(this.user.reservations);
     console.log(this.Bookings)
     this.oldBookings = this.Bookings
   },

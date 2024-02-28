@@ -15,7 +15,7 @@
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-departure"></i>
-                Take Off
+                Departure
               </div>
               <div class="ticket-card__info-line__value">{{
                 `${booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing[0].SailingInfo["@DepartPortName"]}
@@ -35,7 +35,7 @@
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-arrival"></i>
-                Landing
+                Arrival
               </div>
               <div class="ticket-card__info-line__value">{{
                 `${booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing[0].SailingInfo["@DestinationPortName"]}
@@ -56,7 +56,7 @@
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-departure"></i>
-                Take Off
+                Departure
               </div>
               <div class="ticket-card__info-line__value">{{
                 `${booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing[1].SailingInfo["@DepartPortName"]}
@@ -75,7 +75,7 @@
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-arrival"></i>
-                Landing
+                Arrival
               </div>
               <div class="ticket-card__info-line__value">{{
                 `${booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing[1].SailingInfo["@DestinationPortName"]}
@@ -84,13 +84,28 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
+          <button v-if="type === 'current' && !(bookingRequests.map(obj => obj.bookingref).includes(booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']))" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
                 d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
             </svg>
             Edit
+          </button>
+          <button v-if="type === 'current' && (bookingRequests.map(obj => obj.bookingref).includes(booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']))" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#f0ad4e" version="1.1" id="Capa_1" width="48px" height="24px" viewBox="0 0 442.04 442.04" xml:space="preserve">
+            <g>
+              <g>
+                <path d="M221.02,341.304c-49.708,0-103.206-19.44-154.71-56.22C27.808,257.59,4.044,230.351,3.051,229.203    c-4.068-4.697-4.068-11.669,0-16.367c0.993-1.146,24.756-28.387,63.259-55.881c51.505-36.777,105.003-56.219,154.71-56.219    c49.708,0,103.207,19.441,154.71,56.219c38.502,27.494,62.266,54.734,63.259,55.881c4.068,4.697,4.068,11.669,0,16.367    c-0.993,1.146-24.756,28.387-63.259,55.881C324.227,321.863,270.729,341.304,221.02,341.304z M29.638,221.021    c9.61,9.799,27.747,27.03,51.694,44.071c32.83,23.361,83.714,51.212,139.688,51.212s106.859-27.851,139.688-51.212    c23.944-17.038,42.082-34.271,51.694-44.071c-9.609-9.799-27.747-27.03-51.694-44.071    c-32.829-23.362-83.714-51.212-139.688-51.212s-106.858,27.85-139.688,51.212C57.388,193.988,39.25,211.219,29.638,221.021z"/>
+              </g>
+              <g>
+                <path d="M221.02,298.521c-42.734,0-77.5-34.767-77.5-77.5c0-42.733,34.766-77.5,77.5-77.5c18.794,0,36.924,6.814,51.048,19.188    c5.193,4.549,5.715,12.446,1.166,17.639c-4.549,5.193-12.447,5.714-17.639,1.166c-9.564-8.379-21.844-12.993-34.576-12.993    c-28.949,0-52.5,23.552-52.5,52.5s23.551,52.5,52.5,52.5c28.95,0,52.5-23.552,52.5-52.5c0-6.903,5.597-12.5,12.5-12.5    s12.5,5.597,12.5,12.5C298.521,263.754,263.754,298.521,221.02,298.521z"/>
+              </g>
+              <g>
+                <path d="M221.02,246.021c-13.785,0-25-11.215-25-25s11.215-25,25-25c13.786,0,25,11.215,25,25S234.806,246.021,221.02,246.021z"/>
+              </g>
+            </g>
+            </svg>
           </button>
         </div>
 
@@ -104,7 +119,7 @@
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-departure"></i>
-                Take Off
+                Departure
               </div>
               <div class="ticket-card__info-line__value">{{
                 `${booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.SailingInfo["@DepartPortName"]}
@@ -128,7 +143,7 @@
             <div class="ticket-card__info-line">
               <div class="ticket-card__info-line__title">
                 <i class="fas fa-plane-arrival"></i>
-                Landing
+                Arrival
               </div>
               <div class="ticket-card__info-line__value">{{
                 `${booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.SailingInfo["@DestinationPortName"]}
@@ -137,7 +152,7 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current'" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
+          <button v-if="type === 'current' && !(bookingRequests.map(obj => obj.bookingref).includes(booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']))" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -145,23 +160,40 @@
             </svg>
             Edit
           </button>
+          <button v-if="type === 'current' && (bookingRequests.map(obj => obj.bookingref).includes(booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']))" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#f0ad4e" version="1.1" id="Capa_1" width="48px" height="24px" viewBox="0 0 442.04 442.04" xml:space="preserve">
+              <g>
+                <g>
+                  <path d="M221.02,341.304c-49.708,0-103.206-19.44-154.71-56.22C27.808,257.59,4.044,230.351,3.051,229.203    c-4.068-4.697-4.068-11.669,0-16.367c0.993-1.146,24.756-28.387,63.259-55.881c51.505-36.777,105.003-56.219,154.71-56.219    c49.708,0,103.207,19.441,154.71,56.219c38.502,27.494,62.266,54.734,63.259,55.881c4.068,4.697,4.068,11.669,0,16.367    c-0.993,1.146-24.756,28.387-63.259,55.881C324.227,321.863,270.729,341.304,221.02,341.304z M29.638,221.021    c9.61,9.799,27.747,27.03,51.694,44.071c32.83,23.361,83.714,51.212,139.688,51.212s106.859-27.851,139.688-51.212    c23.944-17.038,42.082-34.271,51.694-44.071c-9.609-9.799-27.747-27.03-51.694-44.071    c-32.829-23.362-83.714-51.212-139.688-51.212s-106.858,27.85-139.688,51.212C57.388,193.988,39.25,211.219,29.638,221.021z"/>
+                </g>
+                <g>
+                  <path d="M221.02,298.521c-42.734,0-77.5-34.767-77.5-77.5c0-42.733,34.766-77.5,77.5-77.5c18.794,0,36.924,6.814,51.048,19.188    c5.193,4.549,5.715,12.446,1.166,17.639c-4.549,5.193-12.447,5.714-17.639,1.166c-9.564-8.379-21.844-12.993-34.576-12.993    c-28.949,0-52.5,23.552-52.5,52.5s23.551,52.5,52.5,52.5c28.95,0,52.5-23.552,52.5-52.5c0-6.903,5.597-12.5,12.5-12.5    s12.5,5.597,12.5,12.5C298.521,263.754,263.754,298.521,221.02,298.521z"/>
+                </g>
+                <g>
+                  <path d="M221.02,246.021c-13.785,0-25-11.215-25-25s11.215-25,25-25c13.786,0,25,11.215,25,25S234.806,246.021,221.02,246.021z"/>
+                </g>
+              </g>
+            </svg>
+          </button>
         </div>
 
       </div>
 
       <br />
     </aside>
-    <aside class="change-booking-form-container" id="change-booking-form" v-if="displayModifPannel">
-      <div class="change-booking-form">
-        <h2>Modify Reservation</h2>
-        <fieldset :disabled="false">
-          <form id="BookingForm" @submit="preventDefault" @input="handleFormInput" :disabled="false">
+    <aside class="change-booking-form-container" v-if="displayModifPannel">
+      <div class="change-booking-form" id="change-booking-form">
+        <div id="formHeader" style="display: inline-flex;justify-content: space-evenly;width: 100%;">
+          <h2>Modify Reservation</h2>
+        </div>
+        <fieldset :disabled="disableFormFields">
+          <form id="BookingForm" @submit="preventDefault" @input="handleFormInput" :disabled="disableFormFields">
             <!-- Reservation dates -->
             <label for="departureDate">Booking Date{{ isRange ? 's' : '' }}</label>
             <!-- <input type="date" id="departureDate" :min="new Date().toISOString().split('T')[0]" name="departureDate"
             v-model="bookingModifications.dates.from"> -->
             <Datepicker style="margin-top:0px" v-model="modifDate" @range-start="handleRangeStart"
-              @closed="datePickerClosed" :range="isRange" :allowed-dates="fetchedDates" :disabled="false"
+              @closed="datePickerClosed" :range="isRange" :allowed-dates="fetchedDates" :disabled="disableFormFields"
               :highlight="{ dates: fetchedDates, customClass: 'highlighted-dates' }" :enable-time-picker="false"
               :auto-apply="true" />
 
@@ -381,7 +413,7 @@
               </div>
             </div>
             <!-- Submit button -->
-            <div style="display:inline-flex;gap:0.9rem;">
+            <div id="formButtons" v-if="!disableFormFields" style="display:inline-flex;gap:0.9rem;">
               <button class="change-booking-form-button" @click="submitChange">Submit Changes</button>
               <button class="change-booking-form-button" id="cancel-submit" @click="hideModifPannel">Cancel</button>
             </div>
@@ -429,12 +461,29 @@ export default defineComponent({
       vehiclesData: {},
       initialForm: "",
       modifsForm: "",
-      user: {}
+      user: {},
+      bookingRequests: [],
+      disableFormFields: false
     }
 
   },
 
   methods: {
+    replaceBookingForm(htmlContent, id) {
+    // Get the form element by its ID
+    const bookingForm = document.getElementById(id);
+
+    // If the form exists, replace its content
+    if (bookingForm) {
+
+      // Create a container for the new content
+      const container = document.createElement('div');
+      container.innerHTML = htmlContent;
+
+      // Replace the form with the new content
+      bookingForm.parentNode.replaceChild(container, bookingForm);
+    }
+  },
     extractStylesFromForm(formId) {
       const formElement = document.querySelector(formId);
       if (!formElement) {
@@ -490,25 +539,53 @@ export default defineComponent({
       return formHTMLWithStyles;
     },
     submitChange() {
+      try {
       this.modifsForm = this.extractStylesFromForm('#change-booking-form').replace('<fieldset>', '<fieldset disabled="disabled">')
       console.log(this.initialForm)
       console.log(this.modifsForm)
       this.$axios.post("https://cms.4help.tn/api/Authentication_API/requestbookingmodif", {
         user: this.$props.userMail,
-        oldbooking: this.initialForm,
-        newbooking: this.modifsForm,
-        bookingref: this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"]
+        oldBooking: this.initialForm,
+        bookingRequest: this.modifsForm,
+        bookingRef: this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"]
+      }).then(res => {
+        if(res.status == 200) {
+          swal({
+            title: "Success",
+            text: `Modification for ${this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"]} has been registered, please wait for the approval.`,
+            icon: "success",
+          })
+          this.bookingRequests.push({
+            bookingref: this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"],
+            newbooking: this.modifsForm
+          })
+          this.disableFormFields = true
+          this.replaceBookingForm(`<div id="formHeader" style="display: inline-flex;justify-content: space-evenly;width: 100%;">
+          <h2>Modify Reservation</h2>
+          <span id="closeForm" style="cursor: pointer;">❌</span>
+        </div>`,'formHeader')
+        const span = document.querySelector('#closeForm')
+        if (span) {
+                span.addEventListener('click', this.hideModifPannel);
+              }
+        } else {
+          swal({
+            title: "Error",
+            text: "Something went wrong, please try this later.",
+            icon: "error",
+          })
+        }
+      
       })
+      } catch (e){
+        console.log(e)
+      }
       console.log({
         user: this.$props.userMail,
-        oldbooking: this.initialForm,
-        newbooking: this.modifsForm,
-        bookingref: this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"]
+        oldBooking: this.initialForm,
+        bookingRequest: this.modifsForm,
+        bookingRef: this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"]
       })
-      /*user: user,
-    oldbooking: oldBooking,
-    newbooking:bookingRequest,
-    bookingref: bookingRef,*/
     },
     async getPrice() {
       console.log("priceee")
@@ -717,7 +794,9 @@ export default defineComponent({
         );
         this.services = Array.isArray(response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing : [response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing]
           ;
+        this.disableFormFields = true
         this.initialForm = this.extractStylesFromForm('#change-booking-form').replace('<fieldset>', '<fieldset disabled="disabled">')
+        this.disableFormFields = false
         console.log(this.initialForm)
         console.log(this.services)
       } catch (e) {
@@ -787,7 +866,7 @@ export default defineComponent({
       event.preventDefault()
     },
     async initiateEdit(booking) {
-
+        
       console.log(booking.RecallBookingResponse.FerryComponents.FerryComponent.Cost)
       const sailings = booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing;
       const sailingArray = Array.isArray(sailings) ? sailings : [sailings];
@@ -887,17 +966,27 @@ export default defineComponent({
         }
       });
 
-      console.log(this.bookingModifications.cost)
-
       this.displayModifPannel = true
-      console.log(this.selectedBooking);
-      console.log(this.bookingModifications);
       this.bookingModifications.cost = await this.getPrice()
+      const bookingREF = booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"]
+      console.log(bookingREF)
+      if (this.bookingRequests.map(obj => obj.bookingref).includes(bookingREF)){
+        this.replaceBookingForm(this.bookingRequests.find(booking => booking.bookingref === bookingREF).newbooking,'change-booking-form')
+        this.replaceBookingForm('','formButtons')
+        this.replaceBookingForm(`<div id="formHeader" style="display: inline-flex;justify-content: space-evenly;width: 100%;">
+          <h2>Modify Reservation</h2>
+          <span id="closeForm" style="cursor: pointer;">❌</span>
+        </div>`,'formHeader')
+        const span = document.querySelector('#closeForm')
+        if (span) {
+                span.addEventListener('click', this.hideModifPannel);
+              }
+      }
     },
     getCurrentAndLastDayOfNextMonth() {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth();
+      const currentMonth = currentDate.getMonth(); 
       const currentDay = currentDate.getDate();
       const formattedCurrentDate = this.formatDate(currentYear, currentMonth + 1, currentDay);
 
@@ -928,7 +1017,6 @@ export default defineComponent({
           const dt = date.DepartDateTime.split("T")[0];
           return new Date(dt);
         });
-      console.log(this.fetchedDates)
     },
   },
   watch: {
@@ -940,8 +1028,9 @@ export default defineComponent({
       const isArray = Array.isArray(value.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)
       isArray ? this.modifDate = [this.bookingModifications.dates.from, this.bookingModifications.dates.to] : this.modifDate = this.bookingModifications.dates.from
 
+      // else this.disableFormFields = false
 
-      console.log(this.modifDate)
+      //console.log(this.bookingRequests.map(obj => obj.bookingref).includes(value.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference["@Reference"]))
     },
     bookingModifications(value) {
       console.log(value)
@@ -958,7 +1047,9 @@ export default defineComponent({
       return this.fetchedDates
     }
   },
-  mounted() {
+  async mounted() {
+    this.bookingRequests = await this.$axios.post("https://cms.4help.tn/api/Authentication_API/getbookingmodif", {user: this.$props.userMail}).then(res => {return res.data})
+    console.log(this.bookingRequests)
   }
 
 });
@@ -1343,7 +1434,7 @@ input[type="radio"] {
 }
 
 .change-booking-form-container {
-  width: 23%;
+  width: 20dvw;
 }
 
 .change-booking-form h2 {

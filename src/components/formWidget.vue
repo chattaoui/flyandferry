@@ -647,7 +647,7 @@ export default {
         );
         console.log(Dates);
         localStorage.setItem("trips", JSON.stringify([Out]));
-
+        console.log(Out)
         localStorage.setItem("tripOptions", JSON.stringify(tripOptions));
         if (Out) this.$router.push({ name: "triplist" });
       } else {

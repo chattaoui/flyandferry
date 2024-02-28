@@ -511,9 +511,9 @@ export default {
       }, 700); // 700 milliseconds equals 0.7 seconds
     },
     totalCost() {
-      let total = 0;
+      try {
+        let total = 0;
       if (this.trips.length == 1) {
-        console.log("this.trips[0]", this.trips[0]);
         this.trips[0]["Accomodations"].forEach((accomod) => {
           total += accomod.unitCost * accomod.Quantity;
         });
@@ -524,12 +524,19 @@ export default {
         });
       }
       return total;
+      } catch(e) {
+        console.log(e)
+      }
     },
     getServiceNames() {
-      let serviceNames = [];
+      try {
+        let serviceNames = [];
       let rawServices = [[], []];
+      const serviceArray = Array.isArray(this.services[0].Sailing) ? this.services[0].Sailing[0] : this.services[0].Sailing
+      const serviceFoodArray = Array.isArray(serviceArray.ServicesOptions.OnBoardServices) ? serviceArray.ServicesOptions.OnBoardServices.OnBoardService : [serviceArray.ServicesOptions.OnBoardServices.OnBoardService]
+
       Object.keys(this.selectedQuantities).map((code) => {
-        this.services[0].Sailing.ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService.map(
+        serviceArray.ServicesOptions.OnBoardAccommodationServices.OnBoardAccommodationService.map(
           (service, index) => {
             if (code === service["@Code"]) {
               serviceNames.push({
@@ -544,7 +551,8 @@ export default {
             }
           }
         );
-        this.services[0].Sailing.ServicesOptions.OnBoardServices.OnBoardService.map((service, index) => {
+      
+        serviceFoodArray.map((service, index) => {
           if (code === service["@Code"]) {
             serviceNames.push({
               serviceName: service["@Description"],
@@ -558,9 +566,11 @@ export default {
           }
         });
       });
-      console.log(rawServices);
       localStorage.setItem("rawServices", JSON.stringify(rawServices));
       return serviceNames;
+      } catch(e){
+        console.log(e)
+      }
     },
     getAdultCount() {
       let count = 0;
@@ -588,7 +598,6 @@ export default {
     },
     addFadeInLeft() {
       var elements = document.getElementsByClassName("fade-out-left");
-      console.log("elements", elements)
       // Loop through the elements and add a new class
       for (var i = 0; i < elements.length; i++) {
         elements[i].classList.replace("fade-out-left", "fade-in-left");
@@ -606,9 +615,7 @@ export default {
 
         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
       }
-      console.log(trip);
       this.selectedTrip["trip"] = trip;
-      console.log(this.selectedTrip.trip)
       this.displayLoader = true;
       this.addFadeOutLeft();
       let data = {};
@@ -672,23 +679,15 @@ export default {
       };
 
       try {
-        console.log(configg);
         const response = await this.$axios.request(configg);
 
-        console.log(response.data);
-        this.Sailings =
-          response.data.GetSailingsResponse.FerryComponents.FerryComponent;
+        this.Sailings =response.data.GetSailingsResponse.FerryComponents.FerryComponent;
           
-      this.Sailings.Sailings.Sailing.map((e) => {
-        console.log(
-          e.Services.OnBoardAccommodationServices.OnBoardAccommodationService
-        );
-      });
-      this.showTripList = false;
+        this.showTripList = false;
 
-      this.getServices();
-      this.trips.length == 2 ? this.listedTrips = [trip] : this.trips[0] = [trip];
-      this.displayLoader = false;
+        this.getServices();
+        this.trips.length == 2 ? this.listedTrips = [trip] : this.trips[0] = [trip];
+        this.displayLoader = false;
       } catch (error) {
         console.log("error");
       }
@@ -764,7 +763,6 @@ export default {
 
         ],
       };
-      console.log()
       if (this.selectedTrip.trip.Out && this.selectedTrip.trip.Rtn) {
         Object.keys(this.selectedTrip.trip).forEach((way) => {
           let trip = this.selectedTrip.trip[way]
@@ -780,7 +778,6 @@ export default {
         })
       } else {
         let trip = this.selectedTrip.trip
-        console.log(trip)
         trip.DepartDateTime = trip.DepartDateTime.replace(/:00$/, '')
         trip.ArriveDateTime = trip.ArriveDateTime.replace(/:00$/, '')
         data.sailings.push({
@@ -797,7 +794,6 @@ export default {
       if (this.tripOptions.passengers.length)
         data.vehicles = this.tripOptions.vehicles;
 
-      console.log(data)
       let config = {
         method: "post",
         maxBodyLength: Infinity,
@@ -809,16 +805,7 @@ export default {
         data: data,
       };
       const response = await this.$axios.request(config);
-      console.log(
-        ">>>>>>SERVICES<<<<<<<",
-        response.data.GetServicesResponse.FerryComponents.FerryComponent
-          .Sailings
-      );
-      console.log(
-        ">>>>>>SERVICES<<<<<<<",
-        response.data.GetServicesResponse.FerryComponents.FerryComponent
-          .Sailings.Sailing.ServicesOptions
-      );
+
       this.services = Array.isArray(response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings) ? response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings : [response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings]
 
       } catch (e) {
@@ -899,9 +886,7 @@ export default {
   },
   beforeMount() {
     this.tripOptions = JSON.parse(localStorage.getItem("tripOptions"));
-    console.log(localStorage.getItem("tripOptions"));
     this.trips = JSON.parse(localStorage.getItem("trips"));
-    console.log("this.trips", this.trips);
     if (this.trips.length == 2)
       this.listedTrips = this.transformTripsData(
         this.getTripsMatrix(this.trips[0], this.trips[1])
