@@ -507,13 +507,16 @@
             </div>
           </div>
         </div>
+        <div class="overlayLoader" v-if="displayLoader" id="overlay">
+          <jellyLoader />
+        </div>
         <div
-          id="payme nt"
+          id="payment"
           class="main-container"
           v-if="selectedMenu === 'payment'"
         >
           <div class="content-wrapper">
-            <div class="content-section">
+            <div v-if="Object.keys(selectedTrip).length && passengers.length" class="content-section">
               <div style="width: 40%; align-self: center">
                 <stepper
                   :activeItem="currentStep"
@@ -1188,6 +1191,9 @@
                 <button class="submit" @click="handleNextClick()">Next</button>
               </div>
             </div>
+            <div v-else class="content-section">
+              <img src="empty_page.svg" alt="No Reservations" style="width: 100%;height: 75dvh;" />
+            </div>
           </div>
         </div>
         <div
@@ -1236,12 +1242,15 @@ import VueJwtDecode from "vue-jwt-decode";
 import bcrypt from "bcryptjs";
 import CountriesList from "../../Countries-All.json";
 import BookingsComponent from "@/components/Bookings.vue";
+import swal from 'sweetalert'
+import jellyLoader from "@/components/jellyLoader.vue"
 
 export default defineComponent({
   components: {
     stepper,
     Eticket,
-    BookingsComponent
+    BookingsComponent,
+    jellyLoader
   },
 
   data() {
@@ -1262,7 +1271,7 @@ export default defineComponent({
         year: "",
         cvv: "",
       },
-      selectedMenu: "payment",
+      selectedMenu: "voyages",
       passengersData: [],
       passengers: [],
       openSectionIndex: 0,
@@ -1270,6 +1279,7 @@ export default defineComponent({
       currentStep: "1",
       selectedTrip: {},
       tripOptions: {},
+      displayLoader: false
     };
   },
 
@@ -1335,7 +1345,11 @@ export default defineComponent({
     },
   },
 
-  watch: {},
+  watch: {
+    selectedMenu(){
+      this.user = VueJwtDecode.decode(window.localStorage.getItem("token"))
+    }
+  },
 
   methods: {
     async makeReservation() {
@@ -1425,13 +1439,28 @@ export default defineComponent({
                 vehicleDetails => operatorCode + Registration
             */
       try {
+        this.displayLoader = true
         await this.$axios.request(configg).then((res) => {
           localStorage.setItem("token", res.data.token);
+          this.user = VueJwtDecode.decode(window.localStorage.getItem("token"))
           this.BookingRef = res.data.BookingReference;
-          console.log(res.data);
+          localStorage.removeItem("selectedTrip");
+          localStorage.removeItem("tripOptions");
         });
+        this.displayLoader = false
+        swal({
+            title: "Success",
+            text: `Your reservation was made successfully!`,
+            icon: "success",
+        })
+        this.passengers = []
+        this.tripOptions = {}
       } catch (e) {
-        console.log(e);
+        swal({
+            title: "Error",
+            text: `Something went wrong, please try again later.`,
+            icon: "error",
+          })
       }
     },
     async updateProfile() {
@@ -1439,7 +1468,11 @@ export default defineComponent({
         if (bcrypt.compareSync(this.oldPassword, this.user.password)) {
           this.user.password = await bcrypt.hash(this.newPassword, 8);
         } else {
-          window.alert("Wrong password");
+          swal({
+            title: "Error",
+            text: `Wrong password!`,
+            icon: "error",
+          })
           return;
         }
       }
@@ -1456,6 +1489,7 @@ export default defineComponent({
         return;
 
       try {
+        this.displayLoader = true
         await this.$axios
           .post(
             "https://cms.4help.tn/api/Authentication_API/updateprofile",
@@ -1469,6 +1503,7 @@ export default defineComponent({
               VueJwtDecode.decode(res.data.token)
             );
           });
+        this.displayLoader = false
       } catch (e) {
         window.alert("Please try again later");
       }
@@ -1805,14 +1840,21 @@ export default defineComponent({
           }
         }
       );
-
+      this.displayLoader = true
       const bookings = await Promise.all(bookingsPromises);
+      this.displayLoader = false
         //this.Bookings[0].RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing.length
       return bookings; // return the bookings from this function
     },
   },
-
+  watch: {
+    'user.reservations': async function (value){
+      console.log(value)
+      if(value) this.Bookings = await this.useRecallAPI(value)
+    }
+  },
   async mounted() {
+    this.displayLoader = true
     this.Countries = this.Countries.sort((a, b) => {
       const nameA = a.name.common.toUpperCase(); // for case-insensitive comparison
       const nameB = b.name.common.toUpperCase(); // for case-insensitive comparison
@@ -1835,19 +1877,30 @@ export default defineComponent({
     this.user = VueJwtDecode.decode(window.localStorage.getItem("token"));
     console.log(this.user);
     this.initPassengersArray(this.passengers.length);
-    this.selectedTrip = JSON.parse(localStorage.getItem("selectedTrip"));
-    if(this.user.reservations.length) this.Bookings = await this.useRecallAPI(this.user.reservations);
-    console.log(this.Bookings)
+    this.selectedTrip = localStorage.getItem("selectedTrip")? JSON.parse(localStorage.getItem("selectedTrip")):{};
     this.oldBookings = this.Bookings
+    this.displayLoader = false
   },
   created() {
     this.tripOptions = JSON.parse(localStorage.getItem("tripOptions"));
-    console.log(this.tripOptions);
+    if(localStorage.getItem("selectedTrip") && localStorage.getItem("tripOptions")) this.selectedMenu = "payment"
+
   },
 });
 </script>
 
 <style name="profile-dialog">
+.overlayLoader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.562);
+  /* Semi-transparent background */
+  z-index: 99999999999999999999;
+  /* Ensure it appears above other content */
+}
 .form-row {
   display: flex;
   gap: 2rem;

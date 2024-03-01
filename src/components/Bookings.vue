@@ -3,7 +3,7 @@
     <aside class="more-right-side slide-in-from-left">
       <h4><i class="fas fa-ticket-alt"></i> Pick your ticket:</h4>
 
-      <div v-for="(booking, index) in Object.keys(selectedBooking).length ? { selectedBooking } : Bookings"
+      <div v-for="(booking, index) in Object.keys(selectedBooking).length ? { selectedBooking } : propsBookings"
         :key="`booking_${index}`" class="more-card ticket-card">
         <div v-if="booking && isObject(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)"
           style="display: flex;flex-direction: row;width: 100%;justify-content: space-between;align-items: center;">
@@ -84,7 +84,8 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current' && !(bookingRequests.map(obj => obj.bookingref).includes(booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']))" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
+          <div style="display:grid;gap:1rem">
+            <button v-if="type === 'current' && !(bookingRequests.map(obj => obj.bookingref).includes(booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']))" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -107,6 +108,13 @@
             </g>
             </svg>
           </button>
+          <button v-if="type === 'current'" @click="handleCancleClick(booking)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" fill="currentColor"
+              height="24px" style="margin-right: .4rem;" viewBox="0 0 512 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>
+            Cancel
+          </button>
+          </div>
+          
         </div>
 
 
@@ -152,7 +160,8 @@
                   '/').replaceAll('T', ' ')}` }}</div>
             </div>
           </div>
-          <button v-if="type === 'current' && !(bookingRequests.map(obj => obj.bookingref).includes(booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']))" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
+          <div style="display:grid;gap:1rem">
+            <button v-if="type === 'current' && !(bookingRequests.map(obj => obj.bookingref).includes(booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']))" @click="selectedBooking = booking; initiateEdit(booking); getServices()">
             <svg style="margin-right: .4rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
               height="18" fill="currentColor">
               <path
@@ -175,6 +184,12 @@
               </g>
             </svg>
           </button>
+          <button v-if="type === 'current'" @click="handleCancleClick(booking)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" fill="currentColor"
+              height="24px" style="margin-right: .4rem;" viewBox="0 0 512 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>
+            Cancel
+          </button>
+          </div>
         </div>
 
       </div>
@@ -404,11 +419,11 @@
                   v-model="bookingModifications.vehicle.PlateNumber">
               </fieldset>
               <div style="display: grid;">
-                <label style="font-weight: 800;margin-top: 2rem;text-wrap: nowrap;">Cost <u>{{ bookingModifications.cost
+                <label v-if="bookingModifications.cost" style="font-weight: 800;margin-top: 2rem;text-wrap: nowrap;">Cost <u>{{ bookingModifications.cost.toFixed(2)
                 }}</u> €</label>
                 <label v-if="newCost && newCost !== bookingModifications.cost"
                   style="font-weight: 800;margin-top: 2rem;text-wrap: nowrap;">New cost <u
-                    style="background-color: rgb(255 255 255);padding: 0.8rem;border-radius: 4rem;">{{ newCost }}</u>
+                    style="background-color: rgb(255 255 255);padding: 0.8rem;border-radius: 4rem;">{{ newCost.toFixed(2) }}</u>
                   €</label>
               </div>
             </div>
@@ -431,6 +446,7 @@ import carModels from "../../vehicle-models.json";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import swal from 'sweetalert'
+import VueJwtDecode from "vue-jwt-decode";
 
 export default defineComponent({
 
@@ -463,12 +479,80 @@ export default defineComponent({
       modifsForm: "",
       user: {},
       bookingRequests: [],
-      disableFormFields: false
+      disableFormFields: false,
+      propsBookings: []
     }
 
   },
 
   methods: {
+    async handleCancleClick(booking){
+      
+      this.selectedBooking = booking
+      await this.initiateEdit(booking)
+
+      const Cost = this.bookingModifications.cost
+
+      console.log(Cost)
+      const cancelCharge = await this.$axios.post("https://cms.4help.tn/api/getCancelCharge_API/getCancelCharge", {
+        referenceBooking: booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference'],
+        TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
+        User: "",
+        LanguagePrefCode: "en",
+        Currency: "EUR",
+        CountryCode: "TUN",
+        OriginatingSystem: "",
+        TimeStamp: "2023-09-19T11:10:00"
+      }).then(res => {return res.data.GetCancelChargeResponse.Cost ? parseFloat(res.data.GetCancelChargeResponse.Cost[0].CostDetails[0]['$'].GrossAmount) : 0})
+      console.log(cancelCharge)
+      swal({
+  title: 'Are you sure you want to cancel your reservation?',
+  text: `you'll get ${Cost - cancelCharge} back from ${Cost}`,
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Yes, do it!'
+}).then(async (result) => {
+  if (result) {
+    // Place your code here that you want to execute after confirm
+    await this.$axios.post("https://cms.4help.tn/api/cancel_API/cancel", {
+      referenceBooking: booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference'],
+        TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
+        User: "",
+        LanguagePrefCode: "en",
+        Currency: "EUR",
+        CountryCode: "TUN",
+        OriginatingSystem: "",
+        TimeStamp: "2023-09-19T11:10:00"
+    }).then(async res => {
+      if(res.data) {
+        swal({
+            title: "Success",
+            text: `Booking reference: ${booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']} canceled successfully.`,
+            icon: "success",
+          })
+          let tmpToken = await this.$axios.post("https://cms.4help.tn/api/Authentication_API/removereference",{
+            user: this.$props.userMail,
+            reference: booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference']
+          }).then(res => {return res.data.token})
+          console.log(tmpToken)
+          localStorage.setItem("token", tmpToken)
+          this.propsBookings.splice(this.propsBookings.indexOf(booking),1)
+          this.displayModifPannel = false
+          this.selectedBooking = {}
+      }
+      else {
+        swal({
+            title: "Error",
+            text: `Something went wrong please try again later.`,
+            icon: "error",
+          })
+      }
+    })
+  }
+});
+    },
     replaceBookingForm(htmlContent, id) {
     // Get the form element by its ID
     const bookingForm = document.getElementById(id);
@@ -1049,7 +1133,10 @@ export default defineComponent({
   },
   async mounted() {
     this.bookingRequests = await this.$axios.post("https://cms.4help.tn/api/Authentication_API/getbookingmodif", {user: this.$props.userMail}).then(res => {return res.data})
-    console.log(this.bookingRequests)
+  },
+  created(){
+    console.log(this.$props.Bookings)
+    this.propsBookings = this.$props.Bookings
   }
 
 });
@@ -1152,8 +1239,7 @@ select~i {
 form button {
   border-radius: 16px;
   height: 3.5rem;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 0.6rem;
   box-sizing: border-box;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 17px;
