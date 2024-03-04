@@ -487,13 +487,14 @@ export default defineComponent({
 
   methods: {
     async handleCancleClick(booking){
-      
       this.selectedBooking = booking
+      this.$parent.displayLoader = true
       await this.initiateEdit(booking)
+      this.$parent.displayLoader = false
 
       const Cost = this.bookingModifications.cost
 
-      console.log(Cost)
+      this.$parent.displayLoader = true
       const cancelCharge = await this.$axios.post("https://cms.4help.tn/api/getCancelCharge_API/getCancelCharge", {
         referenceBooking: booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference'],
         TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
@@ -504,6 +505,7 @@ export default defineComponent({
         OriginatingSystem: "",
         TimeStamp: "2023-09-19T11:10:00"
       }).then(res => {return res.data.GetCancelChargeResponse.Cost ? parseFloat(res.data.GetCancelChargeResponse.Cost[0].CostDetails[0]['$'].GrossAmount) : 0})
+      this.$parent.displayLoader = false
       console.log(cancelCharge)
       swal({
   title: 'Are you sure you want to cancel your reservation?',
@@ -516,6 +518,7 @@ export default defineComponent({
 }).then(async (result) => {
   if (result) {
     // Place your code here that you want to execute after confirm
+      this.$parent.displayLoader = true
     await this.$axios.post("https://cms.4help.tn/api/cancel_API/cancel", {
       referenceBooking: booking.RecallBookingResponse.FerryComponents.FerryComponent.BookingReference['@Reference'],
         TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
@@ -526,6 +529,8 @@ export default defineComponent({
         OriginatingSystem: "",
         TimeStamp: "2023-09-19T11:10:00"
     }).then(async res => {
+      
+      this.$parent.displayLoader = false
       if(res.data) {
         swal({
             title: "Success",
@@ -772,8 +777,13 @@ export default defineComponent({
           maxRedirects: 0,
           data: getPriceData
         };
+        
+        this.$parent.displayLoader = true
 
         const response = await this.$axios.request(config);
+
+        this.$parent.displayLoader = false
+
         if (response.data.GetPriceResponse) {
 
           const priceArray = Array.isArray(response.data.GetPriceResponse.FerryComponents.FerryComponent.Cost.CostDetails) ? response.data.GetPriceResponse.FerryComponents.FerryComponent.Cost.CostDetails : [response.data.GetPriceResponse.FerryComponents.FerryComponent.Cost.CostDetails]
@@ -871,13 +881,9 @@ export default defineComponent({
           maxRedirects: 0,
           data: JSON.stringify(getServicesData),
         };
+        this.$parent.displayLoader = true
         const response = await this.$axios.request(config);
-        console.log(
-          ">>>>>>SERVICES<<<<<<<",
-          response
-        );
-        this.services = Array.isArray(response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing) ? response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing : [response.data.GetServicesResponse.FerryComponents.FerryComponent.Sailings.Sailing]
-          ;
+        this.$parent.displayLoader = false
         this.disableFormFields = true
         this.initialForm = this.extractStylesFromForm('#change-booking-form').replace('<fieldset>', '<fieldset disabled="disabled">')
         this.disableFormFields = false
@@ -894,15 +900,14 @@ export default defineComponent({
       JSON.stringify(this.modifDate) === JSON.stringify([this.bookingModifications.dates.from, this.bookingModifications.dates.to]) ? this.fetchDates() : this.modifDate
     },
     async handleRangeStart(DATE) {
-      console.log(DATE);
+      this.$parent.displayLoader = true
       const { lastDayOfNextMonth } = this.getCurrentAndLastDayOfNextMonth();
       let dates = await this.useTimeTableAPI(this.formatDate(DATE.getFullYear(), DATE.getMonth(), DATE.getDate()), lastDayOfNextMonth, this.bookingModifications.route.to.code, this.bookingModifications.route.from.code);
-      console.log(dates);
       this.fetchedDates = dates
         .map(date => new Date(date.DepartDateTime))
         .filter(dt => dt > DATE);
       this.fetchedDates.unshift(DATE);
-      console.log(this.fetchedDates);
+      this.$parent.displayLoader = false
     },
     async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
       try {
@@ -929,9 +934,11 @@ export default defineComponent({
           maxRedirects: 0,
           data: data,
         };
+        this.$parent.displayLoader = true
         return await this.$axios.request(config).then((res) => {
           console.log(res.data);
           if (res.data !== "Pas de data à afficher avec les données entrées") {
+            this.$parent.displayLoader = false
             return res.data;
           }
         });
@@ -950,8 +957,8 @@ export default defineComponent({
       event.preventDefault()
     },
     async initiateEdit(booking) {
+      this.$parent.displayLoader = true
         
-      console.log(booking.RecallBookingResponse.FerryComponents.FerryComponent.Cost)
       const sailings = booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing;
       const sailingArray = Array.isArray(sailings) ? sailings : [sailings];
 
@@ -1066,6 +1073,7 @@ export default defineComponent({
                 span.addEventListener('click', this.hideModifPannel);
               }
       }
+      this.$parent.displayLoader = false
     },
     getCurrentAndLastDayOfNextMonth() {
       const currentDate = new Date();
@@ -1092,7 +1100,7 @@ export default defineComponent({
       return `${formattedYear}-${formattedMonth}-${formattedDay}`;
     },
     async fetchDates(fromCode, toCode) {
-      console.log("called fetchDates")
+      this.$parent.displayLoader = true
       const { currentDate, lastDayOfNextMonth } = this.getCurrentAndLastDayOfNextMonth();
       let dates = await this.useTimeTableAPI(currentDate, lastDayOfNextMonth, fromCode ? fromCode : this.bookingModifications.route.from.code, toCode ? toCode : this.bookingModifications.route.to.code);
       this.fetchedDates = dates
@@ -1101,11 +1109,14 @@ export default defineComponent({
           const dt = date.DepartDateTime.split("T")[0];
           return new Date(dt);
         });
+      this.$parent.displayLoader = false
     },
   },
   watch: {
     async modifDate(value) {
+      this.$parent.displayLoader = true
       Array.isArray(this.selectedBooking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing && value) ? (value[0] instanceof Date ? this.newCost = await this.getPrice() : null) : (value instanceof Date ? this.newCost = await this.getPrice() : null)
+      this.$parent.displayLoader = false
     },
     selectedBooking(value) {
       if (Object.keys(value).length == 0) return
@@ -1132,10 +1143,11 @@ export default defineComponent({
     }
   },
   async mounted() {
+    this.$parent.displayLoader = true
     this.bookingRequests = await this.$axios.post("https://cms.4help.tn/api/Authentication_API/getbookingmodif", {user: this.$props.userMail}).then(res => {return res.data})
+    this.$parent.displayLoader = false
   },
   created(){
-    console.log(this.$props.Bookings)
     this.propsBookings = this.$props.Bookings
   }
 

@@ -661,6 +661,16 @@ export default {
           destinationPlaceRtn: `${destinationPlaceRtn}`,
         };
       }
+      
+      this.tripOptions.passengers.map((passenger, index) => {
+        if (passenger.Category === "Baby") {
+          this.tripOptions.passengers[index] = {
+            Category: "Child",
+            Age: "6",
+          }          
+        }        
+      })
+      console.log(this.tripOptions)
 
       data.passengers = this.tripOptions.passengers;
 
@@ -1019,11 +1029,10 @@ body {
 }
 
 .trip-container {
-  width: 100vw;
-  padding: 12.5rem;
+  width: 100dvw;
+  padding: 12rem;
   background: $grey;
   min-height: 100%;
-  height: 100%;
 }
 
 .trip-Vertical-line {
@@ -1187,7 +1196,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-right: 30px;
+  margin-right: 1dvw;
 }
 
 .travel-arrival-info,
@@ -1257,10 +1266,11 @@ body {
   display: flex;
   align-items: center;
   position: relative;
+  min-width: 5rem;
 
   .range-pos {
-    height: 15px;
-    width: 15px;
+    height: 2rem;
+    width: 2rem;
     border-radius: 50%;
     position: relative;
     z-index: 1;
@@ -1311,11 +1321,15 @@ body {
     font-weight: bold;
     cursor: pointer;
     outline: none;
+    font-size: 1em;
   }
 }
 </style>
 
 <style scoped>
+span {
+  font-size: .8em;
+}
 .services-container {
   display: flex;
   padding: 30px;

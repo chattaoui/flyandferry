@@ -229,7 +229,7 @@
         </div>
       </div>
 
-      <div class="category-container" v-if="categoryExists('Child')">
+      <div class="category-container">
         <svg
           class="categ-icon"
           viewBox="0 0 74.88 56.41"
@@ -243,10 +243,7 @@
             />
           </g>
         </svg>
-        <span v-if="categoryExists('Baby')">children ( 3-14 years )</span>
-        <span style="color: black !important" v-else
-          >children ( 0-14 years )</span
-        >
+        <span style="color: black !important">children ( 3-14 years )</span>
         <div class="number-input">
           <button type="button" @click="children > 0 ? children-- : null">
             -
@@ -263,7 +260,7 @@
         </div>
       </div>
 
-      <div class="category-container" v-if="categoryExists('Baby')">
+      <div class="category-container">
         <svg
           class="categ-icon"
           xmlns="http://www.w3.org/2000/svg"
@@ -280,16 +277,16 @@
             d="M972.8,565.8c0,56.3-46.1,102.4-102.4,102.4c-7.7,0-15.4,0-23-2.6c-51.2,135.7-181.8,233-335.4,233s-284.2-97.3-335.4-233  c-7.7,2.6-15.4,2.6-23,2.6c-56.3,0-102.4-46.1-102.4-102.4s46.1-102.4,102.4-102.4h7.7C197.1,302.1,340.5,181.8,512,181.8  c46.1,0,89.6,10.2,130.6,25.6h10.2c20.5,0,38.4-17.9,38.4-38.4s-17.9-38.4-38.4-38.4c-7.7,0-15.4,2.6-23,7.7  c-10.2,10.2-28.2,7.7-35.8-2.6c-10.2-10.2-7.7-28.2,2.6-35.8c15.4-12.8,35.8-20.5,56.3-20.5c48.6,0,89.6,41,89.6,89.6  c0,28.1-13.7,53.6-34.6,70.2c80.7,48.1,139.4,127.9,158,221.7h4.5C926.7,460.8,972.8,509.4,972.8,565.8z"
           />
         </svg>
-        <span>Babies 0-2 years</span>
+        <span style="color: black !important">Babies 0-2 years</span>
         <div class="number-input">
           <button
             type="button"
-            @click="$refs.baby.value > 0 ? $refs.baby.value-- : null"
+            @click="babies > 0 ? babies-- : null"
           >
             -
           </button>
-          <input type="number" ref="baby" id="baby" name="baby" min="0" />
-          <button type="button" @click="$refs.baby.value++">+</button>
+          <input type="number" ref="baby" id="baby" v-model="babies" name="baby" min="0" />
+          <button type="button" @click="babies++">+</button>
         </div>
       </div>
     </div>
@@ -456,6 +453,7 @@ export default {
       selectingTrailer: false,
       adults: 1,
       children: 0,
+      babies: 0,
       searchedCar: "",
       brandListWidth: "73rem",
       carMODELS: {},
@@ -637,13 +635,20 @@ export default {
         });
       }
 
+      for (let i = 1; i <= this.babies; i++) {
+        tripOptions.passengers.push({
+          Age: "1",
+          Category: "Baby",
+        });
+      }
+
       if (this.tripType !== "roundTrip") {
         const Dates = this.getDatesOneWay(fromDate);
         const Out = await this.useTimeTableAPI(
           Dates[0],
           Dates[1],
-          this.portNameCode[this.depPort],
-          this.portNameCode[this.destPort]
+          this.portNameCode[this.depPort]['CTN'],
+          this.portNameCode[this.destPort]['CTN']
         );
         console.log(Dates);
         localStorage.setItem("trips", JSON.stringify([Out]));
@@ -653,17 +658,18 @@ export default {
       } else {
         const fromDates = this.getDatesOneWay(fromDate);
         const toDates = this.getDatesOneWay(toDate);
+        console.log(this.portNameCode)
         const Out = await this.useTimeTableAPI(
           fromDates[0],
           fromDates[1],
-          this.portNameCode[this.depPort],
-          this.portNameCode[this.destPort]
+          this.portNameCode[this.depPort]['CTN'],
+          this.portNameCode[this.destPort]['CTN']
         );
         const Rtn = await this.useTimeTableAPI(
           toDates[0],
           toDates[1],
-          this.portNameCode[this.destPort],
-          this.portNameCode[this.depPort]
+          this.portNameCode[this.destPort]['CTN'],
+          this.portNameCode[this.depPort]['CTN']
         );
         localStorage.setItem("trips", JSON.stringify([Out, Rtn]));
 
@@ -674,7 +680,7 @@ export default {
       this.$parent.displayLoader = false;
     },
     async useTimeTableAPI(fromDate, toDate, fromPort, toPort) {
-      console.log(fromDate)
+      console.log(fromPort)
       try {
         const data = JSON.stringify({
           TransactionId: "488445e3-13aa-41e3-ace1-9a022a74e974",
@@ -685,8 +691,8 @@ export default {
           OriginatingSystem: "",
           FromSailingDate: fromDate,
           ToSailingDate: toDate,
-          DepartPort: fromPort['CTN'],
-          DestinationPort: toPort['CTN'],
+          DepartPort: fromPort,
+          DestinationPort: toPort,
         });
         console.log(data);
         const config = {
@@ -1091,6 +1097,7 @@ export default {
         ).map((obj) => obj["$"].DestinationPort);
         let dates = await Promise.all(
           destPorts.map(async (destPort) => {
+            console.log(destPort)
             const res = await this.useTimeTableAPI(
               monthDates.currentDate,
               monthDates.lastDayOfNextMonth,

@@ -779,7 +779,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .select-class {
   /* Reset */
   appearance: none;
@@ -1062,7 +1062,7 @@ p {
 }
 </style>
 
-<style>
+<style scoped>
 * {
   margin: 0px;
   padding: 0px;
@@ -1617,7 +1617,7 @@ iframe {
   }
 }
 </style>
-<style name="credit-card">
+<style name="credit-card" scoped>
 .credit-card-container {
   padding: 1rem;
   min-height: 58vh;

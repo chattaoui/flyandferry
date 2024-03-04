@@ -338,6 +338,11 @@ export default {
         if (e.Slider_Image)
           e.Slider_Image = `https://cms.4help.tn/${e.Slider_Image.replaceAll(" ", "%20")}`
       })
+    },
+    resetTripSearch(){
+      const token = localStorage.getItem('token')
+      localStorage.clear()
+      if (token) localStorage.setItem('token', token)
     }
   },
 
@@ -348,6 +353,7 @@ export default {
     }
   },
   mounted() {
+    this.resetTripSearch()
     this.getTopDest()
     this.getSlides()
   }

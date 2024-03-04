@@ -2,13 +2,12 @@
   <div id="userspace">
     <div class="app">
       <div class="header">
-        <div to="/" class="menu-circle">
+        <RouterLink to="/" class="menu-circle">
           <img
-            @click="$router.push({ name: 'home' })"
             style="cursor: pointer"
             src="html_template/img/logo.png"
           />
-        </div>
+        </RouterLink>
         <div class="search-bar">
           <input type="text" placeholder="Search" />
         </div>
@@ -787,7 +786,6 @@
                                 }"
                               >
                                 <option value="Passport">Passport</option>
-                                <option value="CIN">CIN</option>
                               </select>
                             </div>
                             <div class="error-message-wrapper">
@@ -1378,7 +1376,7 @@ export default defineComponent({
       };
 
       data.passengers = this.passengersData.map((item, index) => ({
-        Category: this.passengers[index].Category,
+        Category: this.passengers[index].Category==="Baby"? "Child" : this.passengers[index].Category,
         Title: item.Title,
         Forename: item["first name"],
         Surname: item["last name"],
@@ -1390,6 +1388,8 @@ export default defineComponent({
         DateOfBirth: item["date of birth"],
         Gender: item.gender,
       }));
+
+      console.log(data.passengers)
 
       function calculateAge(dateOfBirth) {
         const birthDate = new Date(dateOfBirth);
@@ -1424,6 +1424,7 @@ export default defineComponent({
         Title: this.user.title,
       };
       data.UserFront = this.user;
+      console.log(JSON.stringify(data))
       let configg = {
         method: "post",
         maxBodyLength: Infinity,
@@ -1889,7 +1890,7 @@ export default defineComponent({
 });
 </script>
 
-<style name="profile-dialog">
+<style name="profile-dialog" scoped>
 .overlayLoader {
   position: fixed;
   top: 0;
@@ -2161,7 +2162,7 @@ dialog p a:visited {
 }
 </style>
 
-<style lang="scss" name="summary-details">
+<style lang="scss" name="summary-details" scoped>
 summary {
   border-radius: 3rem;
   background-color: #ffffffa1;
@@ -3412,7 +3413,7 @@ select {
 }
 </style>
 
-<style name="credit-card">
+<style name="credit-card" scoped>
 .credit-card-container {
   padding: 1rem;
   min-height: 58vh;
@@ -3657,7 +3658,7 @@ select {
 }
 </style>
 
-<style lang="scss" name="booking-container">
+<style lang="scss" name="booking-container" scoped>
 .Voyages {
     .left-side {
     height: 100%;
