@@ -8,8 +8,7 @@
         <div v-if="booking && isObject(booking.RecallBookingResponse.FerryComponents.FerryComponent.Sailings.Sailing)"
           style="display: flex;flex-direction: row;width: 100%;justify-content: space-between;align-items: center;">
           <div class="airline">
-            <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
-            <div class="airline__name">AirTour</div>
+            <img src="img/CTNlogo.png" />
           </div>
           <div>
             <div class="ticket-card__info-line">
@@ -120,8 +119,7 @@
 
         <div v-else style="display: inline-flex;align-items: center;width: 100%;justify-content: space-between;padding:.8rem">
           <div class="airline">
-            <img src="https://cdn.alibaba.ir/static/img/airlines/Domestic/B9.png" />
-            <div class="airline__name">AirTour</div>
+            <img src="img/CTNlogo.png" />
           </div>
           <div style="display: inline-flex;justify-content: space-evenly;width: 100%;">
             <div class="ticket-card__info-line">
@@ -730,17 +728,18 @@ export default defineComponent({
           FareType: sailings[0].FareDetails["@FareType"],
         })
       }
-      console.log("dataaaa", getPriceData)
+      console.log("dataaaa", this.bookingModifications)
 
-      if (Object.keys(this.bookingModifications.vehicle).length > 0) {
-        getPriceData.vehicles = [{
-          OperatorCode: this.bookingModifications.vehicle.Model.Code,
-          Height: this.bookingModifications.vehicle.Model.Height.toString().replaceAll('.', ''),
-          Length: this.bookingModifications.vehicle.Model.Length.toString().replaceAll('.', ''),
-          Brand: this.bookingModifications.vehicle.Brand,
-          Model: this.bookingModifications.vehicle.Model.Model
-        }]
-      }
+      // if (this.bookingModifications.vehicle && this.bookingModifications.vehicle[0] && Object.keys(this.bookingModifications.vehicle[0]).length > 0) {
+      //   console.log("car")
+      //   getPriceData.vehicles = [{
+      //     OperatorCode: this.bookingModifications.vehicle.Model.Code,
+      //     Height: this.bookingModifications.vehicle.Model.Height.toString().replaceAll('.', ''),
+      //     Length: this.bookingModifications.vehicle.Model.Length.toString().replaceAll('.', ''),
+      //     Brand: this.bookingModifications.vehicle.Brand,
+      //     Model: this.bookingModifications.vehicle.Model.Model
+      //   }]
+      // }
 
       Object.keys(this.bookingModifications.services.accommodationServices).forEach((way) => {
         this.bookingModifications.services.accommodationServices[way].forEach((service) => {
@@ -1348,13 +1347,13 @@ form button:active {
 .airline img {
   width: 4rem;
 }
-
+/* 
 .airline__name {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 17px;
   color: #2d0079;
   margin-top: 10px;
-}
+} */
 
 .ticket-card__info-line {
   display: flex;

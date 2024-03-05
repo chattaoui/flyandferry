@@ -808,7 +808,7 @@
                                 :class="{
                                   invalid:
                                     submitted &&
-                                    passengersData[index]['id'].length < 8,
+                                    (passengersData[index]['id'].length < 8 || passengersData[index]['id'].includes(' ')),
                                 }"
                                 required=""
                                 placeholder=""
@@ -819,7 +819,7 @@
                             </div>
                             <div class="error-message-wrapper">
                               <span
-                                v-if="submitted && !passengersData[index]['id']"
+                                v-if="submitted && (passengersData[index]['id'].length < 8 || passengersData[index]['id'].includes(' '))"
                                 class="error-message"
                                 >Please enter your id number.</span
                               >
@@ -864,7 +864,7 @@
                       </form>
                     </div>
                   </div>
-                  <div class="card" v-if="tripOptions && tripOptions.vehicles">
+                  <div class="card" v-if="Object.keys(tripOptions).length && tripOptions.vehicles.length">
                     <div
                       class="card-header"
                       :id="`faqHeading-${passengers.length + 1}`"
@@ -1583,7 +1583,7 @@ export default defineComponent({
           // Check for passport expiry date error
           if (
             !error &&
-            data["type of id"] === "Passport" &&
+            data["type of id"] === "Passport" && 
             !data["expiry date"]
           ) {
             error = true; // Set the error flag to true
@@ -1598,18 +1598,20 @@ export default defineComponent({
             error = true; // Set the error flag to true
             errorIndex = index; // Set the error index
           }
+          if(!error && 
+           data["id"].includes(' ')
+          ) {
+            error = true; // Set the error flag to true
+            errorIndex = index; // Set the error index
+          }
           console.log(data);
         });
 
         if (!error) {
-          console.log(
-            !this.tripOptions.vehicles[0].Registration ||
-              !this.tripOptions.vehicles[0].Ownership
-          );
-          if (
-            !this.tripOptions.vehicles[0].Registration ||
+          if (this.tripOptions.vehicles.length &&
+            (!this.tripOptions.vehicles[0].Registration ||
             !this.tripOptions.vehicles[0].Ownership ||
-            this.tripOptions.vehicles[0].Registration.length > 13
+            this.tripOptions.vehicles[0].Registration.length > 13)
           )
             error = true;
           errorIndex = this.passengersData.length + 1;
@@ -1659,7 +1661,7 @@ export default defineComponent({
     getMaxBD(category) {
       switch (category) {
         case "Adult":
-          return this.getYearsAgoDate(14);
+          return this.getYearsAgoDate(18);
         case "Child":
           return this.getYearsAgoDate(2);
         case "Baby":
@@ -1884,6 +1886,7 @@ export default defineComponent({
   },
   created() {
     this.tripOptions = JSON.parse(localStorage.getItem("tripOptions"));
+    console.log(this.tripOptions)
     if(localStorage.getItem("selectedTrip") && localStorage.getItem("tripOptions")) this.selectedMenu = "payment"
 
   },

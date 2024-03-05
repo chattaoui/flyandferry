@@ -109,7 +109,8 @@
                 </tbody>
               </table>
             </div>
-            <div class="grid-container">
+            <div class="grid-container" style="    border-bottom: aliceblue;
+    border-bottom-style: groove;">
               <div class="grid-item font-bold">Total</div>
               <div class="spacer"></div>
               <div class="grid-item font-size-large font-bold">
@@ -186,7 +187,7 @@
                     ">
                     <div class="quantity-selector">
                       <label for="quantity">Quantity:</label>
-                      <input type="number" v-model="selectedQuantities[service['@Code']]" min="0" />
+                      <input type="number" v-model="selectedQuantities[service['@Code']]" min="0" :max="getAdultCount()" />
                     </div>
                     <div class="travel-rate">
                       Cost: <sup>€</sup>
@@ -362,7 +363,8 @@
                 </tbody>
               </table>
             </div>
-            <div class="grid-container">
+            <div class="grid-container" style="    border-bottom: aliceblue;
+    border-bottom-style: groove;">
               <div class="grid-item font-bold">Total</div>
               <div class="spacer"></div>
               <div class="grid-item font-size-large font-bold">
@@ -439,7 +441,7 @@
                     ">
                     <div class="quantity-selector">
                       <label for="quantity">Quantity:</label>
-                      <input type="number" v-model="selectedQuantities[service['@Code']]" min="0" />
+                      <input type="number" v-model="selectedQuantities[service['@Code']]" min="0" :max="service['@Code'] === 'PC' ? getAdultCount() : null" />
                     </div>
                     <div class="travel-rate">
                       Cost: <sup>€</sup>
@@ -583,6 +585,8 @@ export default {
       this.showTripList = true;
       this.showSummary = true;
       this.trips.length == 1 ? this.trips[0]["Accomodations"] = this.getServiceNames() : this.selectedTrip["Accomodations"] = this.getServiceNames();
+      console.log(this.trips[0])
+      console.log(this.selectedTrip)
       this.trips.length == 1 ? localStorage.setItem("selectedTrip", JSON.stringify(this.trips[0])) : localStorage.setItem("selectedTrip", JSON.stringify(this.selectedTrip));
     },
     getServicePicture(code) {
@@ -690,6 +694,8 @@ export default {
 
       try {
         const response = await this.$axios.request(configg);
+
+        console.log(response.data.GetSailingsResponse.FerryComponents.FerryComponent)
 
         this.Sailings =response.data.GetSailingsResponse.FerryComponents.FerryComponent;
           
@@ -1460,5 +1466,11 @@ h3 {
 
 .caption {
   font-style: italic;
+}
+
+.price {
+  font-size: 1.5em;
+    color: black;
+    font-weight: bold;
 }
 </style>
